@@ -1,13 +1,14 @@
 package com.soccer.ws.service;
 
 import com.google.common.collect.Lists;
-import com.soccer.ws.data.AccountStatistic;
 import com.soccer.ws.data.MatchStatisticsObject;
 import com.soccer.ws.data.MatchStatusEnum;
+import com.soccer.ws.dto.AccountStatisticDTO;
 import com.soccer.ws.model.Account;
 import com.soccer.ws.model.Goal;
 import com.soccer.ws.model.Match;
 import com.soccer.ws.model.Presence;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -20,6 +21,8 @@ import java.util.List;
  */
 @Service
 public class StatisticsServiceImpl implements StatisticsService {
+    @Autowired
+    DTOConversionHelper dtoConversionHelper;
     @PersistenceContext
     private EntityManager em;
 
@@ -74,13 +77,13 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     @Override
-    public AccountStatistic getAccountStatistic(List<Match> matches, Account account) {
-        AccountStatistic accountStatistic = new AccountStatistic(account);
-        setMatchData(matches, account, accountStatistic);
-        return accountStatistic;
+    public AccountStatisticDTO getAccountStatistic(List<Match> matches, Account account, boolean isLoggedIn) {
+        AccountStatisticDTO accountStatisticDTO = new AccountStatisticDTO(dtoConversionHelper.convertAccount(account, isLoggedIn));
+        setMatchData(matches, account, accountStatisticDTO);
+        return accountStatisticDTO;
     }
 
-    private void setMatchData(List<Match> matches, Account account, AccountStatistic accountStatistic) {
+    private void setMatchData(List<Match> matches, Account account, AccountStatisticDTO accountStatisticDTO) {
         int goals = 0;
         int assists = 0;
         int presences = 0;
@@ -98,8 +101,8 @@ public class StatisticsServiceImpl implements StatisticsService {
                 }
             }
         }
-        accountStatistic.setGoals(goals);
-        accountStatistic.setAssists(assists);
-        accountStatistic.setPlayed(presences);
+        accountStatisticDTO.setGoals(goals);
+        accountStatisticDTO.setAssists(assists);
+        accountStatisticDTO.setPlayed(presences);
     }
 }

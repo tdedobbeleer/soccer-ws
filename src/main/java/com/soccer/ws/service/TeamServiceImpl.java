@@ -1,7 +1,7 @@
 package com.soccer.ws.service;
 
 import com.google.common.collect.Lists;
-import com.soccer.ws.dto.ActionWrapperDTO;
+import com.soccer.ws.dto.TeamDTO;
 import com.soccer.ws.model.Account;
 import com.soccer.ws.model.Team;
 import com.soccer.ws.persistence.AddressDao;
@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by u0090265 on 5/10/14.
@@ -89,13 +87,8 @@ public class TeamServiceImpl implements TeamService {
      **/
 
     @Override
-    public List<ActionWrapperDTO<Team>> getTeams(final Account account, final Locale locale) {
-        try {
-            return concurrentDataService.getTeamsActionWrappers(account, locale).get();
-        } catch (InterruptedException | ExecutionException e) {
-            log.error("getAllTeams error: {}", e.getMessage());
-            return Lists.newArrayList();
-        }
+    public List<TeamDTO> getTeams(final Account account) {
+        return concurrentDataService.getTeams(account);
     }
 
     @Override

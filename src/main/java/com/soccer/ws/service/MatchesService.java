@@ -1,7 +1,6 @@
 package com.soccer.ws.service;
 
 import com.google.common.base.Optional;
-import com.soccer.ws.dto.ActionWrapperDTO;
 import com.soccer.ws.dto.MatchDTO;
 import com.soccer.ws.exceptions.ObjectNotFoundException;
 import com.soccer.ws.model.Account;
@@ -11,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -24,7 +22,7 @@ public interface MatchesService {
 
     Page<Match> getUpcomingMatchesPages(int page, int pageSize, Optional<Sort> sort);
 
-    List<ActionWrapperDTO<MatchDTO>> getMatchesWrappersForSeason(long seasonId, Locale locale, Account account);
+    List<MatchDTO> getMatchesForSeason(long seasonId, Account account);
 
     List<Match> getMatchesForSeason(long seasonId);
 

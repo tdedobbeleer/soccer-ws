@@ -1,7 +1,7 @@
 package com.soccer.ws.service;
 
-import com.soccer.ws.data.AccountStatistic;
 import com.soccer.ws.data.MatchStatisticsObject;
+import com.soccer.ws.dto.AccountStatisticDTO;
 import com.soccer.ws.model.Account;
 import com.soccer.ws.model.Match;
 
@@ -20,5 +20,5 @@ public interface StatisticsService {
 
     List<MatchStatisticsObject> getGoalsFor(Account account, long seasonId);
 
-    AccountStatistic getAccountStatistic(List<Match> matches, Account account);
+    AccountStatisticDTO getAccountStatistic(List<Match> matches, Account account, boolean isLoggedIn);
 }

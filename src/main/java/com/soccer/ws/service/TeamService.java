@@ -1,11 +1,10 @@
 package com.soccer.ws.service;
 
-import com.soccer.ws.dto.ActionWrapperDTO;
+import com.soccer.ws.dto.TeamDTO;
 import com.soccer.ws.model.Account;
 import com.soccer.ws.model.Team;
 
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by u0090265 on 5/11/14.
@@ -21,7 +20,7 @@ public interface TeamService {
 
     //Team updateTeam(CreateAndUpdateTeamForm form);
 
-    List<ActionWrapperDTO<Team>> getTeams(Account account, Locale locale);
+    List<TeamDTO> getTeams(Account account);
 
     boolean deleteTeam(long id, Account a);
 }

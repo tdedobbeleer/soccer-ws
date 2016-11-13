@@ -1,13 +1,9 @@
 package com.soccer.ws.service;
 
 import com.google.common.collect.Lists;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
-import com.soccer.ws.data.AccountStatistic;
-import com.soccer.ws.dto.ActionWrapperDTO;
+import com.soccer.ws.dto.AccountStatisticDTO;
 import com.soccer.ws.dto.MatchDTO;
+import com.soccer.ws.dto.TeamDTO;
 import com.soccer.ws.exceptions.ObjectNotFoundException;
 import com.soccer.ws.model.Account;
 import com.soccer.ws.model.Match;
@@ -16,153 +12,66 @@ import com.soccer.ws.model.Team;
 import com.soccer.ws.persistence.MatchesDao;
 import com.soccer.ws.persistence.SeasonDao;
 import com.soccer.ws.persistence.TeamDao;
-import com.soccer.ws.utils.HtmlHelper;
-import com.soccer.ws.utils.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 /**
  * Created by u0090265 on 9/12/14.
  */
 @Service
 public class ConcurrentDataServiceImpl implements ConcurrentDataService {
-    private static final int N_THREADS = 20;
     AccountService accountService;
     private Logger log = LoggerFactory.getLogger(getClass());
-    private ListeningExecutorService executorService;
     private MatchesDao matchesDao;
     private TeamDao teamDao;
     private SeasonDao seasonDao;
-    private HtmlHelper htmlHelper;
-    private SecurityUtils securityUtils;
     private StatisticsService statisticsService;
     private DTOConversionHelper DTOConversionHelper;
 
 
     @Autowired
-    public ConcurrentDataServiceImpl(MatchesDao matchesDao, TeamDao teamDao, SeasonDao seasonDao, SecurityUtils
-            securityUtils, HtmlHelper htmlHelper, StatisticsService statisticsService, AccountService accountService,
+    public ConcurrentDataServiceImpl(MatchesDao matchesDao, TeamDao teamDao, SeasonDao seasonDao, StatisticsService
+            statisticsService, AccountService accountService,
                                      DTOConversionHelper DTOConversionHelper) {
         this.matchesDao = matchesDao;
         this.teamDao = teamDao;
         this.seasonDao = seasonDao;
-        this.htmlHelper = htmlHelper;
-        this.securityUtils = securityUtils;
         this.statisticsService = statisticsService;
         this.accountService = accountService;
         this.DTOConversionHelper = DTOConversionHelper;
-        executorService = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(N_THREADS));
     }
 
     @Override
-    public ListenableFuture<List<AccountStatistic>> getAccountStatisticsForSeason(long seasonId) {
+    public List<AccountStatisticDTO> getAccountStatisticsForSeason(long seasonId, Account account) {
         Season season = seasonDao.findOne(seasonId);
         if (season == null) throw new ObjectNotFoundException(String.format("Season with id %s not found", seasonId));
         List<Match> matches = matchesDao.getMatchesForSeason(season);
-        List<ListenableFuture<AccountStatistic>> stats = Lists.newArrayList();
 
-        for (Account account : accountService.getAccountsByActivationStatus(true)) {
-            stats.add(getAccountStatisticFor(matches, account));
-        }
-        return Futures.allAsList(stats);
+        return accountService.getAccountsByActivationStatus(true)
+                .parallelStream()
+                .map(a -> statisticsService.getAccountStatistic(matches, a, account != null))
+                .collect(Collectors.toList());
     }
 
-    private com.google.common.util.concurrent.ListenableFuture<AccountStatistic> getAccountStatisticFor(final
-                                                                                                        List<Match>
-                                                                                                                matches, final Account account) {
-        return executorService.submit(new Callable<AccountStatistic>() {
-            @Override
-            public AccountStatistic call() throws Exception {
-                return statisticsService.getAccountStatistic(matches, account);
-            }
-        });
-    }
-
-    //Todo: duplicated behaviour, should be avoided
     @Override
-    public ListenableFuture<List<ActionWrapperDTO<MatchDTO>>> getMatchForSeasonActionWrappers(long seasonId, Locale
-            locale, Account account) {
+    public List<MatchDTO> getMatchForSeason(final long seasonId, final Account account) {
         Season season = seasonDao.findOne(seasonId);
-        List<Match> matches = matchesDao.getMatchesForSeason(season);
-        List<ListenableFuture<ActionWrapperDTO<MatchDTO>>> r = new ArrayList<>();
 
-        for (Match m : matches) {
-            r.add(prepareMatchDTO(account, m, locale));
-        }
-        return Futures.allAsList(r);
+        return matchesDao.getMatchesForSeason(season).parallelStream()
+                .map(m -> DTOConversionHelper.convertMatch(m, account != null))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public ListenableFuture<List<ActionWrapperDTO<Team>>> getTeamsActionWrappers(Account account, Locale locale) {
+    public List<TeamDTO> getTeams(Account account) {
         List<Team> teams = Lists.newArrayList(teamDao.findAll());
-        List<ListenableFuture<ActionWrapperDTO<Team>>> r = new ArrayList<>();
-
-        for (ActionWrapperDTO<Team> teamActionWrapper : getActionWrappers(teams)) {
-            r.add(setTeamHtmlActions(teamActionWrapper, locale, account));
-        }
-        /**
-         Java 8 :( teams.parallelStream().forEach(m -> actionWrappers.add(new ActionWrapper<>(m)));
-         actionWrappers.parallelStream()
-         .forEach(a -> a.setHtmlActions(htmlHelper.getTeamButtons(a.getObject(), securityUtils.isAdmin(account),
-         locale)));**/
-        return Futures.allAsList(r);
+        return teams.parallelStream()
+                .map(t -> DTOConversionHelper.convertTeam(t, account != null))
+                .collect(Collectors.toList());
     }
-
-    private com.google.common.util.concurrent.ListenableFuture<ActionWrapperDTO<MatchDTO>> prepareMatchDTO(final
-                                                                                                           Account account, final Match match, final Locale locale) {
-        return executorService.submit(new Callable<ActionWrapperDTO<MatchDTO>>() {
-            @Override
-            public ActionWrapperDTO<MatchDTO> call() throws Exception {
-                ActionWrapperDTO<MatchDTO> wrapperDTO = null;
-                try {
-                    wrapperDTO = new ActionWrapperDTO<>(DTOConversionHelper.convertMatch(match, account != null));
-                    //Get account from security
-                    //HashMap<String, String> map = new HashMap<>();
-                    //map.putAll(htmlHelper.getMatchesButtons(match, securityUtils.isAdmin(account), locale));
-                    //Todo: uncomment after finishing
-                    //map.putAll(htmlHelper.getMatchesAdditions(match, account, locale));
-                    //wrapperDTO.setAdditions(map);
-                } catch (Exception e) {
-                    log.error("Could not create Matches btns. Exception: {}", e.getMessage());
-                    e.printStackTrace();
-                }
-                return wrapperDTO;
-            }
-        });
-
-        /**
-         *  return matches.parallelStream()
-         .map(t -> prepareMatchDTO(new ActionWrapper<>(t), locale, account))
-         .collect(Collectors.toList());
-         */
-    }
-
-    private com.google.common.util.concurrent.ListenableFuture<ActionWrapperDTO<Team>> setTeamHtmlActions(final
-                                                                                                          ActionWrapperDTO<Team> teamActionWrapper, final Locale locale, final Account account) {
-        return executorService.submit(new Callable<ActionWrapperDTO<Team>>() {
-            @Override
-            public ActionWrapperDTO<Team> call() throws Exception {
-                teamActionWrapper.setAdditions(htmlHelper.getTeamButtons(teamActionWrapper.getObject(), securityUtils
-                        .isAdmin(account), locale));
-                return teamActionWrapper;
-            }
-        });
-    }
-
-    private <T> List<ActionWrapperDTO<T>> getActionWrappers(List<T> objects) {
-        final List<ActionWrapperDTO<T>> actionWrappers = new ArrayList<>();
-        for (T o : objects) {
-            actionWrappers.add(new ActionWrapperDTO<>(o));
-        }
-        return actionWrappers;
-    }
-
 }

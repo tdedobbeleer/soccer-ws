@@ -1,8 +1,6 @@
 package com.soccer.ws.service;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
-import com.soccer.ws.dto.ActionWrapperDTO;
 import com.soccer.ws.dto.MatchDTO;
 import com.soccer.ws.exceptions.ObjectNotFoundException;
 import com.soccer.ws.model.Account;
@@ -26,9 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by u0090265 on 5/3/14.
@@ -78,14 +74,9 @@ public class MatchesServiceImpl implements MatchesService {
     }
 
     @Override
-    public List<ActionWrapperDTO<MatchDTO>> getMatchesWrappersForSeason(long seasonId, final Locale locale, Account
+    public List<MatchDTO> getMatchesForSeason(long seasonId, Account
             account) {
-        try {
-            return cacheAdapter.getStatisticsForSeason(seasonId, locale, account);
-        } catch (InterruptedException | ExecutionException e) {
-            log.error("getMatchesWrappersForSeason failed: {}", e.getMessage());
-            return Lists.newArrayList();
-        }
+        return cacheAdapter.getMatchesForSeason(seasonId, account);
     }
 
 
@@ -138,7 +129,7 @@ public class MatchesServiceImpl implements MatchesService {
      * m.setAwayTeam(teamDao.findOne(form.getAwayTeam()));
      * matchesDao.save(m);
      * log.debug("Match {} created.", m);
-     * cacheAdapter.resetMatchWrappersCache();
+     * cacheAdapter.resetMatchesCache();
      * return m;
      * }
      * @Override
@@ -170,7 +161,7 @@ public class MatchesServiceImpl implements MatchesService {
      * m.getGoals().clear();
      * }
      * matchesDao.save(m);
-     * cacheAdapter.resetMatchWrappersCache();
+     * cacheAdapter.resetMatchesCache();
      * cacheAdapter.resetStatisticsCache();
      * return m;
      * }
@@ -182,7 +173,7 @@ public class MatchesServiceImpl implements MatchesService {
         Match m = matchesDao.findOne(id);
         if (m == null) throw new ObjectNotFoundException(String.format("Match with id %s not found", id));
         matchesDao.delete(id);
-        cacheAdapter.resetMatchWrappersCache();
+        cacheAdapter.resetMatchesCache();
     }
 
     /**

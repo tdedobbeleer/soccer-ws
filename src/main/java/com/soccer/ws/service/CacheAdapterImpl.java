@@ -7,8 +7,7 @@
  */
 package com.soccer.ws.service;
 
-import com.soccer.ws.data.AccountStatistic;
-import com.soccer.ws.dto.ActionWrapperDTO;
+import com.soccer.ws.dto.AccountStatisticDTO;
 import com.soccer.ws.dto.MatchDTO;
 import com.soccer.ws.model.Account;
 import com.soccer.ws.persistence.AccountDao;
@@ -18,12 +17,9 @@ import org.cache2k.integration.CacheLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -65,26 +61,26 @@ public class CacheAdapterImpl implements CacheAdapter {
                     .expireAfterWrite(1, TimeUnit.DAYS)
                     .build();
 
-    private Cache<Long, List<AccountStatistic>> statisticsCache =
-            new Cache2kBuilder<Long, List<AccountStatistic>>() {
+    private Cache<Parameters, List<AccountStatisticDTO>> statisticsCache =
+            new Cache2kBuilder<Parameters, List<AccountStatisticDTO>>() {
             }
-                    .loader(new CacheLoader<Long, List<AccountStatistic>>() {
+                    .loader(new CacheLoader<Parameters, List<AccountStatisticDTO>>() {
                         @Override
-                        public List<AccountStatistic> load(Long l) throws Exception {
-                            return dataService.getAccountStatisticsForSeason(l).get();
+                        public List<AccountStatisticDTO> load(Parameters p) throws Exception {
+                            return dataService.getAccountStatisticsForSeason(p.seasonId, p.account);
                         }
                     })
                     .expireAfterWrite(1, TimeUnit.DAYS)
                     .build();
 
-    private Cache<MatchActionParameters, List<ActionWrapperDTO<MatchDTO>>> matchActionWrappersCache =
-            new Cache2kBuilder<MatchActionParameters, List<ActionWrapperDTO<MatchDTO>>>() {
+    private Cache<Parameters, List<MatchDTO>> matchesCache =
+            new Cache2kBuilder<Parameters, List<MatchDTO>>() {
             }
-                    .loader(new CacheLoader<MatchActionParameters, List<ActionWrapperDTO<MatchDTO>>>() {
+                    .loader(new CacheLoader<Parameters, List<MatchDTO>>() {
 
                         @Override
-                        public List<ActionWrapperDTO<MatchDTO>> load(MatchActionParameters s) throws Exception {
-                            return dataService.getMatchForSeasonActionWrappers(s.seasonId, s.locale, s.account).get();
+                        public List<MatchDTO> load(Parameters s) throws Exception {
+                            return dataService.getMatchForSeason(s.seasonId, s.account);
                         }
                     })
                     .expireAfterWrite(1, TimeUnit.DAYS)
@@ -101,41 +97,36 @@ public class CacheAdapterImpl implements CacheAdapter {
     }
 
     @Override
-    public List<ActionWrapperDTO<MatchDTO>> getStatisticsForSeason(long seasonId, Locale locale, Account account)
-            throws ExecutionException, InterruptedException {
+    public List<MatchDTO> getMatchesForSeason(long seasonId, Account account) {
         log.debug("Getting matchActionWrappers");
-        return matchActionWrappersCache.get(new MatchActionParameters(seasonId, locale, account));
+        return matchesCache.get(new Parameters(seasonId, account));
     }
 
     @Override
-    public List<AccountStatistic> getStatisticsForSeason(long seasonId) throws ExecutionException,
-            InterruptedException {
+    public List<AccountStatisticDTO> getStatisticsForSeason(long seasonId, Account account) {
         log.debug("Getting account statistics");
-        return statisticsCache.get(seasonId);
+        return statisticsCache.get(new Parameters(seasonId, account));
     }
 
     @Override
-    @CacheEvict(value = {"accountStatistics"}, allEntries = true)
     public void resetStatisticsCache() {
         log.debug("resetCache - statistics");
         statisticsCache.removeAll();
     }
 
     @Override
-    public void resetMatchWrappersCache() {
-        log.debug("resetMatchWrappersCache - reset");
-        matchActionWrappersCache.removeAll();
+    public void resetMatchesCache() {
+        log.debug("resetMatchesCache - reset");
+        matchesCache.removeAll();
     }
 
-    private class MatchActionParameters {
+    private class Parameters {
         private final long seasonId;
         private final Account account;
-        private final Locale locale;
 
-        public MatchActionParameters(long seasonId, Locale locale, Account account) {
+        public Parameters(long seasonId, Account account) {
             this.seasonId = seasonId;
             this.account = account;
-            this.locale = locale;
         }
 
         @Override
@@ -143,11 +134,10 @@ public class CacheAdapterImpl implements CacheAdapter {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
 
-            MatchActionParameters that = (MatchActionParameters) o;
+            Parameters that = (Parameters) o;
 
             if (seasonId != that.seasonId) return false;
-            if (account != null ? !account.equals(that.account) : that.account != null) return false;
-            return !(locale != null ? !locale.equals(that.locale) : that.locale != null);
+            return !(account != null ? !account.equals(that.account) : that.account != null);
 
         }
 
@@ -155,7 +145,6 @@ public class CacheAdapterImpl implements CacheAdapter {
         public int hashCode() {
             int result = (int) (seasonId ^ (seasonId >>> 32));
             result = 31 * result + (account != null ? account.hashCode() : 0);
-            result = 31 * result + (locale != null ? locale.hashCode() : 0);
             return result;
         }
     }

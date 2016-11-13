@@ -16,9 +16,11 @@ public interface DTOConversionHelper {
 
     MatchDTO convertMatch(Match match, boolean isLoggedIn);
 
-    List<TeamDTO> convertTeams(List<Team> teamList);
-
     MatchPollDTO convertMatchPoll(PlayersPoll playersPoll, boolean isLoggedIn);
+
+    List<TeamDTO> convertTeams(List<Team> teamList, boolean isLoggedIn);
+
+    TeamDTO convertTeam(Team team, boolean isLoggedIn);
 
     MatchPollDTO convertMatchPoll(Match match, boolean isLoggedIn);
 

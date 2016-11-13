@@ -1,6 +1,5 @@
 package com.soccer.ws.controllers;
 
-import com.soccer.ws.dto.ActionWrapperDTO;
 import com.soccer.ws.dto.MatchDTO;
 import com.soccer.ws.dto.MatchPollDTO;
 import com.soccer.ws.exceptions.ObjectNotFoundException;
@@ -40,9 +39,9 @@ public class MatchesRestController extends AbstractRestController {
     @RequestMapping(value = "/matches/season/{id}", method = RequestMethod.GET)
     public
     @ResponseBody
-    List<ActionWrapperDTO<MatchDTO>> getMatchesForSeason(@PathVariable Long id, Locale locale) {
+    List<MatchDTO> getMatchesForSeason(@PathVariable Long id, Locale locale) {
         Account account = getAccountFromSecurity();
-        return matchesService.getMatchesWrappersForSeason(id, locale, getAccountFromSecurity());
+        return matchesService.getMatchesForSeason(id, getAccountFromSecurity());
     }
 
     @RequestMapping(value = "/matches/next", method = RequestMethod.GET)

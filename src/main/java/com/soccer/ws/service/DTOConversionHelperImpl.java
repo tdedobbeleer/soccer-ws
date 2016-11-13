@@ -65,15 +65,20 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
     }
 
     @Override
-    public List<TeamDTO> convertTeams(List<Team> teamList) {
+    public List<TeamDTO> convertTeams(List<Team> teamList, boolean isLoggedIn) {
         List<TeamDTO> teamDTOs = Lists.newArrayList();
         for (Team t : teamList) {
-            teamDTOs.add(new TeamDTO(t.getName(),
-                    String.format("%s,%s %s", t.getAddress().getAddress(), t.getAddress().getPostalCode(), t
-                            .getAddress().getCity()),
-                    t.getAddress().getGoogleLink()));
+            teamDTOs.add(convertTeam(t, isLoggedIn));
         }
         return teamDTOs;
+    }
+
+    @Override
+    public TeamDTO convertTeam(Team team, boolean isLoggedIn) {
+        return new TeamDTO(team.getName(),
+                String.format("%s,%s %s", team.getAddress().getAddress(), team.getAddress().getPostalCode(), team
+                        .getAddress().getCity()),
+                team.getAddress().getGoogleLink());
     }
 
     @Override

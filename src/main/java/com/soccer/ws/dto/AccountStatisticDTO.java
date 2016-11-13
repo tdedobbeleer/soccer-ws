@@ -1,32 +1,30 @@
-package com.soccer.ws.data;
-
-import com.soccer.ws.model.Account;
+package com.soccer.ws.dto;
 
 /**
  * Created by u0090265 on 10/10/15.
  */
-public class AccountStatistic {
-    Account account;
+public class AccountStatisticDTO {
+    AccountDTO account;
     int goals;
     int assists;
     int played;
 
-    public AccountStatistic(Account account, int goals, int assists, int played) {
+    public AccountStatisticDTO(AccountDTO account, int goals, int assists, int played) {
         this.account = account;
         this.goals = goals;
         this.assists = assists;
         this.played = played;
     }
 
-    public AccountStatistic(Account account) {
+    public AccountStatisticDTO(AccountDTO account) {
         this.account = account;
     }
 
-    public Account getAccount() {
+    public AccountDTO getAccount() {
         return account;
     }
 
-    public void setAccount(Account account) {
+    public void setAccount(AccountDTO account) {
         this.account = account;
     }
 
@@ -59,7 +57,7 @@ public class AccountStatistic {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        AccountStatistic that = (AccountStatistic) o;
+        AccountStatisticDTO that = (AccountStatisticDTO) o;
 
         if (goals != that.goals) return false;
         if (assists != that.assists) return false;
