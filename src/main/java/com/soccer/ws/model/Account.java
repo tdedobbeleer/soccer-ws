@@ -81,7 +81,7 @@ public class Account extends BaseClass implements Comparable<Account> {
     @JsonIgnore
     @NotNull
     @Size(min = 1, max = 50)
-    @Column(name = "lastName")
+    @Column(name = "lastname")
     public String getLastName() {
         return lastName;
     }
