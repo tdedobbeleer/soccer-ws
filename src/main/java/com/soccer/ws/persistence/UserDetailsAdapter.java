@@ -2,6 +2,7 @@ package com.soccer.ws.persistence;
 
 import com.google.common.collect.Sets;
 import com.soccer.ws.model.Account;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
@@ -54,6 +55,10 @@ public class UserDetailsAdapter extends SocialUser {
 
     public String getFullName() {
         return account.getFullName();
+    }
+
+    public DateTime getPasswordLastSet() {
+        return account.getPasswordLastSet();
     }
 
     @Override

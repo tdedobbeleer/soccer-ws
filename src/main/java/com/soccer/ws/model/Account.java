@@ -2,29 +2,19 @@ package com.soccer.ws.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.soccer.ws.data.SocialMediaEnum;
+import org.joda.time.DateTime;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-@NamedQueries({
-        @NamedQuery(name = "findAccountByUsername", query = "select a from Account a where a.username = :username"),
-        @NamedQuery(name = "findAccountByUsernameAndActiveStatus", query = "select a from Account a where a.username " +
-                "= :username AND a.active = :active"),
-        @NamedQuery(name = "findAccountById", query = "select a from Account a where a.id = :id"),
-        @NamedQuery(name = "findAccountByUsernameExcludeCurrentId", query = "select a from Account a where a.username" +
-                " = :username AND a.id != :id"),
-        @NamedQuery(name = "findAccountsByStatus", query = "select a from Account a where a.active = :status"),
-        @NamedQuery(name = "findNotNullActivationCodes", query = "select a from Account a where a.pwdRecovery IS NOT " +
-                "NULL")
-
-})
 @Entity
 @Table(name = "account")
 public class Account extends BaseClass implements Comparable<Account> {
     private String firstName;
     private String lastName;
     private String username;
+    private DateTime passwordLastSet = DateTime.now();
     private Role role;
     private SocialMediaEnum signInProvider;
     private String pwdRecovery;
@@ -173,6 +163,16 @@ public class Account extends BaseClass implements Comparable<Account> {
     @Override
     public int compareTo(Account o) {
         return this.getFullName().compareTo(o.getFullName());
+    }
+
+    @Column(name = "password_last_set")
+    @org.hibernate.annotations.Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    public DateTime getPasswordLastSet() {
+        return passwordLastSet;
+    }
+
+    public void setPasswordLastSet(DateTime passwordLastSet) {
+        this.passwordLastSet = passwordLastSet;
     }
 
     public static class Builder {
