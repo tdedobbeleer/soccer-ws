@@ -4,6 +4,8 @@ import com.soccer.ws.persistence.UserDetailsAdapter;
 import com.soccer.ws.security.TokenUtils;
 import com.soccer.ws.security.json.AuthenticationRequest;
 import com.soccer.ws.security.json.AuthenticationResponse;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,20 +18,17 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/api/v2/auth}")
-public class AuthenticationController {
+@Api(value = "Authentication endpoint", description = "Endpoint for logging in")
+public class AuthenticationController extends AbstractRestController {
 
   private final Logger logger = Logger.getLogger(this.getClass());
 
-  @Value("${cerberus.token.header}")
+  @Value("${jwt.token.header}")
   private String tokenHeader;
 
   @Autowired
@@ -41,7 +40,9 @@ public class AuthenticationController {
   @Autowired
   private UserDetailsService userDetailsService;
 
-  @RequestMapping(method = RequestMethod.POST)
+  @RequestMapping(value = "/auth", method = RequestMethod.POST)
+  @ResponseBody
+  @ApiOperation(value = "authenticate", nickname = "authenticate")
   public ResponseEntity<?> authenticationRequest(@RequestBody AuthenticationRequest authenticationRequest, Device device) throws AuthenticationException {
 
     // Perform the authentication
@@ -61,7 +62,9 @@ public class AuthenticationController {
     return ResponseEntity.ok(new AuthenticationResponse(token));
   }
 
-  @RequestMapping(value = "${cerberus.route.authentication.refresh}", method = RequestMethod.GET)
+  @RequestMapping(value = "/auth/refresh", method = RequestMethod.GET)
+  @ResponseBody
+  @ApiOperation(value = "Refresh token", nickname = "refresh")
   public ResponseEntity<?> authenticationRequest(HttpServletRequest request) {
     String token = request.getHeader(this.tokenHeader);
     String username = this.tokenUtils.getUsernameFromToken(token);

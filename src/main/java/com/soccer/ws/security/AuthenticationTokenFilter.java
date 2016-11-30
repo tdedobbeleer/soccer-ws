@@ -18,7 +18,7 @@ import java.io.IOException;
 
 public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFilter {
 
-  @Value("${cerberus.token.header}")
+  @Value("${jwt.token.header}")
   private String tokenHeader;
 
   @Autowired
