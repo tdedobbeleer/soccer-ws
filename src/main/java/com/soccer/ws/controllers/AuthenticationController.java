@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mobile.device.Device;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -55,15 +56,15 @@ public class AuthenticationController extends AbstractRestController {
       SecurityContextHolder.getContext().setAuthentication(authentication);
 
       // Reload password post-authentication so we can generate token
-      UserDetails userDetails = this.userDetailsService.loadUserByUsername(authenticationRequestDTO.getUsername());
-      String token = this.tokenUtils.generateToken(userDetails, device);
+      UserDetailsAdapter user = (UserDetailsAdapter) this.userDetailsService.loadUserByUsername(authenticationRequestDTO.getUsername());
+      String token = this.tokenUtils.generateToken(user, device);
 
       // Return the token
-      return ResponseEntity.ok(new AuthenticationResponseDTO(token));
+      return ResponseEntity.ok(new AuthenticationResponseDTO(token, user.getFirstName(), user.getLastName(), user.getUsername()));
     }
     catch (Exception e) {
       logger.warn(String.format("Could not log in user %s", authenticationRequestDTO.getUsername()));
-      return
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
   }
 
@@ -76,7 +77,7 @@ public class AuthenticationController extends AbstractRestController {
     UserDetailsAdapter user = (UserDetailsAdapter) this.userDetailsService.loadUserByUsername(username);
     if (this.tokenUtils.canTokenBeRefreshed(token, user.getPasswordLastSet())) {
       String refreshedToken = this.tokenUtils.refreshToken(token);
-      return ResponseEntity.ok(new AuthenticationResponseDTO(refreshedToken));
+      return ResponseEntity.ok(new AuthenticationResponseDTO(refreshedToken, user.getFirstName(), user.getLastName(), user.getUsername()));
     } else {
       return ResponseEntity.badRequest().body(null);
     }
