@@ -1,16 +1,16 @@
-package com.soccer.ws.security.json;
+package com.soccer.ws.dto;
 
-public class AuthenticationRequest {
+public class AuthenticationRequestDTO {
 
 	private static final long serialVersionUID = 6624726180748515507L;
 	private String username;
 	private String password;
 
-	public AuthenticationRequest() {
+	public AuthenticationRequestDTO() {
 		super();
 	}
 
-	public AuthenticationRequest(String username, String password) {
+	public AuthenticationRequestDTO(String username, String password) {
 		this.setUsername(username);
 		this.setPassword(password);
 	}

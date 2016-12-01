@@ -1,15 +1,15 @@
-package com.soccer.ws.security.json;
+package com.soccer.ws.dto;
 
-public class AuthenticationResponse {
+public class AuthenticationResponseDTO {
 
 	private static final long serialVersionUID = -6624726180748515507L;
 	private String token;
 
-	public AuthenticationResponse() {
+	public AuthenticationResponseDTO() {
 		super();
 	}
 
-	public AuthenticationResponse(String token) {
+	public AuthenticationResponseDTO(String token) {
 		this.setToken(token);
 	}
 

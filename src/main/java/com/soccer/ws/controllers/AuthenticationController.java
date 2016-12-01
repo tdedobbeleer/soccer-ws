@@ -2,8 +2,8 @@ package com.soccer.ws.controllers;
 ;
 import com.soccer.ws.persistence.UserDetailsAdapter;
 import com.soccer.ws.security.TokenUtils;
-import com.soccer.ws.security.json.AuthenticationRequest;
-import com.soccer.ws.security.json.AuthenticationResponse;
+import com.soccer.ws.dto.AuthenticationRequestDTO;
+import com.soccer.ws.dto.AuthenticationResponseDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.log4j.Logger;
@@ -43,23 +43,23 @@ public class AuthenticationController extends AbstractRestController {
   @RequestMapping(value = "/auth", method = RequestMethod.POST)
   @ResponseBody
   @ApiOperation(value = "authenticate", nickname = "authenticate")
-  public ResponseEntity<?> authenticationRequest(@RequestBody AuthenticationRequest authenticationRequest, Device device) throws AuthenticationException {
+  public ResponseEntity<?> authenticationRequest(@RequestBody AuthenticationRequestDTO authenticationRequestDTO, Device device) throws AuthenticationException {
 
     // Perform the authentication
     Authentication authentication = this.authenticationManager.authenticate(
       new UsernamePasswordAuthenticationToken(
-        authenticationRequest.getUsername(),
-        authenticationRequest.getPassword()
+        authenticationRequestDTO.getUsername(),
+        authenticationRequestDTO.getPassword()
       )
     );
     SecurityContextHolder.getContext().setAuthentication(authentication);
 
     // Reload password post-authentication so we can generate token
-    UserDetails userDetails = this.userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+    UserDetails userDetails = this.userDetailsService.loadUserByUsername(authenticationRequestDTO.getUsername());
     String token = this.tokenUtils.generateToken(userDetails, device);
 
     // Return the token
-    return ResponseEntity.ok(new AuthenticationResponse(token));
+    return ResponseEntity.ok(new AuthenticationResponseDTO(token));
   }
 
   @RequestMapping(value = "/auth/refresh", method = RequestMethod.GET)
@@ -71,7 +71,7 @@ public class AuthenticationController extends AbstractRestController {
     UserDetailsAdapter user = (UserDetailsAdapter) this.userDetailsService.loadUserByUsername(username);
     if (this.tokenUtils.canTokenBeRefreshed(token, user.getPasswordLastSet())) {
       String refreshedToken = this.tokenUtils.refreshToken(token);
-      return ResponseEntity.ok(new AuthenticationResponse(refreshedToken));
+      return ResponseEntity.ok(new AuthenticationResponseDTO(refreshedToken));
     } else {
       return ResponseEntity.badRequest().body(null);
     }
