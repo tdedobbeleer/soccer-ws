@@ -44,22 +44,27 @@ public class AuthenticationController extends AbstractRestController {
   @ResponseBody
   @ApiOperation(value = "authenticate", nickname = "authenticate")
   public ResponseEntity<?> authenticationRequest(@RequestBody AuthenticationRequestDTO authenticationRequestDTO, Device device) throws AuthenticationException {
+    try {
+      // Perform the authentication
+      Authentication authentication = this.authenticationManager.authenticate(
+              new UsernamePasswordAuthenticationToken(
+                      authenticationRequestDTO.getUsername(),
+                      authenticationRequestDTO.getPassword()
+              )
+      );
+      SecurityContextHolder.getContext().setAuthentication(authentication);
 
-    // Perform the authentication
-    Authentication authentication = this.authenticationManager.authenticate(
-      new UsernamePasswordAuthenticationToken(
-        authenticationRequestDTO.getUsername(),
-        authenticationRequestDTO.getPassword()
-      )
-    );
-    SecurityContextHolder.getContext().setAuthentication(authentication);
+      // Reload password post-authentication so we can generate token
+      UserDetails userDetails = this.userDetailsService.loadUserByUsername(authenticationRequestDTO.getUsername());
+      String token = this.tokenUtils.generateToken(userDetails, device);
 
-    // Reload password post-authentication so we can generate token
-    UserDetails userDetails = this.userDetailsService.loadUserByUsername(authenticationRequestDTO.getUsername());
-    String token = this.tokenUtils.generateToken(userDetails, device);
-
-    // Return the token
-    return ResponseEntity.ok(new AuthenticationResponseDTO(token));
+      // Return the token
+      return ResponseEntity.ok(new AuthenticationResponseDTO(token));
+    }
+    catch (Exception e) {
+      logger.warn(String.format("Could not log in user %s", authenticationRequestDTO.getUsername()));
+      return
+    }
   }
 
   @RequestMapping(value = "/auth/refresh", method = RequestMethod.GET)
