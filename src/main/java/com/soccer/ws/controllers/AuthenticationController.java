@@ -66,7 +66,7 @@ public class AuthenticationController extends AbstractRestController {
 
   }
 
-  @RequestMapping(value = "/auth/refresh", method = RequestMethod.GET)
+  @RequestMapping(value = "/auth/token/refresh", method = RequestMethod.GET)
   @ResponseBody
   @ApiOperation(value = "Refresh token", nickname = "refresh")
   public ResponseEntity<?> authenticationRequest(HttpServletRequest request) {
@@ -87,6 +87,5 @@ public class AuthenticationController extends AbstractRestController {
   public ResponseEntity<Boolean> isFullyAuthenticated() {
     return new ResponseEntity<>(getAccountFromSecurity() != null, HttpStatus.OK);
   }
-
 
 }
