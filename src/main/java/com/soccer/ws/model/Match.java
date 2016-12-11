@@ -15,14 +15,6 @@ import java.util.SortedSet;
  * Time: 9:36 PM
  * Remarks: none
  */
-
-@NamedQueries({
-        @NamedQuery(name = "findMatchById", query = "from Match where id = :id"),
-        @NamedQuery(name = "getMatchesForSeason", query = "from Match where season = :season order by date desc"),
-        @NamedQuery(name = "getMatchesForTeam", query = "from Match where homeTeam = :team OR awayTeam = :team order " +
-                "by date desc")
-})
-
 @Entity
 @Table(name = "matches")
 public class Match extends BaseClass {
@@ -32,8 +24,8 @@ public class Match extends BaseClass {
     private Team awayTeam;
     private PlayersPoll motmPoll;
     private News news;
-    private int atGoals;
-    private int htGoals;
+    private Integer atGoals;
+    private Integer htGoals;
     private SortedSet<Goal> goals;
     private Doodle matchDoodle;
     private MatchStatusEnum status = MatchStatusEnum.NOT_PLAYED; //Default value
@@ -99,20 +91,20 @@ public class Match extends BaseClass {
     }
 
     @Column(name = "atGoals")
-    public int getAtGoals() {
-        return atGoals;
+    public Integer getAtGoals() {
+        return atGoals == null ? new Integer(0) : atGoals;
     }
 
-    public void setAtGoals(int atGoals) {
+    public void setAtGoals(Integer atGoals) {
         this.atGoals = atGoals;
     }
 
     @Column(name = "htGoals")
-    public int getHtGoals() {
-        return htGoals;
+    public Integer getHtGoals() {
+        return htGoals == null ? new Integer(0) : htGoals;
     }
 
-    public void setHtGoals(int htGoals) {
+    public void setHtGoals(Integer htGoals) {
         this.htGoals = htGoals;
     }
 
