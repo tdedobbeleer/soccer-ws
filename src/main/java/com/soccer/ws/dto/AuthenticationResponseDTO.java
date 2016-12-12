@@ -1,5 +1,7 @@
 package com.soccer.ws.dto;
 
+import java.util.List;
+
 public class AuthenticationResponseDTO {
 
 	private static final long serialVersionUID = -6624726180748515507L;
@@ -7,16 +9,18 @@ public class AuthenticationResponseDTO {
 	private String firstName;
 	private String lastName;
 	private String userName;
+	private List<String> roles;
 
 	public AuthenticationResponseDTO() {
 		super();
 	}
 
-	public AuthenticationResponseDTO(String token, String firstName, String lastName, String userName) {
+	public AuthenticationResponseDTO(String token, String firstName, String lastName, String userName, List<String> roles) {
 		this.setToken(token);
 		this.setFirstName(firstName);
 		this.setLastName(lastName);
 		this.setUserName(userName);
+		this.setRoles(roles);
 	}
 
 	public String getToken() {
@@ -49,5 +53,13 @@ public class AuthenticationResponseDTO {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public List<String> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<String> roles) {
+		this.roles = roles;
 	}
 }

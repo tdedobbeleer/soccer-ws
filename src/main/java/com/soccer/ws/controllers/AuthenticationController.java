@@ -1,5 +1,6 @@
 package com.soccer.ws.controllers;
 
+import com.google.common.collect.Lists;
 import com.soccer.ws.dto.AuthenticationRequestDTO;
 import com.soccer.ws.dto.AuthenticationResponseDTO;
 import com.soccer.ws.persistence.UserDetailsAdapter;
@@ -18,11 +19,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @Api(value = "Authentication endpoint", description = "Endpoint for logging in")
@@ -62,7 +66,7 @@ public class AuthenticationController extends AbstractRestController {
     String token = this.tokenUtils.generateToken(user, device);
 
     // Return the token
-    return ResponseEntity.ok(new AuthenticationResponseDTO(token, user.getFirstName(), user.getLastName(), user.getUsername()));
+      return ResponseEntity.ok(new AuthenticationResponseDTO(token, user.getFirstName(), user.getLastName(), user.getUsername(), getAuthorities(user)));
 
   }
 
@@ -75,7 +79,7 @@ public class AuthenticationController extends AbstractRestController {
     UserDetailsAdapter user = (UserDetailsAdapter) this.userDetailsService.loadUserByUsername(username);
     if (this.tokenUtils.canTokenBeRefreshed(token, user.getPasswordLastSet())) {
       String refreshedToken = this.tokenUtils.refreshToken(token);
-      return ResponseEntity.ok(new AuthenticationResponseDTO(refreshedToken, user.getFirstName(), user.getLastName(), user.getUsername()));
+        return ResponseEntity.ok(new AuthenticationResponseDTO(refreshedToken, user.getFirstName(), user.getLastName(), user.getUsername(), getAuthorities(user)));
     } else {
       return ResponseEntity.badRequest().body(null);
     }
@@ -88,4 +92,11 @@ public class AuthenticationController extends AbstractRestController {
     return new ResponseEntity<>(getAccountFromSecurity() != null, HttpStatus.OK);
   }
 
+    private List<String> getAuthorities(UserDetailsAdapter userDetailsAdapter) {
+        return Lists.newArrayList(userDetailsAdapter.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList()));
+
+    }
 }
