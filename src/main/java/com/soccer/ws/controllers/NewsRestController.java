@@ -13,10 +13,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 /**
  * Created by u0090265 on 16/09/16.
@@ -40,6 +40,13 @@ public class NewsRestController extends AbstractRestController {
         Page<News> news = newsService.getPagedNews(page, size, Optional.absent());
         return new ResponseEntity<>(dtoConversionHelper.convertNewsPage(getAccountFromSecurity(), news, isAdmin()),
                 HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @RequestMapping(value = "/news", method = RequestMethod.GET)
+    @ApiOperation(value = "Post news", nickname = "getNewsPage")
+    public ResponseEntity<> getNewsPage(@Valid @RequestBody NewsDTO newsDTO) {
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/news/search/{term}", method = RequestMethod.GET)

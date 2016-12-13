@@ -1,6 +1,7 @@
 package com.soccer.ws.service;
 
 import com.google.common.base.Optional;
+import com.soccer.ws.dto.NewsDTO;
 import com.soccer.ws.model.Account;
 import com.soccer.ws.model.News;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,12 @@ public interface NewsService {
     //News createNews(NewsForm form, Account account);
 
     //void updateNews(NewsForm form, Account account);
+
+    @Transactional(readOnly = false)
+    News create(NewsDTO news, Account account);
+
+    @Transactional(readOnly = false)
+    News update(NewsDTO news, Account account);
 
     News addNewsComment(long newsId, String content, Account account);
 

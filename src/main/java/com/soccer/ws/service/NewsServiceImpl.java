@@ -3,6 +3,7 @@ package com.soccer.ws.service;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.soccer.ws.dto.NewsDTO;
 import com.soccer.ws.exceptions.ObjectNotFoundException;
 import com.soccer.ws.model.Account;
 import com.soccer.ws.model.Comment;
@@ -35,23 +36,41 @@ import java.util.Set;
 @Service
 @Transactional(readOnly = true)
 public class NewsServiceImpl implements NewsService {
+    private final NewsDao newsDao;
+    private final CommentDao commentDao;
+    private final AuthorizationService authorizationService;
+    private final MailService mailService;
+    private final AccountDao accountDao;
+    private final MessageSource messageSource;
     Logger log = LoggerFactory.getLogger(this.getClass());
-
     @Value("${base.url}")
     private String baseUrl;
 
     @Autowired
-    private NewsDao newsDao;
-    @Autowired
-    private CommentDao commentDao;
-    @Autowired
-    private AuthorizationService authorizationService;
-    @Autowired
-    private MailService mailService;
-    @Autowired
-    private AccountDao accountDao;
-    @Autowired
-    private MessageSource messageSource;
+    public NewsServiceImpl(NewsDao newsDao, CommentDao commentDao, AuthorizationService authorizationService, MailService mailService, AccountDao accountDao, MessageSource messageSource) {
+        this.newsDao = newsDao;
+        this.commentDao = commentDao;
+        this.authorizationService = authorizationService;
+        this.mailService = mailService;
+        this.accountDao = accountDao;
+        this.messageSource = messageSource;
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public News create(NewsDTO news, Account account) {
+        News n = new News(news.getHeader(), news.getContent(), account);
+        return newsDao.save(n);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public News update(NewsDTO news, Account account) {
+        News n = newsDao.findOne(news.getId());
+        if (n == null)
+            throw new ObjectNotFoundException(String.format("Object news with id %s not found", news.getId()));
+        return newsDao.save(n);
+    }
 
 
 //    @Override
