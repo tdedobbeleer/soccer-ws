@@ -5,13 +5,14 @@ import com.soccer.ws.dto.AuthenticationRequestDTO;
 import com.soccer.ws.dto.AuthenticationResponseDTO;
 import com.soccer.ws.persistence.UserDetailsAdapter;
 import com.soccer.ws.security.TokenUtils;
+import com.soccer.ws.utils.SecurityUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mobile.device.Device;
@@ -33,18 +34,18 @@ import java.util.stream.Collectors;
 public class AuthenticationController extends AbstractRestController {
 
   private final Logger logger = Logger.getLogger(this.getClass());
-
+  private final AuthenticationManager authenticationManager;
+  private final TokenUtils tokenUtils;
+  private final UserDetailsService userDetailsService;
   @Value("${jwt.token.header}")
   private String tokenHeader;
 
-  @Autowired
-  private AuthenticationManager authenticationManager;
-
-  @Autowired
-  private TokenUtils tokenUtils;
-
-  @Autowired
-  private UserDetailsService userDetailsService;
+  public AuthenticationController(MessageSource messageSource, AuthenticationManager authenticationManager, TokenUtils tokenUtils, UserDetailsService userDetailsService, SecurityUtils securityUtils) {
+    super(securityUtils, messageSource);
+    this.authenticationManager = authenticationManager;
+    this.tokenUtils = tokenUtils;
+    this.userDetailsService = userDetailsService;
+  }
 
   @RequestMapping(value = "/auth", method = RequestMethod.POST)
   @ResponseBody

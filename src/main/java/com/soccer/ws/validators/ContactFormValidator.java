@@ -25,6 +25,6 @@ public class ContactFormValidator implements Validator {
         if (!ValidationHelper.isEmailMatch(form.getEmail())) {
             errors.rejectValue("email", "validation.noEmail");
         }
-        form.setMessage(SanitizeUtils.SanitizeHtml(form.getMessage()));
+        form.setMessage(SanitizeUtils.sanitizeHtml(form.getMessage()));
     }
 }

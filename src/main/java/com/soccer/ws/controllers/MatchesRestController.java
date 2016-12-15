@@ -6,11 +6,12 @@ import com.soccer.ws.exceptions.ObjectNotFoundException;
 import com.soccer.ws.model.Match;
 import com.soccer.ws.service.DTOConversionHelper;
 import com.soccer.ws.service.MatchesService;
+import com.soccer.ws.utils.SecurityUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,11 +30,14 @@ import java.util.Locale;
 public class MatchesRestController extends AbstractRestController {
     private static final Logger logger = LoggerFactory.getLogger(MatchesRestController.class);
 
-    @Autowired
-    private MatchesService matchesService;
+    private final MatchesService matchesService;
+    private final DTOConversionHelper DTOConversionHelper;
 
-    @Autowired
-    private DTOConversionHelper DTOConversionHelper;
+    public MatchesRestController(SecurityUtils securityUtils, MessageSource messageSource, MatchesService matchesService, DTOConversionHelper dtoConversionHelper) {
+        super(securityUtils, messageSource);
+        this.matchesService = matchesService;
+        DTOConversionHelper = dtoConversionHelper;
+    }
 
     @RequestMapping(value = "/matches/season/{id}", method = RequestMethod.GET)
     public

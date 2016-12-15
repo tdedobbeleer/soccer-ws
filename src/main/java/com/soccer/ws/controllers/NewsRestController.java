@@ -3,17 +3,21 @@ package com.soccer.ws.controllers;
 import com.google.common.base.Optional;
 import com.soccer.ws.dto.NewsDTO;
 import com.soccer.ws.dto.PageDTO;
+import com.soccer.ws.exceptions.CustomMethodArgumentNotValidException;
 import com.soccer.ws.model.News;
 import com.soccer.ws.service.DTOConversionHelper;
 import com.soccer.ws.service.NewsService;
+import com.soccer.ws.utils.SecurityUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -28,10 +32,12 @@ public class NewsRestController extends AbstractRestController {
     private final NewsService newsService;
     private final DTOConversionHelper dtoConversionHelper;
 
-    public NewsRestController(NewsService newsService, DTOConversionHelper dtoConversionHelper) {
+    public NewsRestController(SecurityUtils securityUtils, MessageSource messageSource, NewsService newsService, DTOConversionHelper dtoConversionHelper) {
+        super(securityUtils, messageSource);
         this.newsService = newsService;
         this.dtoConversionHelper = dtoConversionHelper;
     }
+
 
     @RequestMapping(value = "/news", method = RequestMethod.GET)
     @ApiOperation(value = "Get news", nickname = "getNewsPage")
@@ -44,8 +50,13 @@ public class NewsRestController extends AbstractRestController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/news", method = RequestMethod.GET)
-    @ApiOperation(value = "Post news", nickname = "getNewsPage")
-    public ResponseEntity<> getNewsPage(@Valid @RequestBody NewsDTO newsDTO) {
+    @ApiOperation(value = "Post news", nickname = "postNewsPage")
+    public ResponseEntity getNewsPage(@Valid @RequestBody NewsDTO newsDTO, BindingResult bindingResult) throws CustomMethodArgumentNotValidException {
+        if (bindingResult.hasErrors()) {
+            throw new CustomMethodArgumentNotValidException(bindingResult);
+        } else {
+            newsService.create(newsDTO, getAccountFromSecurity());
+        }
         return new ResponseEntity(HttpStatus.OK);
     }
 

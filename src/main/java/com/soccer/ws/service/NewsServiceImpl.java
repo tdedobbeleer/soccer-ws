@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import static com.soccer.ws.validators.SanitizeUtils.sanitizeHtml;
+
 /**
  * User: Tom De Dobbeleer
  * Date: 12/20/13
@@ -59,7 +61,7 @@ public class NewsServiceImpl implements NewsService {
     @Override
     @Transactional(readOnly = false)
     public News create(NewsDTO news, Account account) {
-        News n = new News(news.getHeader(), news.getContent(), account);
+        News n = new News(sanitizeHtml(news.getHeader()), sanitizeHtml(news.getContent()), account);
         return newsDao.save(n);
     }
 

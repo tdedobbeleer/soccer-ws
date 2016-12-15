@@ -8,11 +8,11 @@ import com.soccer.ws.model.Match;
 import com.soccer.ws.service.DTOConversionHelper;
 import com.soccer.ws.service.DoodleService;
 import com.soccer.ws.service.MatchesService;
+import com.soccer.ws.utils.SecurityUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,23 +27,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 @org.springframework.web.bind.annotation.RestController
 @Api(value = "Doodle REST api", description = "Doodle REST operations")
 public class DoodleRestController extends AbstractRestController {
-    private MatchesService matchesService;
-    private DTOConversionHelper DTOConversionHelper;
-    private DoodleService doodleService;
+    private final MatchesService matchesService;
+    private final DTOConversionHelper DTOConversionHelper;
+    private final DoodleService doodleService;
 
-    @Autowired
-    public DoodleRestController(MatchesService matchesService, DTOConversionHelper dtoConversionHelper,
-                                DoodleService doodleService) {
+    public DoodleRestController(SecurityUtils securityUtils, MessageSource messageSource, MatchesService matchesService, DTOConversionHelper dtoConversionHelper, DoodleService doodleService) {
+        super(securityUtils, messageSource);
         this.matchesService = matchesService;
-        this.DTOConversionHelper = dtoConversionHelper;
+        DTOConversionHelper = dtoConversionHelper;
         this.doodleService = doodleService;
     }
+
 
     @RequestMapping(value = "/matchDoodle", method = RequestMethod.GET)
     @ApiOperation(value = "Get matchdoodles", nickname = "matchdoodles")
     public ResponseEntity<PageDTO<MatchDoodleDTO>> getMatchDoodles(@RequestParam int page, @RequestParam(required =
             false) int size) {
-        Page<Match> matches = matchesService.getUpcomingMatchesPages(page, size, Optional.<Sort>absent());
+        Page<Match> matches = matchesService.getUpcomingMatchesPages(page, size, Optional.absent());
         return new ResponseEntity<>(DTOConversionHelper.convertMatchDoodles(matches, getAccountFromSecurity(),
                 isAdmin()), HttpStatus.OK);
     }

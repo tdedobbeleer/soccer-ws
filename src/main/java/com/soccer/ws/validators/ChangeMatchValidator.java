@@ -32,7 +32,7 @@ public class ChangeMatchValidator implements Validator {
         }
 
         if (form.getStatus().equals(MatchStatusEnum.CANCELLED)) {
-            SanitizeUtils.SanitizeHtml(form.getStatusText());
+            SanitizeUtils.sanitizeHtml(form.getStatusText());
         }
     }
 }

@@ -1,5 +1,8 @@
 package com.soccer.ws.dto;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 /**
@@ -25,6 +28,8 @@ public class NewsDTO extends DTOBaseClass {
     }
 
 
+    @NotNull
+    @NotEmpty
     public String getHeader() {
         return header;
     }
@@ -33,6 +38,8 @@ public class NewsDTO extends DTOBaseClass {
         this.header = header;
     }
 
+    @NotNull
+    @NotEmpty
     public String getContent() {
         return content;
     }

@@ -2,12 +2,13 @@ package com.soccer.ws.controllers;
 
 import com.soccer.ws.dto.CommentDTO;
 import com.soccer.ws.service.NewsService;
+import com.soccer.ws.utils.SecurityUtils;
 import com.soccer.ws.validators.SanitizeUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,16 +26,17 @@ public class CommentsRestController extends AbstractRestController {
     private static final Logger logger = LoggerFactory.getLogger(NewsRestController.class);
     private final NewsService newsService;
 
-    @Autowired
-    public CommentsRestController(NewsService newsService) {
+    public CommentsRestController(SecurityUtils securityUtils, MessageSource messageSource, NewsService newsService) {
+        super(securityUtils, messageSource);
         this.newsService = newsService;
     }
+
 
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/news/{id}/comment", method = RequestMethod.POST)
     @ApiOperation(value = "Get news", nickname = "postComment")
     public ResponseEntity postComment(@PathVariable Long id, @RequestBody CommentDTO commentDTO) {
-        newsService.addNewsComment(id, SanitizeUtils.SanitizeHtml(commentDTO.getContent()), getAccountFromSecurity());
+        newsService.addNewsComment(id, SanitizeUtils.sanitizeHtml(commentDTO.getContent()), getAccountFromSecurity());
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -42,7 +44,7 @@ public class CommentsRestController extends AbstractRestController {
     @RequestMapping(value = "/news/{id}/comment", method = RequestMethod.PUT)
     @ApiOperation(value = "Get news", nickname = "editComment")
     public ResponseEntity editComment(@PathVariable Long id, @RequestBody CommentDTO commentDTO) {
-        newsService.changeNewsComment(commentDTO.getId(), id, SanitizeUtils.SanitizeHtml(commentDTO.getContent()),
+        newsService.changeNewsComment(commentDTO.getId(), id, SanitizeUtils.sanitizeHtml(commentDTO.getContent()),
                 getAccountFromSecurity());
         return new ResponseEntity(HttpStatus.OK);
     }

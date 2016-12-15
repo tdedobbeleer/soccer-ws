@@ -33,9 +33,9 @@ public class CreateTeamValidator implements Validator {
     }
 
     private void sanitizeAll(CreateAndUpdateTeamForm form) {
-        form.setTeamName(SanitizeUtils.SanitizeHtml(form.getTeamName()));
-        form.setAddress(SanitizeUtils.SanitizeHtml(form.getAddress()));
-        form.setPostalCode(SanitizeUtils.SanitizeHtml(form.getPostalCode()));
-        form.setCity(SanitizeUtils.SanitizeHtml(form.getCity()));
+        form.setTeamName(SanitizeUtils.sanitizeHtml(form.getTeamName()));
+        form.setAddress(SanitizeUtils.sanitizeHtml(form.getAddress()));
+        form.setPostalCode(SanitizeUtils.sanitizeHtml(form.getPostalCode()));
+        form.setCity(SanitizeUtils.sanitizeHtml(form.getCity()));
     }
 }

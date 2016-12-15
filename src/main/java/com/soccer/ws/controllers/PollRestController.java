@@ -12,12 +12,12 @@ import com.soccer.ws.model.PlayersPoll;
 import com.soccer.ws.service.DTOConversionHelper;
 import com.soccer.ws.service.MatchesService;
 import com.soccer.ws.service.PollService;
+import com.soccer.ws.utils.SecurityUtils;
 import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,14 +33,16 @@ import java.util.List;
 public class PollRestController extends AbstractRestController {
     private static final Logger logger = LoggerFactory.getLogger(PollRestController.class);
 
-    @Autowired
-    private PollService pollService;
+    private final PollService pollService;
+    private final MatchesService matchesService;
+    private final DTOConversionHelper DTOConversionHelper;
 
-    @Autowired
-    private MatchesService matchesService;
-
-    @Autowired
-    private DTOConversionHelper DTOConversionHelper;
+    public PollRestController(SecurityUtils securityUtils, MessageSource messageSource, PollService pollService, MatchesService matchesService, DTOConversionHelper dtoConversionHelper) {
+        super(securityUtils, messageSource);
+        this.pollService = pollService;
+        this.matchesService = matchesService;
+        DTOConversionHelper = dtoConversionHelper;
+    }
 
     @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/poll/{id}/reset", method = RequestMethod.PUT)
@@ -81,8 +83,8 @@ public class PollRestController extends AbstractRestController {
     @RequestMapping(value = "/matchPoll", method = RequestMethod.GET)
     public ResponseEntity<PageDTO<MatchPollDTO>> getAllMatchPolls(@RequestParam int page, @RequestParam(required =
             false) int size, @RequestParam(required = false) String sort) {
-        Page<Match> playersPolls = matchesService.getMatchesWithPolls(page, size, Optional.<Sort>absent(), Optional
-                .<String>absent());
+        Page<Match> playersPolls = matchesService.getMatchesWithPolls(page, size, Optional.absent(), Optional
+                .absent());
         return new ResponseEntity<>(DTOConversionHelper.convertMatchPolls(playersPolls, isLoggedIn()), HttpStatus.OK);
     }
 }
