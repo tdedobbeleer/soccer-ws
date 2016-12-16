@@ -18,14 +18,16 @@ import java.io.IOException;
 
 public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFilter {
 
+  private final TokenUtils tokenUtils;
+  private final UserDetailsService userDetailsService;
   @Value("${jwt.token.header}")
   private String tokenHeader;
 
   @Autowired
-  private TokenUtils tokenUtils;
-
-  @Autowired
-  private UserDetailsService userDetailsService;
+  public AuthenticationTokenFilter(TokenUtils tokenUtils, UserDetailsService userDetailsService) {
+    this.tokenUtils = tokenUtils;
+    this.userDetailsService = userDetailsService;
+  }
 
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {

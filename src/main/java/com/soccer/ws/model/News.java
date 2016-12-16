@@ -20,7 +20,7 @@ import java.util.List;
 @Entity
 @Table(name = "news")
 public class News extends BaseClass {
-    private Date postDate;
+    private Date postDate = new Date();
     private String header;
     private String content;
     private Account account;

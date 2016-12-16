@@ -28,7 +28,7 @@ public class UserDetailsAdapter extends SocialUser {
     private Account account;
 
     public UserDetailsAdapter(Account account, String password) {
-        super(account.getUsername(), getPassword(password), Sets.newHashSet(new SimpleGrantedAuthority(account
+        super(account.getUsername(), getPassword(password), Sets.newHashSet(new SimpleGrantedAuthority("ROLE_" + account
                 .getRole().name())));
         this.account = account;
     }
@@ -89,7 +89,7 @@ public class UserDetailsAdapter extends SocialUser {
     @Override
     public Collection<GrantedAuthority> getAuthorities() {
         Set<GrantedAuthority> authorities = new HashSet<>();
-        authorities.add(new SimpleGrantedAuthority(account.getRole().name()));
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + account.getRole().name()));
         return authorities;
     }
 }

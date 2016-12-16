@@ -23,6 +23,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -71,6 +72,7 @@ public class NewsServiceImpl implements NewsService {
         News n = newsDao.findOne(news.getId());
         if (n == null)
             throw new ObjectNotFoundException(String.format("Object news with id %s not found", news.getId()));
+        n.setPostDate(new Date());
         return newsDao.save(n);
     }
 
@@ -168,7 +170,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    public boolean sendNewsEmail(News news) {
+    public boolean sendNewsEmail(NewsDTO news) {
         Set<String> emails = Sets.newHashSet();
         for (Account a : accountDao.findAllByActive(true)) {
             if (a.getAccountSettings().isSendNewsNotifications()) {
@@ -176,8 +178,7 @@ public class NewsServiceImpl implements NewsService {
             }
         }
         String newsItemUrl = String.format("%s/newsItem.html?newsId=%s", baseUrl, news.getId());
-        String title = messageSource.getMessage("email.news.title", new String[]{news.getHeader(), news.getAccount()
-                .toString()}, Locale.ENGLISH);
+        String title = messageSource.getMessage("email.news.title", new String[]{news.getHeader(), news.getPostedBy().getName()}, Locale.ENGLISH);
         String body = messageSource.getMessage("email.news.body", new String[]{news.getContent(), newsItemUrl},
                 Locale.ENGLISH);
         return mailService.sendMail(emails, title, body);

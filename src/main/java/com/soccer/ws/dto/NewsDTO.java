@@ -17,6 +17,9 @@ public class NewsDTO extends DTOBaseClass {
     private Set<CommentDTO> comments;
     private NewsDTOType type = NewsDTOType.POST_AND_SEND;
 
+    public NewsDTO() {
+    }
+
     public NewsDTO(Long id, String header, String content, String postDate, AccountDTO postedBy, boolean editable,
                    Set<CommentDTO> comments) {
         super(id);
@@ -81,7 +84,6 @@ public class NewsDTO extends DTOBaseClass {
         this.postedBy = postedBy;
     }
 
-    @NotEmpty
     @NotNull
     public NewsDTOType getType() {
         return type;

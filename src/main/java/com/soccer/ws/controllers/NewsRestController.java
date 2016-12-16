@@ -1,6 +1,7 @@
 package com.soccer.ws.controllers;
 
 import com.google.common.base.Optional;
+import com.soccer.ws.dto.AccountDTO;
 import com.soccer.ws.dto.NewsDTO;
 import com.soccer.ws.dto.PageDTO;
 import com.soccer.ws.exceptions.CustomMethodArgumentNotValidException;
@@ -48,14 +49,28 @@ public class NewsRestController extends AbstractRestController {
                 HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @RequestMapping(value = "/news", method = RequestMethod.GET)
-    @ApiOperation(value = "Post news", nickname = "postNewsPage")
-    public ResponseEntity getNewsPage(@Valid @RequestBody NewsDTO newsDTO, BindingResult bindingResult) throws CustomMethodArgumentNotValidException {
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/news", method = RequestMethod.POST)
+    @ApiOperation(value = "Post news", nickname = "postNews")
+    public ResponseEntity postNews(@Valid @RequestBody NewsDTO newsDTO, BindingResult bindingResult) throws CustomMethodArgumentNotValidException {
         if (bindingResult.hasErrors()) {
             throw new CustomMethodArgumentNotValidException(bindingResult);
         } else {
-            newsService.create(newsDTO, getAccountFromSecurity());
+            AccountDTO account = dtoConversionHelper.convertAccount(getAccountFromSecurity(), true);
+            newsDTO.setPostedBy(account);
+
+            switch (newsDTO.getType()) {
+                case POST_AND_SEND:
+                    newsService.create(newsDTO, getAccountFromSecurity());
+                    newsService.sendNewsEmail(newsDTO);
+                case POST:
+                    newsService.create(newsDTO, getAccountFromSecurity());
+                    break;
+                case SEND:
+                    newsService.sendNewsEmail(newsDTO);
+                    break;
+            }
+
         }
         return new ResponseEntity(HttpStatus.OK);
     }
