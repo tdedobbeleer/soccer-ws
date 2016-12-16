@@ -15,6 +15,7 @@ public class NewsDTO extends DTOBaseClass {
     private AccountDTO postedBy;
     private boolean editable;
     private Set<CommentDTO> comments;
+    private NewsDTOType type = NewsDTOType.POST_AND_SEND;
 
     public NewsDTO(Long id, String header, String content, String postDate, AccountDTO postedBy, boolean editable,
                    Set<CommentDTO> comments) {
@@ -78,5 +79,15 @@ public class NewsDTO extends DTOBaseClass {
 
     public void setPostedBy(AccountDTO postedBy) {
         this.postedBy = postedBy;
+    }
+
+    @NotEmpty
+    @NotNull
+    public NewsDTOType getType() {
+        return type;
+    }
+
+    public void setType(NewsDTOType type) {
+        this.type = type;
     }
 }
