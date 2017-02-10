@@ -3,7 +3,7 @@ package com.soccer.ws.dto;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Created by u0090265 on 16/09/16.
@@ -14,14 +14,14 @@ public class NewsDTO extends DTOBaseClass {
     private String postDate;
     private AccountDTO postedBy;
     private boolean editable;
-    private Set<CommentDTO> comments;
+    private List<CommentDTO> comments;
     private NewsDTOType type = NewsDTOType.POST_AND_SEND;
 
     public NewsDTO() {
     }
 
     public NewsDTO(Long id, String header, String content, String postDate, AccountDTO postedBy, boolean editable,
-                   Set<CommentDTO> comments) {
+                   List<CommentDTO> comments) {
         super(id);
         this.header = header;
         this.content = content;
@@ -60,11 +60,11 @@ public class NewsDTO extends DTOBaseClass {
         this.editable = editable;
     }
 
-    public Set<CommentDTO> getComments() {
+    public List<CommentDTO> getComments() {
         return comments;
     }
 
-    public void setComments(Set<CommentDTO> comments) {
+    public void setComments(List<CommentDTO> comments) {
         this.comments = comments;
     }
 

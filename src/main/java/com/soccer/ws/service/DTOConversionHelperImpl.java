@@ -1,7 +1,6 @@
 package com.soccer.ws.service;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.soccer.ws.dto.*;
 import com.soccer.ws.model.*;
 import org.joda.time.DateTime;
@@ -237,7 +236,7 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
     public NewsDTO convertNews(Account account, News news, boolean isAdmin) {
         boolean isLoggedIn = account != null;
         if (news != null) {
-            Set<CommentDTO> comments = Sets.newTreeSet();
+            List<CommentDTO> comments = Lists.newArrayList();
             for (Comment comment : news.getComments()) {
                 comments.add(convertComment(account, comment, isAdmin, isLoggedIn));
             }

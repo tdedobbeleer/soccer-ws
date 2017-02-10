@@ -12,7 +12,7 @@ public class SanitizeUtils {
     public static String sanitizeHtml(String text) {
         if (Strings.isNullOrEmpty(text)) return text;
         String r = Sanitizers.FORMATTING.and(Sanitizers.IMAGES).and(Sanitizers.LINKS).and(Sanitizers.BLOCKS).sanitize
-                (text);
+                (unescapeHtml4(text));
         return unescapeHtml4(r);
     }
 }
