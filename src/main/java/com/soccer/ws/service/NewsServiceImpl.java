@@ -101,34 +101,36 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional(readOnly = false)
-    public News addNewsComment(long newsId, String content, Account account) {
+    public Comment addNewsComment(long newsId, String content, Account account) {
         News news = newsDao.findOne(newsId);
         NewsComment comment = new NewsComment(content, news, account);
         news.getComments().add(comment);
         log.info(String.format("Newscomment %s added by %s", comment, account));
-        return newsDao.save(news);
+        newsDao.save(news);
+        return comment;
     }
 
     @Override
     @Transactional(readOnly = false)
-    public News changeNewsComment(long commentId, long newsId, String content, Account account) {
+    public Comment changeNewsComment(long commentId, long newsId, String content, Account account) {
         Comment comment = commentDao.findOne(commentId);
         authorizationService.isAuthorized(account, comment);
         comment.setContent(content);
         commentDao.save(comment);
         log.info(String.format("Newscomment %s changed by %s", comment, account));
-        return newsDao.findOne(newsId);
+        newsDao.findOne(newsId);
+        return comment;
     }
 
     @Override
     @Transactional(readOnly = false)
-    public News deleteNewsComment(long commentId, long newsId, Account account) {
+    public void deleteNewsComment(long commentId, long newsId, Account account) {
         NewsComment comment = (NewsComment) commentDao.findOne(commentId);
         authorizationService.isAuthorized(account, comment);
         News news = newsDao.findOne(newsId);
         news.getComments().remove(comment);
         log.info(String.format("Newscomment %s deleted by by %s", comment, account));
-        return newsDao.save(news);
+        newsDao.save(news);
     }
 
     @Override

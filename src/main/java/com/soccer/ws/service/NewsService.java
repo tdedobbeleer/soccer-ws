@@ -3,6 +3,7 @@ package com.soccer.ws.service;
 import com.google.common.base.Optional;
 import com.soccer.ws.dto.NewsDTO;
 import com.soccer.ws.model.Account;
+import com.soccer.ws.model.Comment;
 import com.soccer.ws.model.News;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -28,12 +29,12 @@ public interface NewsService {
     @Transactional(readOnly = false)
     News update(NewsDTO news, Account account);
 
-    News addNewsComment(long newsId, String content, Account account);
+    Comment addNewsComment(long newsId, String content, Account account);
 
-    News changeNewsComment(long commentId, long newsId, String content, Account account);
+    Comment changeNewsComment(long commentId, long newsId, String content, Account account);
 
     @Transactional(readOnly = false)
-    News deleteNewsComment(long commentId, long newsId, Account account);
+    void deleteNewsComment(long commentId, long newsId, Account account);
 
     News getNewsItem(long id);
 
