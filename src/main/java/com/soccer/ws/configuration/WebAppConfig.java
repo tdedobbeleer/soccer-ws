@@ -20,7 +20,9 @@ public class WebAppConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 //Allow cors for localhost
-                registry.addMapping("/**").allowedOrigins(allowedOrigin);
+                registry.addMapping("/**")
+                        .allowedOrigins(allowedOrigin)
+                        .allowedMethods("PUT", "DELETE", "POST", "GET");
             }
         };
     }
