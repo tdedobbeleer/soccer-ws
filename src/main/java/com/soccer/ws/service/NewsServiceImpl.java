@@ -146,20 +146,17 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    public Page<News> getPagedNews(int start, int pageSize, Optional<Sort> sort) {
+    public Page<News> getPagedNews(Optional<String> term, int start, int pageSize, Optional<Sort> sort) {
         Sort s = sort.isPresent() ? sort.get() : new Sort(Sort.Direction.DESC, "postDate");
+        if (term.isPresent()) {
+            return newsDao.getSearch("%" + sanitizeHtml(term.get()) + "%", new PageRequest(start, pageSize, s));
+        }
         return newsDao.findAll((new PageRequest(start, pageSize, s)));
     }
 
     @Override
     public int getNewsCount() {
         return (int) newsDao.count();
-    }
-
-    @Override
-    public Page<News> getSearch(String term, int start, int pageSize, Optional<Sort> sort) {
-        Sort s = sort.isPresent() ? sort.get() : new Sort(Sort.Direction.DESC, "postDate");
-        return newsDao.getSearch("%" + term + "%", new PageRequest(start, pageSize, s));
     }
 
     @Override

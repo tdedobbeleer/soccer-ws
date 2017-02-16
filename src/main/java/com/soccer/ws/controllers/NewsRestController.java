@@ -42,9 +42,9 @@ public class NewsRestController extends AbstractRestController {
 
     @RequestMapping(value = "/news", method = RequestMethod.GET)
     @ApiOperation(value = "Get news", nickname = "getNewsPage")
-    public ResponseEntity<PageDTO<NewsDTO>> getNewsPage(@RequestParam int page, @RequestParam(required =
+    public ResponseEntity<PageDTO<NewsDTO>> getNewsPage(@RequestParam(required = false) String searchTerm, @RequestParam int page, @RequestParam(required =
             false) int size) {
-        Page<News> news = newsService.getPagedNews(page, size, Optional.absent());
+        Page<News> news = newsService.getPagedNews(Optional.fromNullable(searchTerm), page, size, Optional.absent());
         return new ResponseEntity<>(dtoConversionHelper.convertNewsPage(getAccountFromSecurity(), news, isAdmin()),
                 HttpStatus.OK);
     }
@@ -73,16 +73,6 @@ public class NewsRestController extends AbstractRestController {
 
         }
         return new ResponseEntity(HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/news/search/{term}", method = RequestMethod.GET)
-    @ApiOperation(value = "Search news", nickname = "searchNewsPage")
-    public ResponseEntity<PageDTO<NewsDTO>> searchNewsPage(@PathVariable String term, @RequestParam int page,
-                                                           @RequestParam(required =
-                                                                   false) int size) {
-        Page<News> news = newsService.getSearch(term, page, size, Optional.absent());
-        return new ResponseEntity<>(dtoConversionHelper.convertNewsPage(getAccountFromSecurity(), news, isAdmin()),
-                HttpStatus.OK);
     }
 
     @RequestMapping(value = "/news/{id}", method = RequestMethod.GET)
