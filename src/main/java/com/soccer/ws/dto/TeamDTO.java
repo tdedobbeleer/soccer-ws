@@ -1,17 +1,17 @@
 package com.soccer.ws.dto;
 
+import com.soccer.ws.model.BaseClass;
+
 /**
  * Created by u0090265 on 10/2/15.
  */
-public class TeamDTO {
-    String name;
-    String address;
-    String googleMapsEmbeddedLink;
+public class TeamDTO extends BaseClass {
+    private String name;
+    private AddressDTO address;
 
-    public TeamDTO(String name, String address, String googleMapsLink) {
+    public TeamDTO(String name, AddressDTO address) {
         this.name = name;
         this.address = address;
-        this.googleMapsEmbeddedLink = googleMapsLink;
     }
 
     public String getName() {
@@ -22,19 +22,11 @@ public class TeamDTO {
         this.name = name;
     }
 
-    public String getAddress() {
+    public AddressDTO getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(AddressDTO address) {
         this.address = address;
-    }
-
-    public String getGoogleMapsEmbeddedLink() {
-        return googleMapsEmbeddedLink;
-    }
-
-    public void setGoogleMapsEmbeddedLink(String googleMapsLink) {
-        this.googleMapsEmbeddedLink = googleMapsLink;
     }
 }

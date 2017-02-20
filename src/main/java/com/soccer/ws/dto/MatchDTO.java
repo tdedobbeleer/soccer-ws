@@ -8,22 +8,23 @@ import java.util.List;
  * Created by u0090265 on 10/2/15.
  */
 public class MatchDTO extends DTOBaseClass {
-    String date;
-    String hour;
-    String homeTeam;
-    String awayTeam;
-    String atGoals;
-    String htGoals;
-    String status;
-    String locationUrl;
-    String fullAddress;
-    boolean hasDoodle;
-    MatchPollDTO poll;
-    List<GoalDTO> goals;
+    private String date;
+    private String hour;
+    private String homeTeam;
+    private String awayTeam;
+    private String atGoals;
+    private String htGoals;
+    private String status;
+    private String locationUrl;
+    private String fullAddress;
+    private String statusText;
+    private boolean hasDoodle;
+    private MatchPollDTO poll;
+    private List<GoalDTO> goals;
 
     public MatchDTO(Long id, String date, String hour, String homeTeam, String awayTeam, String atGoals, String
             htGoals, String status, MatchPollDTO matchPollDTO, List<GoalDTO> goals, String locationUrl, String
-                            address, boolean hasDoodle) {
+                            address, String statusText, boolean hasDoodle) {
         this.date = date;
         this.hour = hour;
         this.homeTeam = homeTeam;
@@ -32,6 +33,7 @@ public class MatchDTO extends DTOBaseClass {
         this.htGoals = htGoals;
         this.poll = matchPollDTO;
         this.status = status;
+        this.statusText = statusText;
         this.setId(id);
         this.goals = goals;
         this.hasDoodle = hasDoodle;
@@ -145,5 +147,14 @@ public class MatchDTO extends DTOBaseClass {
 
     public void setHasDoodle(boolean hasDoodle) {
         this.hasDoodle = hasDoodle;
+    }
+
+    @ApiModelProperty(value = "Status text", name = "statusText")
+    public String getStatusText() {
+        return statusText;
+    }
+
+    public void setStatusText(String statusText) {
+        this.statusText = statusText;
     }
 }

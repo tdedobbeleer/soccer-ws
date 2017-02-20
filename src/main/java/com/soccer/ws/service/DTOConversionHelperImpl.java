@@ -38,7 +38,7 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
                     convertGoals(m.getGoals(), isLoggedIn),
                     m.getHomeTeam().getAddress().getGoogleLink(),
                     m.getHomeTeam().getAddress().getAddress(),
-                    m.getMatchDoodle() != null));
+                    m.getStatusText(), m.getMatchDoodle() != null));
         }
         return matchDTOs;
     }
@@ -58,7 +58,7 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
                     convertGoals(match.getGoals(), isLoggedIn),
                     match.getHomeTeam().getAddress().getGoogleLink(),
                     match.getHomeTeam().getAddress().getAddress(),
-                    match.getMatchDoodle() != null);
+                    match.getStatusText(), match.getMatchDoodle() != null);
         }
         return null;
     }
@@ -74,10 +74,7 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
 
     @Override
     public TeamDTO convertTeam(Team team, boolean isLoggedIn) {
-        return new TeamDTO(team.getName(),
-                String.format("%s,%s %s", team.getAddress().getAddress(), team.getAddress().getPostalCode(), team
-                        .getAddress().getCity()),
-                team.getAddress().getGoogleLink());
+        return new TeamDTO(team.getName(), convertAddress(team.getAddress()));
     }
 
     @Override
@@ -204,6 +201,16 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
                     doodle.countPresences());
         }
         return null;
+    }
+
+    private AddressDTO convertAddress(Address address) {
+        return new AddressDTO(
+                address.getId(),
+                address.getPostalCode(),
+                address.getAddress(),
+                address.getCity(),
+                address.getGoogleLink()
+        );
     }
 
     private String getModifiedDateIfNeeded(Presence presence) {
