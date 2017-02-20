@@ -29,16 +29,16 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
             matchDTOs.add(new MatchDTO(m.getId(),
                     m.getStringDate(),
                     m.getStringHour(),
-                    m.getHomeTeam().getName(),
-                    m.getAwayTeam().getName(),
-                    Integer.toString(m.getHtGoals()),
-                    Integer.toString(m.getAtGoals()),
+                    convertTeam(m.getHomeTeam(), isLoggedIn),
+                    convertTeam(m.getAwayTeam(), isLoggedIn),
+                    m.getHtGoals(),
+                    m.getAtGoals(),
                     m.getStatus().name(),
                     convertMatchPoll(m.getMotmPoll(), isLoggedIn),
                     convertGoals(m.getGoals(), isLoggedIn),
                     m.getHomeTeam().getAddress().getGoogleLink(),
                     m.getHomeTeam().getAddress().getAddress(),
-                    m.getStatusText(), m.getMatchDoodle() != null));
+                    m.getStatusText(), m.getMatchDoodle() != null, convertSeason(m.getSeason())));
         }
         return matchDTOs;
     }
@@ -49,16 +49,16 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
             return new MatchDTO(match.getId(),
                     match.getStringDate(),
                     match.getStringHour(),
-                    match.getHomeTeam().getName(),
-                    match.getAwayTeam().getName(),
-                    match.getAtGoals().toString(),
-                    match.getHtGoals().toString(),
+                    convertTeam(match.getHomeTeam(), isLoggedIn),
+                    convertTeam(match.getAwayTeam(), isLoggedIn),
+                    match.getAtGoals(),
+                    match.getHtGoals(),
                     match.getStatus().name(),
                     convertMatchPoll(match.getMotmPoll(), isLoggedIn),
                     convertGoals(match.getGoals(), isLoggedIn),
                     match.getHomeTeam().getAddress().getGoogleLink(),
                     match.getHomeTeam().getAddress().getAddress(),
-                    match.getStatusText(), match.getMatchDoodle() != null);
+                    match.getStatusText(), match.getMatchDoodle() != null, convertSeason(match.getSeason()));
         }
         return null;
     }
@@ -148,7 +148,7 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
         List<GoalDTO> result = Lists.newArrayList();
         for (Goal g : goals) {
             result.add(new GoalDTO(convertAccount(g.getScorer(), isLoggedIn), convertAccount(g.getAssist(),
-                    isLoggedIn)));
+                    isLoggedIn), g.getOrder()));
         }
         return result;
     }
@@ -211,6 +211,10 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
                 address.getCity(),
                 address.getGoogleLink()
         );
+    }
+
+    private SeasonDTO convertSeason(Season season) {
+        return new SeasonDTO(season.getId(), season.getDescription());
     }
 
     private String getModifiedDateIfNeeded(Presence presence) {

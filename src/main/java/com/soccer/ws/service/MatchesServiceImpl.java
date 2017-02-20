@@ -1,15 +1,19 @@
 package com.soccer.ws.service;
 
 import com.google.common.base.Optional;
+import com.soccer.ws.data.MatchStatusEnum;
+import com.soccer.ws.dto.GoalDTO;
 import com.soccer.ws.dto.MatchDTO;
 import com.soccer.ws.exceptions.ObjectNotFoundException;
 import com.soccer.ws.model.Account;
+import com.soccer.ws.model.Goal;
 import com.soccer.ws.model.Match;
 import com.soccer.ws.model.Season;
 import com.soccer.ws.persistence.AccountDao;
 import com.soccer.ws.persistence.MatchesDao;
 import com.soccer.ws.persistence.SeasonDao;
 import com.soccer.ws.persistence.TeamDao;
+import com.soccer.ws.utils.GeneralUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +26,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -118,54 +123,54 @@ public class MatchesServiceImpl implements MatchesService {
         return matchesDao.findOne(id);
     }
 
-    /**
-     * @Override
-     * @Transactional(readOnly = false)
-     * public Match createMatch(CreateMatchForm form) throws ParseException {
-     * Match m = new Match();
-     * m.setSeason(seasonDao.findOne(form.getSeason()));
-     * m.setDate(form.getDate());
-     * m.setHomeTeam(teamDao.findOne(form.getHomeTeam()));
-     * m.setAwayTeam(teamDao.findOne(form.getAwayTeam()));
-     * matchesDao.save(m);
-     * log.debug("Match {} created.", m);
-     * cacheAdapter.resetMatchesCache();
-     * return m;
-     * }
-     * @Override
-     * @Transactional(readOnly = false)
-     * public Match updateMatch(ChangeResultForm form) {
-     * Match m = matchesDao.findOne(form.getMatchId());
-     * m.setHomeTeam(teamDao.findOne(form.getHomeTeam()));
-     * m.setAwayTeam(teamDao.findOne(form.getAwayTeam()));
-     * m.setDate(form.getDate());
-     * m.setSeason(seasonDao.findOne(form.getSeason()));
-     * <p>
-     * //Get original match status
-     * MatchStatusEnum originalMatchStatus = m.getStatus();
-     * //Set matchstatus
-     * m.setStatus(form.getStatus());
-     * m.setStatusText(form.getStatus().equals(MatchStatusEnum.CANCELLED) ? form.getStatusText() : null);
-     * <p>
-     * //If status has changed, check if the motm poll should be added
-     * if (!form.getStatus().equals(originalMatchStatus)) {
-     * pollService.setMotmPoll(m);
-     * }
-     * <p>
-     * if (form.getStatus().equals(MatchStatusEnum.PLAYED)) {
-     * m.getGoals().clear();
-     * m.getGoals().addAll(transFormGoals(form, m));
-     * m.setAtGoals(form.getAtGoals());
-     * m.setHtGoals(form.getHtGoals());
-     * } else {
-     * m.getGoals().clear();
-     * }
-     * matchesDao.save(m);
-     * cacheAdapter.resetMatchesCache();
-     * cacheAdapter.resetStatisticsCache();
-     * return m;
-     * }
-     **/
+    @Override
+    @Transactional(readOnly = false)
+    public MatchDTO createMatch(MatchDTO matchDTO) {
+        Match m = new Match();
+        m.setSeason(seasonDao.findOne(matchDTO.getSeason().getId()));
+        DateTime dateTime = GeneralUtils.convertToDate(matchDTO.getDate(), matchDTO.getHour());
+        m.setDate(dateTime);
+        m.setHomeTeam(teamDao.findOne(matchDTO.getHomeTeam().getId()));
+        m.setAwayTeam(teamDao.findOne(matchDTO.getAwayTeam().getId()));
+        matchesDao.save(m);
+        log.debug("Match {} created.", m);
+        cacheAdapter.resetMatchesCache();
+        return matchDTO;
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public MatchDTO updateMatch(MatchDTO matchDTO) {
+        Match m = matchesDao.findOne(matchDTO.getId());
+        m.setHomeTeam(teamDao.findOne(matchDTO.getHomeTeam().getId()));
+        m.setAwayTeam(teamDao.findOne(matchDTO.getAwayTeam().getId()));
+        DateTime dateTime = GeneralUtils.convertToDate(matchDTO.getDate(), matchDTO.getHour());
+        m.setDate(dateTime);
+        m.setSeason(seasonDao.findOne(matchDTO.getSeason().getId()));
+        //Get original match status
+        MatchStatusEnum originalMatchStatus = m.getStatus();
+        //Set matchstatus
+        MatchStatusEnum updatedStatus = MatchStatusEnum.valueOf(matchDTO.getStatus());
+        m.setStatus(updatedStatus);
+        m.setStatusText(updatedStatus.equals(MatchStatusEnum.CANCELLED) ? matchDTO.getStatusText() : null);
+
+        //If status has changed, check if the motm poll should be added
+        if (!updatedStatus.equals(originalMatchStatus)) {
+            pollService.setMotmPoll(m);
+        }
+        if (updatedStatus.equals(MatchStatusEnum.PLAYED)) {
+            m.getGoals().clear();
+            m.getGoals().addAll(transFormGoals(matchDTO.getGoals(), m));
+            m.setAtGoals(matchDTO.getAtGoals());
+            m.setHtGoals(matchDTO.getHtGoals());
+        } else {
+            m.getGoals().clear();
+        }
+        matchesDao.save(m);
+        cacheAdapter.resetMatchesCache();
+        cacheAdapter.resetStatisticsCache();
+        return matchDTO;
+    }
 
     @Override
     @Transactional(readOnly = false)
@@ -176,21 +181,19 @@ public class MatchesServiceImpl implements MatchesService {
         cacheAdapter.resetMatchesCache();
     }
 
-    /**
-     private List<Goal> transFormGoals(ChangeResultForm form, Match match) {
+
+    private List<Goal> transFormGoals(List<GoalDTO> goals, Match match) {
      List<Goal> result = new ArrayList<>();
-     for (ChangeResultForm.FormGoal goal : form.getGoals()) {
-     Goal g = new Goal();
-     g.setMatch(match);
-     g.setOrder(goal.getOrder());
-     //Goals and and assists can be null
-     if (!Strings.isNullOrEmpty(goal.getScorer())) g.setScorer(accountDao.findOne(GeneralUtils.convertToLong(goal
-     .getScorer())));
-     if (!Strings.isNullOrEmpty(goal.getAssist())) g.setAssist(accountDao.findOne(GeneralUtils.convertToLong(goal
-     .getAssist())));
-     result.add(g);
+        for (GoalDTO goalDTO : goals) {
+            Goal g = new Goal();
+            g.setMatch(match);
+            g.setOrder(goalDTO.getOrder());
+            //Goals and and assists can be null
+            if (goalDTO.getScorer() != null) g.setScorer(accountDao.findOne(goalDTO.getScorer().getId()));
+            if (goalDTO.getAssist() != null) g.setAssist(accountDao.findOne(goalDTO.getAssist().getId()));
+            result.add(g);
+        }
+        return result;
      }
-     return result;
-     }
-     **/
+
 }

@@ -10,21 +10,22 @@ import java.util.List;
 public class MatchDTO extends DTOBaseClass {
     private String date;
     private String hour;
-    private String homeTeam;
-    private String awayTeam;
-    private String atGoals;
-    private String htGoals;
+    private TeamDTO homeTeam;
+    private TeamDTO awayTeam;
+    private Integer atGoals;
+    private Integer htGoals;
     private String status;
     private String locationUrl;
     private String fullAddress;
     private String statusText;
     private boolean hasDoodle;
+    private SeasonDTO season;
     private MatchPollDTO poll;
     private List<GoalDTO> goals;
 
-    public MatchDTO(Long id, String date, String hour, String homeTeam, String awayTeam, String atGoals, String
+    public MatchDTO(Long id, String date, String hour, TeamDTO homeTeam, TeamDTO awayTeam, Integer atGoals, Integer
             htGoals, String status, MatchPollDTO matchPollDTO, List<GoalDTO> goals, String locationUrl, String
-                            address, String statusText, boolean hasDoodle) {
+                            address, String statusText, boolean hasDoodle, SeasonDTO season) {
         this.date = date;
         this.hour = hour;
         this.homeTeam = homeTeam;
@@ -34,6 +35,7 @@ public class MatchDTO extends DTOBaseClass {
         this.poll = matchPollDTO;
         this.status = status;
         this.statusText = statusText;
+        this.season = season;
         this.setId(id);
         this.goals = goals;
         this.hasDoodle = hasDoodle;
@@ -78,38 +80,38 @@ public class MatchDTO extends DTOBaseClass {
     }
 
     @ApiModelProperty(value = "Name of the hometeam", name = "homeTeam")
-    public String getHomeTeam() {
+    public TeamDTO getHomeTeam() {
         return homeTeam;
     }
 
-    public void setHomeTeam(String homeTeam) {
+    public void setHomeTeam(TeamDTO homeTeam) {
         this.homeTeam = homeTeam;
     }
 
     @ApiModelProperty(value = "Name of the awayteam", name = "awayTeam")
-    public String getAwayTeam() {
+    public TeamDTO getAwayTeam() {
         return awayTeam;
     }
 
-    public void setAwayTeam(String awayTeam) {
+    public void setAwayTeam(TeamDTO awayTeam) {
         this.awayTeam = awayTeam;
     }
 
     @ApiModelProperty(value = "Goals scored by awayteam", name = "atGoals")
-    public String getAtGoals() {
+    public Integer getAtGoals() {
         return atGoals;
     }
 
-    public void setAtGoals(String atGoals) {
+    public void setAtGoals(Integer atGoals) {
         this.atGoals = atGoals;
     }
 
     @ApiModelProperty(value = "Goals scored by hometeam", name = "htGoals")
-    public String getHtGoals() {
+    public Integer getHtGoals() {
         return htGoals;
     }
 
-    public void setHtGoals(String htGoals) {
+    public void setHtGoals(Integer htGoals) {
         this.htGoals = htGoals;
     }
 
@@ -156,5 +158,13 @@ public class MatchDTO extends DTOBaseClass {
 
     public void setStatusText(String statusText) {
         this.statusText = statusText;
+    }
+
+    public SeasonDTO getSeason() {
+        return season;
+    }
+
+    public void setSeason(SeasonDTO season) {
+        this.season = season;
     }
 }

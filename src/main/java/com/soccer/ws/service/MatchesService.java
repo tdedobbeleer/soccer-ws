@@ -8,6 +8,7 @@ import com.soccer.ws.model.Match;
 import com.soccer.ws.model.Season;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,12 @@ public interface MatchesService {
     //Match createMatch(CreateMatchForm form) throws ParseException;
 
     //Match updateMatch(ChangeResultForm form);
+
+    @Transactional(readOnly = false)
+    MatchDTO createMatch(MatchDTO matchDTO);
+
+    @Transactional(readOnly = false)
+    MatchDTO updateMatch(MatchDTO matchDTO);
 
     void deleteMatch(long id) throws ObjectNotFoundException;
 }

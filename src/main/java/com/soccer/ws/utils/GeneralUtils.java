@@ -51,6 +51,10 @@ public class GeneralUtils {
         return dateFormatter.parseDateTime(date);
     }
 
+    public static DateTime convertToDate(String date, String time) {
+        return dateTimeFormatter.parseDateTime(String.format("%s - %s", date, time));
+    }
+
     public static String convertToStringHour(DateTime dateTime) {
         return hourFormatter.print(dateTime);
     }

@@ -2,11 +2,14 @@ package com.soccer.ws.controllers;
 
 import com.soccer.ws.dto.MatchDTO;
 import com.soccer.ws.dto.MatchPollDTO;
+import com.soccer.ws.exceptions.CustomMethodArgumentNotValidException;
 import com.soccer.ws.exceptions.ObjectNotFoundException;
 import com.soccer.ws.model.Match;
 import com.soccer.ws.service.DTOConversionHelper;
 import com.soccer.ws.service.MatchesService;
 import com.soccer.ws.utils.SecurityUtils;
+import com.soccer.ws.validators.CreateMatchValidator;
+import com.soccer.ws.validators.UpdateMatchValidator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -14,11 +17,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Locale;
 
@@ -32,11 +34,37 @@ public class MatchesRestController extends AbstractRestController {
 
     private final MatchesService matchesService;
     private final DTOConversionHelper DTOConversionHelper;
+    private final UpdateMatchValidator updateMatchValidator;
+    private final CreateMatchValidator createMatchValidator;
 
-    public MatchesRestController(SecurityUtils securityUtils, MessageSource messageSource, MatchesService matchesService, DTOConversionHelper dtoConversionHelper) {
+    public MatchesRestController(SecurityUtils securityUtils, MessageSource messageSource, MatchesService matchesService, DTOConversionHelper dtoConversionHelper, UpdateMatchValidator updateMatchValidator, CreateMatchValidator createMatchValidator) {
         super(securityUtils, messageSource);
         this.matchesService = matchesService;
         DTOConversionHelper = dtoConversionHelper;
+        this.updateMatchValidator = updateMatchValidator;
+        this.createMatchValidator = createMatchValidator;
+    }
+
+    @RequestMapping(value = "/matches", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    @ApiOperation(value = "Create match", nickname = "createMatch")
+    MatchDTO createMatch(@Valid @RequestBody MatchDTO dto, BindingResult result) throws CustomMethodArgumentNotValidException {
+        if (result.hasErrors()) {
+            throw new CustomMethodArgumentNotValidException(result);
+        }
+        return matchesService.createMatch(dto);
+    }
+
+    @RequestMapping(value = "/matches", method = RequestMethod.PUT)
+    public
+    @ResponseBody
+    @ApiOperation(value = "Update match", nickname = "updateMatch")
+    MatchDTO updateMatch(@Valid @RequestBody MatchDTO matchDTO, BindingResult result) throws CustomMethodArgumentNotValidException {
+        if (result.hasErrors()) {
+            throw new CustomMethodArgumentNotValidException(result);
+        }
+        return matchesService.updateMatch(matchDTO);
     }
 
     @RequestMapping(value = "/matches/season/{id}", method = RequestMethod.GET)
