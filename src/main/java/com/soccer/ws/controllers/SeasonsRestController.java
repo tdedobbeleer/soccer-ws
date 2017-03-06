@@ -32,7 +32,7 @@ public class SeasonsRestController extends AbstractRestController {
     }
 
     @RequestMapping(value = "/seasons", method = RequestMethod.GET)
-    @ApiOperation(value = "Get all seasons")
+    @ApiOperation(value = "Get all seasons", nickname = "getSeasons")
     public ResponseEntity<List<SeasonDTO>> getSeasons() {
         return new ResponseEntity<>(DTOConversionHelper.convertSeasons(seasonService.getSeasons()), HttpStatus.OK);
     }
