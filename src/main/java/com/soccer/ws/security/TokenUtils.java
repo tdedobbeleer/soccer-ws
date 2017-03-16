@@ -1,7 +1,9 @@
 package com.soccer.ws.security;
 
 import com.soccer.ws.persistence.UserDetailsAdapter;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +11,7 @@ import org.springframework.mobile.device.Device;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,12 +30,42 @@ public class TokenUtils {
   private String secret;
 
   @Value("${jwt.token.expiration}")
-  private Long expiration;
+  private String expiration;
 
-  public String getUsernameFromToken(String token) {
+    public Boolean validateToken(String token, UserDetails userDetails) {
+        UserDetailsAdapter user = (UserDetailsAdapter) userDetails;
+        Claims claims = getClaimsFromToken(token);
+        final String username = this.getUsername(claims);
+        final DateTime created = this.getCreatedDate(claims);
+        return (username.equals(user.getUsername()) && !(this.isCreatedBeforeLastPasswordReset(created, user.getPasswordLastSet())));
+    }
+
+    public String getUsernameFromToken(final String token) {
+        String username;
+        try {
+            username = getUsername(getClaimsFromToken(token));
+        } catch (Exception e) {
+            username = null;
+        }
+        return username;
+    }
+
+    private Claims getClaimsFromToken(String token) {
+        Claims claims;
+        try {
+            claims = Jwts.parser()
+                    .setSigningKey(this.secret)
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (Exception e) {
+            claims = null;
+        }
+        return claims;
+    }
+
+    private String getUsername(final Claims claims) {
     String username;
     try {
-      final Claims claims = this.getClaimsFromToken(token);
       username = claims.getSubject();
     } catch (Exception e) {
       username = null;
@@ -40,21 +73,19 @@ public class TokenUtils {
     return username;
   }
 
-  public DateTime getCreatedDateFromToken(String token) {
+    private DateTime getCreatedDate(final Claims claims) {
     DateTime created;
     try {
-      final Claims claims = this.getClaimsFromToken(token);
-      created = new DateTime(claims.get("created"));
+        created = new DateTime((long) claims.get("created"));
     } catch (Exception e) {
       created = null;
     }
     return created;
   }
 
-  public DateTime getExpirationDateFromToken(String token) {
+    private DateTime getExpirationDate(final Claims claims) {
     DateTime expiration;
     try {
-      final Claims claims = this.getClaimsFromToken(token);
       expiration = new DateTime(claims.getExpiration());
     } catch (Exception e) {
       expiration = null;
@@ -62,10 +93,9 @@ public class TokenUtils {
     return expiration;
   }
 
-  public String getAudienceFromToken(String token) {
+    private String getAudience(final Claims claims) {
     String audience;
     try {
-      final Claims claims = this.getClaimsFromToken(token);
       audience = (String) claims.get("audience");
     } catch (Exception e) {
       audience = null;
@@ -73,30 +103,13 @@ public class TokenUtils {
     return audience;
   }
 
-  private Claims getClaimsFromToken(String token) {
-    Claims claims;
-    try {
-      claims = Jwts.parser()
-        .setSigningKey(this.secret)
-        .parseClaimsJws(token)
-        .getBody();
-    } catch (Exception e) {
-      claims = null;
-    }
-    return claims;
-  }
-
-  private DateTime generateCurrentDate() {
-    return DateTime.now();
+    private long generateCurrentDate() {
+        return DateTime.now().getMillis();
   }
 
   private Date generateExpirationDate() {
-    return new Date(System.currentTimeMillis() + this.expiration * 1000);
-  }
-
-  private Boolean isTokenExpired(String token) {
-    final DateTime expiration = this.getExpirationDateFromToken(token);
-    return expiration.isBefore(this.generateCurrentDate());
+      Duration duration = Duration.parse(expiration);
+      return new DateTime().plusSeconds(Math.toIntExact(duration.getSeconds())).toDate();
   }
 
   private Boolean isCreatedBeforeLastPasswordReset(DateTime created, DateTime lastPasswordReset) {
@@ -115,8 +128,8 @@ public class TokenUtils {
     return audience;
   }
 
-  private Boolean ignoreTokenExpiration(String token) {
-    String audience = this.getAudienceFromToken(token);
+    private Boolean ignoreTokenExpiration(Claims claims) {
+        String audience = this.getAudience(claims);
     return (this.AUDIENCE_TABLET.equals(audience) || this.AUDIENCE_MOBILE.equals(audience));
   }
 
@@ -137,8 +150,9 @@ public class TokenUtils {
   }
 
   public Boolean canTokenBeRefreshed(String token, DateTime lastPasswordReset) {
-    final DateTime created = this.getCreatedDateFromToken(token);
-    return (!(this.isCreatedBeforeLastPasswordReset(created, lastPasswordReset)) && (!(this.isTokenExpired(token)) || this.ignoreTokenExpiration(token)));
+      Claims claims = getClaimsFromToken(token);
+      final DateTime created = this.getCreatedDate(claims);
+      return (!(this.isCreatedBeforeLastPasswordReset(created, lastPasswordReset)) && this.ignoreTokenExpiration(claims));
   }
 
   public String refreshToken(String token) {
@@ -151,14 +165,6 @@ public class TokenUtils {
       refreshedToken = null;
     }
     return refreshedToken;
-  }
-
-  public Boolean validateToken(String token, UserDetails userDetails) {
-    UserDetailsAdapter user = (UserDetailsAdapter) userDetails;
-    final String username = this.getUsernameFromToken(token);
-    final DateTime created = this.getCreatedDateFromToken(token);
-    final DateTime expiration = this.getExpirationDateFromToken(token);
-    return (username.equals(user.getUsername()) && !(this.isTokenExpired(token)) && !(this.isCreatedBeforeLastPasswordReset(created, user.getPasswordLastSet())));
   }
 
 }
