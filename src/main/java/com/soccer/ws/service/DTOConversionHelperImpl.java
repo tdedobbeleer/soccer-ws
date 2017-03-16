@@ -74,7 +74,7 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
 
     @Override
     public TeamDTO convertTeam(Team team, boolean isLoggedIn) {
-        return new TeamDTO(team.getName(), convertAddress(team.getAddress()));
+        return new TeamDTO(team.getId(), team.getName(), convertAddress(team.getAddress()));
     }
 
     @Override

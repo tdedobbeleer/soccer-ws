@@ -62,7 +62,7 @@ public class ConcurrentDataServiceImpl implements ConcurrentDataService {
     public List<MatchDTO> getMatchForSeason(final long seasonId, final Account account) {
         Season season = seasonDao.findOne(seasonId);
 
-        return matchesDao.getMatchesForSeason(season).parallelStream()
+        return matchesDao.getMatchesForSeason(season).stream()
                 .map(m -> DTOConversionHelper.convertMatch(m, account != null))
                 .collect(Collectors.toList());
     }

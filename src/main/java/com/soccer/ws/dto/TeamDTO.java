@@ -1,15 +1,14 @@
 package com.soccer.ws.dto;
 
-import com.soccer.ws.model.BaseClass;
-
 /**
  * Created by u0090265 on 10/2/15.
  */
-public class TeamDTO extends BaseClass {
+public class TeamDTO extends DTOBaseClass {
     private String name;
     private AddressDTO address;
 
-    public TeamDTO(String name, AddressDTO address) {
+    public TeamDTO(Long id, String name, AddressDTO address) {
+        super(id);
         this.name = name;
         this.address = address;
     }
