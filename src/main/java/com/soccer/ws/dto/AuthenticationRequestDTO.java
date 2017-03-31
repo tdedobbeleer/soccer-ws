@@ -5,13 +5,15 @@ public class AuthenticationRequestDTO {
 	private static final long serialVersionUID = 6624726180748515507L;
 	private String username;
 	private String password;
+    private boolean rememberMe;
 
 	public AuthenticationRequestDTO() {
 		super();
 	}
 
-	public AuthenticationRequestDTO(String username, String password) {
-		this.setUsername(username);
+    public AuthenticationRequestDTO(String username, String password, boolean rememberMe) {
+        this.rememberMe = rememberMe;
+        this.setUsername(username);
 		this.setPassword(password);
 	}
 
@@ -31,4 +33,11 @@ public class AuthenticationRequestDTO {
 		this.password = password;
 	}
 
+    public boolean isRememberMe() {
+        return rememberMe;
+    }
+
+    public void setRememberMe(boolean rememberMe) {
+        this.rememberMe = rememberMe;
+    }
 }

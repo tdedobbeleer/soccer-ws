@@ -52,7 +52,7 @@ public class AuthenticationController extends AbstractRestController {
   @ApiOperation(value = "authenticate", nickname = "authenticate")
   @ApiResponses(value = {
           @ApiResponse(code = 401, message = "Access denied")})
-  public ResponseEntity<?> authenticationRequest(@RequestBody AuthenticationRequestDTO authenticationRequestDTO, Device device) throws AuthenticationException {
+  public ResponseEntity<?> authenticationRequest(@RequestBody AuthenticationRequestDTO authenticationRequestDTO, Device device, HttpServletRequest request) throws AuthenticationException {
     // Perform the authentication
     Authentication authentication = this.authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
@@ -64,26 +64,11 @@ public class AuthenticationController extends AbstractRestController {
 
     // Reload password post-authentication so we can generate token
     UserDetailsAdapter user = (UserDetailsAdapter) this.userDetailsService.loadUserByUsername(authenticationRequestDTO.getUsername());
-    String token = this.tokenUtils.generateToken(user, device);
+      String token = this.tokenUtils.generateToken(user, device, request.getHeader("User-Agent"), authenticationRequestDTO.isRememberMe());
 
     // Return the token
       return ResponseEntity.ok(new AuthenticationResponseDTO(token, user.getFirstName(), user.getLastName(), user.getUsername(), getAuthorities(user)));
 
-  }
-
-  @RequestMapping(value = "/auth/token/refresh", method = RequestMethod.GET)
-  @ResponseBody
-  @ApiOperation(value = "Refresh token", nickname = "refresh")
-  public ResponseEntity<?> authenticationRequest(HttpServletRequest request) {
-    String token = request.getHeader(this.tokenHeader);
-    String username = this.tokenUtils.getUsernameFromToken(token);
-    UserDetailsAdapter user = (UserDetailsAdapter) this.userDetailsService.loadUserByUsername(username);
-    if (this.tokenUtils.canTokenBeRefreshed(token, user.getPasswordLastSet())) {
-      String refreshedToken = this.tokenUtils.refreshToken(token);
-        return ResponseEntity.ok(new AuthenticationResponseDTO(refreshedToken, user.getFirstName(), user.getLastName(), user.getUsername(), getAuthorities(user)));
-    } else {
-      return ResponseEntity.badRequest().body(null);
-    }
   }
 
   @RequestMapping(value = "/auth/isFullyAuthenticated", method = RequestMethod.GET)
