@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by u0090265 on 5/3/14.
@@ -31,6 +32,8 @@ public interface MatchesDao extends PagingAndSortingRepository<Match, Long>, Jpa
     Page<Match> findAll(Pageable pageable);
 
     Page<Match> findByMotmPollNotNull(Pageable pageable);
+
+    Optional<Match> findByMotmPollId(long pollId);
 
     Match findFirstByDateBeforeAndMotmPollIsNotNullOrderByDateDesc(DateTime date);
 }

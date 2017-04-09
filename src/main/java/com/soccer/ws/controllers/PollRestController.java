@@ -8,7 +8,6 @@ import com.soccer.ws.dto.PageDTO;
 import com.soccer.ws.model.Account;
 import com.soccer.ws.model.Match;
 import com.soccer.ws.model.MultipleChoicePlayerVote;
-import com.soccer.ws.model.PlayersPoll;
 import com.soccer.ws.service.DTOConversionHelper;
 import com.soccer.ws.service.MatchesService;
 import com.soccer.ws.service.PollService;
@@ -61,7 +60,7 @@ public class PollRestController extends AbstractRestController {
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/matchPoll/{id}", method = RequestMethod.GET)
     public ResponseEntity<MatchPollDTO> getMatchPoll(@PathVariable Long id) {
-        return new ResponseEntity<>(DTOConversionHelper.convertMatchPoll((PlayersPoll) pollService.get(id),
+        return new ResponseEntity<>(DTOConversionHelper.convertMatchPoll(matchesService.getMatchByPoll(id),
                 isLoggedIn()), HttpStatus.OK);
     }
 

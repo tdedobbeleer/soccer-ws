@@ -27,6 +27,8 @@ public interface MatchesService {
 
     List<Match> getMatchesForSeason(long seasonId);
 
+    Match getMatchByPoll(long pollId);
+
     List<Match> getMatchesForSeason(String description);
 
     Match getLatestMatch();

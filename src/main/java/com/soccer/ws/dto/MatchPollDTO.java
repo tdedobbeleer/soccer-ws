@@ -27,14 +27,6 @@ public class MatchPollDTO extends DTOBaseClass {
         this.matchId = matchId;
     }
 
-    public MatchPollDTO(Long id, List<VotesDTO> votes, List<AccountDTO> accounts, int totalVotes, String status) {
-        this.votes = votes;
-        this.totalVotes = totalVotes;
-        this.status = status;
-        this.setId(id);
-        this.setOptions(accounts);
-    }
-
     public Long getMatchId() {
         return matchId;
     }

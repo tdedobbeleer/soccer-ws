@@ -93,6 +93,15 @@ public class MatchesServiceImpl implements MatchesService {
     }
 
     @Override
+    public Match getMatchByPoll(long pollId) {
+        java.util.Optional<Match> m = matchesDao.findByMotmPollId(pollId);
+        if (m.isPresent()) {
+            return m.get();
+        }
+        throw new ObjectNotFoundException("Poll with id " + pollId + "not found.");
+    }
+
+    @Override
     public List<Match> getMatchesForSeason(String description) {
         Season season = seasonDao.findByDescription(description);
         if (season == null) throw new ObjectNotFoundException(String.format("Season %s does not exists", description));

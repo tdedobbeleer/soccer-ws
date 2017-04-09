@@ -9,7 +9,6 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class Option<T> extends BaseClass {
     private T option;
-    private Poll poll;
 
     public Option() {
     }

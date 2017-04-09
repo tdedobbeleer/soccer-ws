@@ -34,7 +34,7 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
                     m.getHtGoals(),
                     m.getAtGoals(),
                     m.getStatus().name(),
-                    convertMatchPoll(m.getMotmPoll(), isLoggedIn),
+                    convertMatchPoll(m, isLoggedIn),
                     convertGoals(m.getGoals(), isLoggedIn),
                     m.getHomeTeam().getAddress().getGoogleLink(),
                     m.getHomeTeam().getAddress().getAddress(),
@@ -54,7 +54,7 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
                     match.getAtGoals(),
                     match.getHtGoals(),
                     match.getStatus().name(),
-                    convertMatchPoll(match.getMotmPoll(), isLoggedIn),
+                    convertMatchPoll(match, isLoggedIn),
                     convertGoals(match.getGoals(), isLoggedIn),
                     match.getHomeTeam().getAddress().getGoogleLink(),
                     match.getHomeTeam().getAddress().getAddress(),
@@ -87,18 +87,6 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
                     convertIdentityOptions(playersPoll.getOptions(), isLoggedIn),
                     rankingList.getTotalVotes(), playersPoll.getStatus().name(), match.getDescription(), match
                     .getStringDate());
-        }
-        return null;
-    }
-
-    @Override
-    public MatchPollDTO convertMatchPoll(PlayersPoll playersPoll, boolean isLoggedIn) {
-        if (playersPoll != null) {
-            RankingList<Long> rankingList = playersPoll.getResult();
-            return new MatchPollDTO(playersPoll.getId(),
-                    convertIdentityRankings(rankingList, isLoggedIn),
-                    convertIdentityOptions(playersPoll.getOptions(), isLoggedIn),
-                    rankingList.getTotalVotes(), playersPoll.getStatus().name());
         }
         return null;
     }
