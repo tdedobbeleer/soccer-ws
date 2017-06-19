@@ -1,0 +1,662 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="u0090265 (generated)" id="1497185125116-1">
+        <createTable tableName="UserConnection">
+            <column name="userId" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="providerId" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="providerUserId" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rank" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="displayName" type="VARCHAR(255)"/>
+            <column name="profileUrl" type="VARCHAR(512)"/>
+            <column name="imageUrl" type="VARCHAR(512)"/>
+            <column name="accessToken" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="secret" type="VARCHAR(255)"/>
+            <column name="refreshToken" type="VARCHAR(255)"/>
+            <column name="expireTime" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-2">
+        <createTable tableName="account">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="pk_account"/>
+            </column>
+            <column name="activated" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="firstname" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastName" type="VARCHAR(255)"/>
+            <column name="password_recovery" type="VARCHAR(255)"/>
+            <column name="role" type="VARCHAR(255)"/>
+            <column name="sign_in_provider" type="VARCHAR(20)"/>
+            <column name="username" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(255)"/>
+            <column name="send_doodle_notifications" type="BIT(1)"/>
+            <column name="send_news_notifications" type="BIT(1)"/>
+            <column name="profile_id" type="BIGINT"/>
+            <column name="created" type="datetime(6)"/>
+            <column name="modified" type="datetime(6)"/>
+            <column name="password_last_set" type="datetime(6)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-3">
+        <createTable tableName="account_profile">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="pk_account_profile"/>
+            </column>
+            <column name="content" type="VARCHAR(200)"/>
+            <column name="favourite_position" type="VARCHAR(20)"/>
+            <column name="mobile_phone" type="VARCHAR(255)"/>
+            <column name="phone" type="VARCHAR(255)"/>
+            <column name="adrress_id" type="BIGINT"/>
+            <column name="avatar_id" type="BIGINT"/>
+            <column name="created" type="datetime(6)"/>
+            <column name="modified" type="datetime(6)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-4">
+        <createTable tableName="address">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="pk_address"/>
+            </column>
+            <column name="address" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="google_link" type="VARCHAR(255)"/>
+            <column name="postal_code" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="datetime(6)"/>
+            <column name="modified" type="datetime(6)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-5">
+        <createTable tableName="comment">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="pk_comment"/>
+            </column>
+            <column name="content" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="postdate" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="posted_by" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="datetime(6)"/>
+            <column name="modified" type="datetime(6)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-6">
+        <createTable tableName="comment_news">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NEWS_ID" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-7">
+        <createTable tableName="doodle">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-8">
+        <createTable tableName="goals">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="pk_goals"/>
+            </column>
+            <column name="goal_order" type="INT"/>
+            <column name="assist" type="BIGINT"/>
+            <column name="scorer" type="BIGINT"/>
+            <column name="MATCH_ID" type="BIGINT"/>
+            <column name="created" type="datetime(6)"/>
+            <column name="modified" type="datetime(6)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-9">
+        <createTable tableName="hibernate_sequences">
+            <column name="sequence_name" type="VARCHAR(255)"/>
+            <column name="sequence_next_hi_value" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-10">
+        <createTable tableName="identity_option">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="pk_identity_options"/>
+            </column>
+            <column name="opt" type="BIGINT"/>
+            <column name="poll_id" type="BIGINT"/>
+            <column name="created" type="datetime(6)"/>
+            <column name="modified" type="datetime(6)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-11">
+        <createTable tableName="image">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="pk_image"/>
+            </column>
+            <column name="image_id" type="VARCHAR(255)"/>
+            <column name="image_url" type="VARCHAR(255)"/>
+            <column name="created" type="datetime(6)"/>
+            <column name="modified" type="datetime(6)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-12">
+        <createTable tableName="matches">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="pk_matches"/>
+            </column>
+            <column name="atGoals" type="INT"/>
+            <column name="date" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="htGoals" type="INT"/>
+            <column name="awayteam_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="hometeam_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="news_id" type="BIGINT"/>
+            <column name="season_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="doodle_id" type="BIGINT"/>
+            <column name="status" type="VARCHAR(20)"/>
+            <column name="status_text" type="VARCHAR(255)"/>
+            <column name="motmpoll_id" type="BIGINT"/>
+            <column name="created" type="datetime(6)"/>
+            <column name="modified" type="datetime(6)"/>
+            <column name="at_goals" type="INT"/>
+            <column name="ht_goals" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-13">
+        <createTable tableName="matches_goals">
+            <column name="matches_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="goals_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-14">
+        <createTable tableName="multiple_choice_player_vote">
+            <column name="answer" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="vote_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-15">
+        <createTable tableName="news">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="pk_news"/>
+            </column>
+            <column name="content" type="MEDIUMTEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="header" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="postdate" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="posted_by" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="datetime(6)"/>
+            <column name="modified" type="datetime(6)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-16">
+        <createTable tableName="persistent_logins">
+            <column name="username" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="series" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="token" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="last_used" type="TIMESTAMP(19)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-17">
+        <createTable tableName="players_poll">
+            <column name="poll_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-18">
+        <createTable tableName="poll_options">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="options_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-19">
+        <createTable tableName="polls">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="pk_polls"/>
+            </column>
+            <column name="end_date" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="question" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_date" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="datetime(6)"/>
+            <column name="modified" type="datetime(6)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-20">
+        <createTable tableName="presences">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="pk_presences"/>
+            </column>
+            <column name="present" type="BIT(1)"/>
+            <column name="account_id" type="BIGINT"/>
+            <column name="doodle_id" type="BIGINT"/>
+            <column name="created" type="datetime(6)"/>
+            <column name="modified" type="datetime(6)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-21">
+        <createTable tableName="season">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="pk_season"/>
+            </column>
+            <column name="description" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="datetime(6)"/>
+            <column name="modified" type="datetime(6)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-22">
+        <createTable tableName="teams">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="pk_teams"/>
+            </column>
+            <column name="description" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="adrress_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="datetime(6)"/>
+            <column name="modified" type="datetime(6)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-23">
+        <createTable tableName="vote">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="pk_vote"/>
+            </column>
+            <column name="poll_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voter" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="datetime(6)"/>
+            <column name="modified" type="datetime(6)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-24">
+        <addPrimaryKey columnNames="userId, providerId, providerUserId" constraintName="pk_userconnection"
+                       tableName="UserConnection"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-25">
+        <addPrimaryKey columnNames="id" constraintName="pk_comment_news" tableName="comment_news"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-26">
+        <addPrimaryKey columnNames="id" constraintName="pk_doodle" tableName="doodle"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-27">
+        <addPrimaryKey columnNames="vote_id" constraintName="pk_multiple_choice_player_vote"
+                       tableName="multiple_choice_player_vote"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-28">
+        <addPrimaryKey columnNames="series" constraintName="pk_persistent_logins" tableName="persistent_logins"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-29">
+        <addPrimaryKey columnNames="poll_id" constraintName="pk_players_poll" tableName="players_poll"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-30">
+        <addPrimaryKey columnNames="id, options_id" constraintName="pk_poll_options" tableName="poll_options"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-31">
+        <addUniqueConstraint columnNames="options_id" constraintName="UK_k0lss03xuy4cxngqecpp55owa"
+                             tableName="poll_options"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-32">
+        <addUniqueConstraint columnNames="doodle_id, account_id" constraintName="UK_qhw94jh6l7mhtrpiqwp8jmti4"
+                             tableName="presences"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-33">
+        <addUniqueConstraint columnNames="doodle_id, account_id" constraintName="UKqhw94jh6l7mhtrpiqwp8jmti4"
+                             tableName="presences"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-34">
+        <addUniqueConstraint columnNames="userId, providerId, rank" constraintName="UserConnectionRank"
+                             tableName="UserConnection"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-35">
+        <createIndex indexName="FK321E89331132B9DC" tableName="matches">
+            <column name="awayteam_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-36">
+        <createIndex indexName="FK321E89332FFBD2CA" tableName="matches">
+            <column name="season_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-37">
+        <createIndex indexName="FK321E8933554027F7" tableName="matches">
+            <column name="doodle_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-38">
+        <createIndex indexName="FK321E893356C5C6CB" tableName="matches">
+            <column name="hometeam_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-39">
+        <createIndex indexName="FK321E893394DBC8CA" tableName="matches">
+            <column name="news_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-40">
+        <createIndex indexName="FK338AD36C4E0F94" tableName="news">
+            <column name="posted_by"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-41">
+        <createIndex indexName="FK5DF63C0A0AE9AA6" tableName="goals">
+            <column name="assist"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-42">
+        <createIndex indexName="FK5DF63C0BE82AC5D" tableName="goals">
+            <column name="scorer"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-43">
+        <createIndex indexName="FK69209B6F4A17F7C" tableName="teams">
+            <column name="adrress_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-44">
+        <createIndex indexName="FKB2D5DB422E6237C" tableName="matches_goals">
+            <column name="matches_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-45">
+        <createIndex indexName="FKB2D5DB48DE9A0FD" tableName="matches_goals">
+            <column name="goals_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-46">
+        <createIndex indexName="FKC90C02D87B181D52" tableName="presences">
+            <column name="account_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-47">
+        <createIndex indexName="FK_13ndi25xu7cv7c5tfm9an5hod" tableName="presences">
+            <column name="doodle_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-48">
+        <createIndex indexName="FK_23mi3hxmmq1fv3bf9evb1k9fo" tableName="goals">
+            <column name="MATCH_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-49">
+        <createIndex indexName="FK_5dy7xpvcoqasla18qs1uqfsov" tableName="account_profile">
+            <column name="avatar_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-50">
+        <createIndex indexName="FK_6pqo7xodoj6ttinn3t9mqef92" tableName="identity_option">
+            <column name="poll_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-51">
+        <createIndex indexName="FK_gxoqecdnbsemfodrpcqm9lqlb" tableName="matches">
+            <column name="motmpoll_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-52">
+        <createIndex indexName="FK_io4i9nrwgo2etwsltrvcswf7m" tableName="vote">
+            <column name="voter"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-53">
+        <createIndex indexName="FK_kvawlyv7wyvvjsnk2iqj87ork" tableName="comment_news">
+            <column name="NEWS_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-54">
+        <createIndex indexName="FK_lluk0bt3wenie9anfkd5if83w" tableName="comment">
+            <column name="posted_by"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-55">
+        <createIndex indexName="FK_lx5o8xa39akufx3vih7fto4gj" tableName="account">
+            <column name="profile_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-56">
+        <createIndex indexName="FK_p08bovbo86ssl5wj2y7m57gqb" tableName="account_profile">
+            <column name="adrress_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-57">
+        <createIndex indexName="FK_rm52gy175x47ywsjfp047ewm" tableName="vote">
+            <column name="poll_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-58">
+        <addForeignKeyConstraint baseColumnNames="awayteam_id" baseTableName="matches"
+                                 constraintName="FK321E89331132B9DC" deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
+                                 referencedTableName="teams"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-59">
+        <addForeignKeyConstraint baseColumnNames="hometeam_id" baseTableName="matches"
+                                 constraintName="FK321E893356C5C6CB" deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
+                                 referencedTableName="teams"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-60">
+        <addForeignKeyConstraint baseColumnNames="posted_by" baseTableName="news" constraintName="FK338AD36C4E0F94"
+                                 deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="account"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-61">
+        <addForeignKeyConstraint baseColumnNames="assist" baseTableName="goals" constraintName="FK5DF63C0A0AE9AA6"
+                                 deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="account"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-62">
+        <addForeignKeyConstraint baseColumnNames="scorer" baseTableName="goals" constraintName="FK5DF63C0BE82AC5D"
+                                 deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="account"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-63">
+        <addForeignKeyConstraint baseColumnNames="adrress_id" baseTableName="teams" constraintName="FK69209B6F4A17F7C"
+                                 deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="address"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-64">
+        <addForeignKeyConstraint baseColumnNames="NEWS_ID" baseTableName="comment_news"
+                                 constraintName="FK6kpk177043n5qt51qy9fm8dkp" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="news"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-65">
+        <addForeignKeyConstraint baseColumnNames="profile_id" baseTableName="account"
+                                 constraintName="FK70uiieef8vjx6emonw0ndyv29" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="account_profile"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-66">
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="comment_news"
+                                 constraintName="FK71p3cq5rvlxoxvsew0yrrwwl4" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="comment"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-67">
+        <addForeignKeyConstraint baseColumnNames="MATCH_ID" baseTableName="goals"
+                                 constraintName="FK8ccx0cu1ny1aj69vjn4cruo3l" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="matches"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-68">
+        <addForeignKeyConstraint baseColumnNames="news_id" baseTableName="matches"
+                                 constraintName="FK8euq6yrs91dndxvb9sx59loh7" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="news"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-69">
+        <addForeignKeyConstraint baseColumnNames="matches_id" baseTableName="matches_goals"
+                                 constraintName="FKB2D5DB422E6237C" deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
+                                 referencedTableName="matches"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-70">
+        <addForeignKeyConstraint baseColumnNames="goals_id" baseTableName="matches_goals"
+                                 constraintName="FKB2D5DB48DE9A0FD" deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
+                                 referencedTableName="goals"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-71">
+        <addForeignKeyConstraint baseColumnNames="account_id" baseTableName="presences"
+                                 constraintName="FKC90C02D87B181D52" deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
+                                 referencedTableName="account"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-72">
+        <addForeignKeyConstraint baseColumnNames="avatar_id" baseTableName="account_profile"
+                                 constraintName="FK_5dy7xpvcoqasla18qs1uqfsov" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="image"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-73">
+        <addForeignKeyConstraint baseColumnNames="poll_id" baseTableName="identity_option"
+                                 constraintName="FK_6pqo7xodoj6ttinn3t9mqef92" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="polls"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-74">
+        <addForeignKeyConstraint baseColumnNames="doodle_id" baseTableName="matches"
+                                 constraintName="FK_8pmb6pjw5hhmjklgtvbsp9faf" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="doodle"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-75">
+        <addForeignKeyConstraint baseColumnNames="poll_id" baseTableName="players_poll"
+                                 constraintName="FK_fs9jkuup77vudc8t3bhepbyki" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="polls"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-76">
+        <addForeignKeyConstraint baseColumnNames="motmpoll_id" baseTableName="matches"
+                                 constraintName="FK_gxoqecdnbsemfodrpcqm9lqlb" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="poll_id" referencedTableName="players_poll"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-77">
+        <addForeignKeyConstraint baseColumnNames="voter" baseTableName="vote"
+                                 constraintName="FK_io4i9nrwgo2etwsltrvcswf7m" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="account"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-78">
+        <addForeignKeyConstraint baseColumnNames="options_id" baseTableName="poll_options"
+                                 constraintName="FK_k0lss03xuy4cxngqecpp55owa" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="identity_option"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-79">
+        <addForeignKeyConstraint baseColumnNames="adrress_id" baseTableName="account_profile"
+                                 constraintName="FK_p08bovbo86ssl5wj2y7m57gqb" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="address"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-80">
+        <addForeignKeyConstraint baseColumnNames="poll_id" baseTableName="vote"
+                                 constraintName="FK_rm52gy175x47ywsjfp047ewm" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="polls"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-81">
+        <addForeignKeyConstraint baseColumnNames="vote_id" baseTableName="multiple_choice_player_vote"
+                                 constraintName="FK_sf5x2vf33b1ok4iwk3bovqho0" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="vote"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-82">
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="poll_options"
+                                 constraintName="FKblswainblruashv701kjrl5r1" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="poll_id" referencedTableName="players_poll"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-83">
+        <addForeignKeyConstraint baseColumnNames="posted_by" baseTableName="comment"
+                                 constraintName="FKffiin55w6u4anwpwgxhkwxxh0" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="account"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-84">
+        <addForeignKeyConstraint baseColumnNames="doodle_id" baseTableName="presences"
+                                 constraintName="FKrfk3h96krbcbc8wswrma58uig" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="doodle"/>
+    </changeSet>
+    <changeSet author="u0090265 (generated)" id="1497185125116-85">
+        <addForeignKeyConstraint baseColumnNames="season_id" baseTableName="matches"
+                                 constraintName="FKt32wb9qvxjjj8rtbciiwurdyv" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="season"/>
+    </changeSet>
+</databaseChangeLog>

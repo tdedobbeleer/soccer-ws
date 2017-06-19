@@ -20,6 +20,15 @@ public class NewsDTO extends DTOBaseClass {
     public NewsDTO() {
     }
 
+    /**
+     * @param id
+     * @param header
+     * @param content
+     * @param postDate
+     * @param postedBy
+     * @param editable
+     * @param comments
+     */
     public NewsDTO(Long id, String header, String content, String postDate, AccountDTO postedBy, boolean editable,
                    List<CommentDTO> comments) {
         super(id);
@@ -31,6 +40,20 @@ public class NewsDTO extends DTOBaseClass {
         this.comments = comments;
     }
 
+    /**
+     * @param id
+     * @param header
+     * @param content
+     * @param postDate
+     * @param postedBy
+     */
+    public NewsDTO(Long id, String header, String content, String postDate, AccountDTO postedBy) {
+        super(id);
+        this.header = header;
+        this.content = content;
+        this.postDate = postDate;
+        this.postedBy = postedBy;
+    }
 
     @NotNull
     @NotEmpty

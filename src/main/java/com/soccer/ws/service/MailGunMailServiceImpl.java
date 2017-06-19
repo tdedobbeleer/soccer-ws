@@ -7,8 +7,8 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -19,7 +19,7 @@ import java.util.Set;
 /**
  * Created by u0090265 on 12/08/16.
  */
-@Qualifier("mailGunService")
+@Profile("!default")
 @Service
 public class MailGunMailServiceImpl implements MailService {
     @Value("${mail.admin.fromTo}")

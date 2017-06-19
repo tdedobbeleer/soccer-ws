@@ -177,15 +177,11 @@ public class Account extends BaseClass implements Comparable<Account> {
 
     public static class Builder {
 
-        private Long id;
-
         private String username;
 
         private String firstName;
 
         private String lastName;
-
-        private String password;
 
         private Role role = Role.USER;
 
@@ -198,11 +194,6 @@ public class Account extends BaseClass implements Comparable<Account> {
 
         public Builder firstName(String firstName) {
             this.firstName = firstName;
-            return this;
-        }
-
-        public Builder id(Long id) {
-            this.id = id;
             return this;
         }
 

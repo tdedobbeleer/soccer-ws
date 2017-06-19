@@ -1,12 +1,10 @@
 package com.soccer.ws.security;
 
-import com.google.common.base.Strings;
 import com.soccer.ws.persistence.UserDetailsAdapter;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.apache.log4j.Logger;
-import org.jasypt.util.text.BasicTextEncryptor;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mobile.device.Device;
@@ -30,9 +28,6 @@ public class JWTTokenUtils implements TokenUtils {
     @Value("${jwt.token.secret}")
     private String secret;
 
-    @Value("${jwt.token.fp.secret}")
-    private String fingerPrintsecret;
-
     @Value("${jwt.token.expiration.short}")
     private String shortLivedExpiration;
 
@@ -48,17 +43,8 @@ public class JWTTokenUtils implements TokenUtils {
         final DateTime expirationTime = this.getExpirationDate(claims);
         final long diff = expirationTime.getMillis() - created.getMillis();
 
-        if (diff <= Duration.parse(shortLivedExpiration).toMillis()) {
-            return (username.equals(user.getUsername())
-                    && !(this.isCreatedBeforeLastPasswordReset(created, user.getPasswordLastSet())));
-        } else {
-            final String tkFingerPrint = this.getFingerPrint(claims);
-            return (username.equals(user.getUsername())
-                    && (!Strings.isNullOrEmpty(tkFingerPrint)
-                    && tkFingerPrint.equals(fingerPrint))
-                    && !(this.isCreatedBeforeLastPasswordReset(created, user.getPasswordLastSet())));
-        }
-
+        return (username.equals(user.getUsername())
+                && !(this.isCreatedBeforeLastPasswordReset(created, user.getPasswordLastSet())));
     }
 
     @Override
@@ -68,9 +54,6 @@ public class JWTTokenUtils implements TokenUtils {
         claims.put("sub", userDetails.getUsername());
         claims.put("audience", this.generateAudience(device));
         claims.put("created", now.toDate());
-        if (rememberMe) {
-            claims.put("fingerprint", encryptFingerPrint(fingerPrint));
-        }
         return Jwts.builder()
                 .setClaims(claims)
                 .setExpiration(rememberMe ? this.generateLongLivedExpirationDate(now).toDate() : this.generateShortLivedExpirationDate(now).toDate())
@@ -122,16 +105,6 @@ public class JWTTokenUtils implements TokenUtils {
         return created;
     }
 
-    private String getFingerPrint(final Claims claims) {
-        String created;
-        try {
-            created = decryptFingerPrint((String) claims.get("fingerprint"));
-        } catch (Exception e) {
-            created = "";
-        }
-        return created;
-    }
-
     private DateTime getExpirationDate(final Claims claims) {
         DateTime expiration;
         try {
@@ -176,22 +149,5 @@ public class JWTTokenUtils implements TokenUtils {
             audience = AUDIENCE_MOBILE;
         }
         return audience;
-    }
-
-    private Boolean ignoreTokenExpiration(Claims claims) {
-        String audience = this.getAudience(claims);
-        return (this.AUDIENCE_TABLET.equals(audience) || this.AUDIENCE_MOBILE.equals(audience));
-    }
-
-    private String encryptFingerPrint(final String fingerPrint) {
-        BasicTextEncryptor textEncryptor = new BasicTextEncryptor();
-        textEncryptor.setPassword(fingerPrintsecret);
-        return textEncryptor.encrypt(fingerPrint);
-    }
-
-    private String decryptFingerPrint(final String encryptedFingerPrint) {
-        BasicTextEncryptor textEncryptor = new BasicTextEncryptor();
-        textEncryptor.setPassword(fingerPrintsecret);
-        return textEncryptor.decrypt(encryptedFingerPrint);
     }
 }

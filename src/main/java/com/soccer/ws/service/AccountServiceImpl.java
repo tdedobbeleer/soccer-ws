@@ -1,6 +1,7 @@
 package com.soccer.ws.service;
 
 import com.google.common.collect.Lists;
+import com.soccer.ws.dto.AccountDTO;
 import com.soccer.ws.model.Account;
 import com.soccer.ws.model.Image;
 import com.soccer.ws.persistence.AccountDao;
@@ -11,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
@@ -41,9 +42,22 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private ImageService imageService;
+
+    @Override
+    public AccountDTO registerAccount(AccountDTO account, String password) {
+        Account toBeCreated = new Account.Builder()
+                .firstName(account.getFirstName())
+                .lastName(account.getLastName())
+                .username(account.getUsername())
+                .build();
+        createAccountWithPassword(toBeCreated, password);
+        mailService.sendPreConfiguredMail(messageSource.getMessage("mail.user.registered", new Object[]{baseUrl,
+                account.getId(), account.toString()}, Locale.ENGLISH));
+        return account;
+    }
 
     @Override
     public Account registerAccount(Account account, String password) {

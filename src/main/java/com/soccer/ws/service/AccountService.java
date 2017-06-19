@@ -1,5 +1,6 @@
 package com.soccer.ws.service;
 
+import com.soccer.ws.dto.AccountDTO;
 import com.soccer.ws.model.Account;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
@@ -7,6 +8,8 @@ import org.springframework.validation.Errors;
 import java.util.List;
 
 public interface AccountService {
+    AccountDTO registerAccount(AccountDTO account, String password);
+
     Account registerAccount(Account account, String password);
 
     //Account updateAccount(Account account, AccountProfileForm form);
