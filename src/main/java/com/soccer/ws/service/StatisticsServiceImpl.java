@@ -21,10 +21,16 @@ import java.util.List;
  */
 @Service
 public class StatisticsServiceImpl implements StatisticsService {
-    @Autowired
+    private final
     DTOConversionHelper dtoConversionHelper;
+
     @PersistenceContext
     private EntityManager em;
+
+    @Autowired
+    public StatisticsServiceImpl(DTOConversionHelper dtoConversionHelper) {
+        this.dtoConversionHelper = dtoConversionHelper;
+    }
 
     @Override
     public List<MatchStatisticsObject> getGoalsPerPlayerForSeason(long seasonId) {

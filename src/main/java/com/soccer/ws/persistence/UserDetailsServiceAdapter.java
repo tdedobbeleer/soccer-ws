@@ -23,9 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = false)
 public class UserDetailsServiceAdapter implements UserDetailsService {
     private static final Logger logger = LoggerFactory.getLogger(UserDetailsServiceAdapter.class);
-    final
+    private final
     AccountDao accountDao;
-    final
+    private final
     UserDetailsDao userDetailsDao;
 
     @Autowired

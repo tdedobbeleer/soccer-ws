@@ -28,4 +28,11 @@ public class SeasonServiceImpl implements SeasonService {
     public Season getLatestSeason() {
         return Iterables.getFirst(seasonDao.findAllOrderByDescriptionDesc(), null);
     }
+
+    @Override
+    public Season create(String description) {
+        final Season season = new Season();
+        season.setDescription(description);
+        return seasonDao.save(season);
+    }
 }

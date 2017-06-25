@@ -61,10 +61,10 @@ public class NewsRestController extends AbstractRestController {
 
             switch (newsDTO.getType()) {
                 case POST_AND_SEND:
-                    newsService.create(newsDTO, getAccountFromSecurity());
+                    newsService.create(newsDTO);
                     newsService.sendNewsEmail(newsDTO);
                 case POST:
-                    newsService.create(newsDTO, getAccountFromSecurity());
+                    newsService.create(newsDTO);
                     break;
                 case SEND:
                     newsService.sendNewsEmail(newsDTO);

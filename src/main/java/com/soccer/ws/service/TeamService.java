@@ -16,9 +16,9 @@ public interface TeamService {
 
     Team getTeam(long id);
 
-    //Team createTeam(CreateAndUpdateTeamForm form);
+    TeamDTO create(TeamDTO dto);
 
-    //Team updateTeam(CreateAndUpdateTeamForm form);
+    void update(TeamDTO teamDTO);
 
     List<TeamDTO> getTeams(Account account);
 

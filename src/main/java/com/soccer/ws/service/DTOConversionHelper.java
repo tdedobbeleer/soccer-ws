@@ -34,6 +34,8 @@ public interface DTOConversionHelper {
 
     AccountDTO convertAccount(Account account, boolean isLoggedIn);
 
+    Account convertAccount(AccountDTO account);
+
     PageDTO<MatchDoodleDTO> convertMatchDoodles(Page<Match> match, Account account, boolean isAdmin);
 
     MatchDoodleDTO convertMatchDoodle(Match match, Account account, boolean isAdmin);

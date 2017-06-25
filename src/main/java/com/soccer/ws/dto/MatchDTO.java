@@ -43,6 +43,18 @@ public class MatchDTO extends DTOBaseClass {
         this.fullAddress = address;
     }
 
+    public MatchDTO(Long id, String date, String hour, TeamDTO homeTeam, TeamDTO awayTeam, Integer atGoals, Integer
+            htGoals, SeasonDTO season) {
+        this.date = date;
+        this.hour = hour;
+        this.homeTeam = homeTeam;
+        this.awayTeam = awayTeam;
+        this.atGoals = atGoals;
+        this.htGoals = htGoals;
+        this.season = season;
+        this.setId(id);
+    }
+
     public String getFullAddress() {
         return fullAddress;
     }

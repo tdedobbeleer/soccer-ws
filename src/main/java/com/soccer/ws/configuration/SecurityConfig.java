@@ -6,7 +6,6 @@ import com.soccer.ws.security.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -34,7 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public SecurityConfig(@Lazy UserDetailsService userDetailsService, EntryPointUnauthorizedHandler unauthorizedHandler, TokenUtils tokenUtils, PasswordEncoder passwordEncoder) {
+    public SecurityConfig(UserDetailsService userDetailsService, EntryPointUnauthorizedHandler unauthorizedHandler, TokenUtils tokenUtils, PasswordEncoder passwordEncoder) {
         this.userDetailsService = userDetailsService;
         this.unauthorizedHandler = unauthorizedHandler;
         this.tokenUtils = tokenUtils;
@@ -53,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         // Custom JWT based authentication
-        http
+        http.antMatcher("/api/v1/**")
             .addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
     }
 

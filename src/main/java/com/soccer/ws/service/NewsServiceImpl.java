@@ -20,6 +20,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,7 +62,10 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional(readOnly = false)
-    public News create(NewsDTO news, Account account) {
+    public News create(NewsDTO news) {
+        Account account = accountDao.findOne(news.getPostedBy().getId());
+        if (account == null)
+            throw new UsernameNotFoundException("Cannopt post news, user not found");
         News n = new News(sanitizeHtml(news.getHeader()), sanitizeHtml(news.getContent()), account);
         return newsDao.save(n);
     }

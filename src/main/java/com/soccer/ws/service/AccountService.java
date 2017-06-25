@@ -2,17 +2,21 @@ package com.soccer.ws.service;
 
 import com.soccer.ws.dto.AccountDTO;
 import com.soccer.ws.model.Account;
+import com.soccer.ws.model.Role;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
 
 import java.util.List;
 
 public interface AccountService {
-    AccountDTO registerAccount(AccountDTO account, String password);
-
-    Account registerAccount(Account account, String password);
+    AccountDTO register(AccountDTO account, String password);
 
     //Account updateAccount(Account account, AccountProfileForm form);
+
+    void activate(AccountDTO accountDTO);
+
+    @Transactional(readOnly = false)
+    void changeRole(AccountDTO accountDTO, Role role);
 
     @Transactional
     Account saveAccount(Account account);

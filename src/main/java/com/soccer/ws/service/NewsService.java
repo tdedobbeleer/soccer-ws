@@ -24,7 +24,7 @@ public interface NewsService {
     //void updateNews(NewsForm form, Account account);
 
     @Transactional(readOnly = false)
-    News create(NewsDTO news, Account account);
+    News create(NewsDTO news);
 
     @Transactional(readOnly = false)
     News update(NewsDTO news, Account account);

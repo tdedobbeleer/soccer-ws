@@ -11,4 +11,6 @@ public interface SeasonService {
     List<Season> getSeasons();
 
     Season getLatestSeason();
+
+    Season create(String description);
 }

@@ -1,8 +1,11 @@
 package com.soccer.ws.service;
 
 import com.google.common.collect.Lists;
+import com.soccer.ws.dto.AddressDTO;
 import com.soccer.ws.dto.TeamDTO;
+import com.soccer.ws.exceptions.ObjectNotFoundException;
 import com.soccer.ws.model.Account;
+import com.soccer.ws.model.Address;
 import com.soccer.ws.model.Team;
 import com.soccer.ws.persistence.AddressDao;
 import com.soccer.ws.persistence.MatchesDao;
@@ -22,15 +25,20 @@ import java.util.List;
 @Transactional
 public class TeamServiceImpl implements TeamService {
     private static final Logger log = LoggerFactory.getLogger(TeamService.class);
-    @Autowired
+    final
     ConcurrentDataService concurrentDataService;
-    @Autowired
-    private TeamDao teamDao;
-    @Autowired
-    private MatchesDao matchesDao;
+    private final TeamDao teamDao;
+    private final MatchesDao matchesDao;
+
+    private final AddressDao addressDao;
 
     @Autowired
-    private AddressDao addressDao;
+    public TeamServiceImpl(ConcurrentDataService concurrentDataService, TeamDao teamDao, MatchesDao matchesDao, AddressDao addressDao) {
+        this.concurrentDataService = concurrentDataService;
+        this.teamDao = teamDao;
+        this.matchesDao = matchesDao;
+        this.addressDao = addressDao;
+    }
 
     @Override
     public List<Team> getAll() {
@@ -47,44 +55,43 @@ public class TeamServiceImpl implements TeamService {
         return teamDao.findOne(id);
     }
 
-    /**
-     * @Transactional(readOnly = false)
-     * @Override public Team createTeam(CreateAndUpdateTeamForm form) {
-     * Team team = new Team();
-     * updateTeamFromForm(form, team);
-     * teamDao.save(team);
-     * return team;
-     * }
-     * @Transactional(readOnly = false)
-     * @Override public Team updateTeam(CreateAndUpdateTeamForm form) {
-     * Team team = teamDao.findOne(form.getId());
-     * updateTeamFromForm(form, team);
-     * teamDao.save(team);
-     * return team;
-     * }
-     * <p>
-     * private void updateTeamFromForm(CreateAndUpdateTeamForm form, Team team) {
-     * //If an existing address is chose, get the address, otherwise create a new one.
-     * if (form.isUseExistingAddress()) {
-     * Address address = addressDao.findOne(form.getAddressId());
-     * if (address == null) throw new ObjectNotFoundException(String.format("Address with id %s not found", form
-     * .getAddressId()));
-     * team.setAddress(address);
-     * } else {
-     * team.setAddress(getAddress(form));
-     * }
-     * team.setName(form.getTeamName());
-     * }
-     * <p>
-     * private Address getAddress(CreateAndUpdateTeamForm form) {
-     * Address address = new Address();
-     * address.setAddress(form.getAddress());
-     * address.setCity(form.getCity());
-     * address.setPostalCode(Integer.parseInt(form.getPostalCode()));
-     * address.setGoogleLink(form.isUseLink() ? form.getGoogleLink() : null);
-     * return address;
-     * }
-     **/
+    @Override
+    public TeamDTO create(TeamDTO dto) {
+        Team team = new Team();
+        updateFromDTO(dto, team);
+        Team result = teamDao.save(team);
+        dto.setId(result.getId());
+        return dto;
+    }
+
+    @Override
+    public void update(TeamDTO teamDTO) {
+        Team team = teamDao.findOne(teamDTO.getId());
+        updateFromDTO(teamDTO, team);
+        teamDao.save(team);
+    }
+
+    private void updateFromDTO(TeamDTO teamDTO, Team team) {
+        //If an existing address is chose, get the address, otherwise create a new one.
+        if (teamDTO.getAddress().getId() != null) {
+            Address address = addressDao.findOne(teamDTO.getAddress().getId());
+            if (address == null)
+                throw new ObjectNotFoundException(String.format("Address with id %s not found", teamDTO.getAddress().getId()));
+            team.setAddress(address);
+        } else {
+            team.setAddress(getAddress(teamDTO.getAddress()));
+        }
+        team.setName(teamDTO.getName());
+    }
+
+    private Address getAddress(AddressDTO addressDTO) {
+        Address address = new Address();
+        address.setAddress(addressDTO.getAddress());
+        address.setCity(addressDTO.getCity());
+        address.setPostalCode(addressDTO.getPostalCode());
+        address.setGoogleLink(addressDTO.getGoogleLink());
+        return address;
+    }
 
     @Override
     public List<TeamDTO> getTeams(final Account account) {

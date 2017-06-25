@@ -2,8 +2,10 @@ package com.soccer.ws.service;
 
 import com.google.common.collect.Lists;
 import com.soccer.ws.dto.AccountDTO;
+import com.soccer.ws.exceptions.ObjectNotFoundException;
 import com.soccer.ws.model.Account;
 import com.soccer.ws.model.Image;
+import com.soccer.ws.model.Role;
 import com.soccer.ws.persistence.AccountDao;
 import com.soccer.ws.utils.GeneralUtils;
 import org.slf4j.Logger;
@@ -30,41 +32,59 @@ public class AccountServiceImpl implements AccountService {
 
     private static final String UPDATE_PASSWORD_SQL = "update account set password = ? where id = ?";
     private static final String GET_PASSWORD = "select password from account where id = ?";
-    @Autowired
+    final
     MessageSource messageSource;
+    private final AccountDao accountDao;
+    private final MailService mailService;
+    private final JdbcTemplate jdbcTemplate;
+    private final PasswordEncoder passwordEncoder;
+    private final ImageService imageService;
     @Value("${base.url}")
     private String baseUrl;
-    @Autowired
-    private AccountDao accountDao;
-    @Autowired
-    private MailService mailService;
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private ImageService imageService;
+    public AccountServiceImpl(MessageSource messageSource, AccountDao accountDao, MailService mailService, JdbcTemplate jdbcTemplate, PasswordEncoder passwordEncoder, ImageService imageService) {
+        this.messageSource = messageSource;
+        this.accountDao = accountDao;
+        this.mailService = mailService;
+        this.jdbcTemplate = jdbcTemplate;
+        this.passwordEncoder = passwordEncoder;
+        this.imageService = imageService;
+    }
 
     @Override
-    public AccountDTO registerAccount(AccountDTO account, String password) {
+    public AccountDTO register(AccountDTO account, String password) {
         Account toBeCreated = new Account.Builder()
                 .firstName(account.getFirstName())
                 .lastName(account.getLastName())
                 .username(account.getUsername())
                 .build();
-        createAccountWithPassword(toBeCreated, password);
+        Account result = createAccountWithPassword(toBeCreated, password);
         mailService.sendPreConfiguredMail(messageSource.getMessage("mail.user.registered", new Object[]{baseUrl,
                 account.getId(), account.toString()}, Locale.ENGLISH));
+        //Account was created, so the id can be set;
+        account.setId(result.getId());
         return account;
     }
 
     @Override
-    public Account registerAccount(Account account, String password) {
-        Account resultAccount = createAccountWithPassword(account, password);
-        mailService.sendPreConfiguredMail(messageSource.getMessage("mail.user.registered", new Object[]{baseUrl,
-                account.getId(), account.toString()}, Locale.ENGLISH));
-        return resultAccount;
+    @Transactional(readOnly = false)
+    public void activate(AccountDTO accountDTO) {
+        Account account = accountDao.findOne(accountDTO.getId());
+        if (account == null)
+            throw new ObjectNotFoundException("Account not found");
+        account.setActive(true);
+        accountDao.save(account);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void changeRole(AccountDTO accountDTO, Role role) {
+        Account account = accountDao.findOne(accountDTO.getId());
+        if (account == null)
+            throw new ObjectNotFoundException("Account not found");
+        account.setRole(role);
+        accountDao.save(account);
     }
 
     @Transactional(readOnly = false)

@@ -5,6 +5,7 @@ import com.soccer.ws.dto.*;
 import com.soccer.ws.model.*;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +19,12 @@ import java.util.SortedSet;
  */
 @Service
 public class DTOConversionHelperImpl implements DTOConversionHelper {
+    private final CacheAdapter cacheAdapter;
+
     @Autowired
-    CacheAdapter cacheAdapter;
+    public DTOConversionHelperImpl(@Lazy CacheAdapter cacheAdapter) {
+        this.cacheAdapter = cacheAdapter;
+    }
 
     @Override
     public List<MatchDTO> convertMatches(List<Match> matchList, boolean isLoggedIn) {
@@ -148,6 +153,16 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
             accountDTO.setName(isLoggedIn ? account.toString() : account.getFullName());
             accountDTO.setId(account.getId());
             return accountDTO;
+        }
+        return null;
+    }
+
+    @Override
+    public Account convertAccount(AccountDTO account) {
+        if (account != null) {
+            Account result = new Account(account.getFirstName(), account.getLastName(), account.getUsername());
+            result.setId(account.getId());
+            return result;
         }
         return null;
     }

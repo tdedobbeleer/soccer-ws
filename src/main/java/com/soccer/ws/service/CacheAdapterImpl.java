@@ -29,11 +29,9 @@ public class CacheAdapterImpl implements CacheAdapter {
 
     private static final String ACTIVE_ACCOUNTS = "activeAccounts";
 
-    @Autowired
-    private ConcurrentDataService dataService;
+    private final ConcurrentDataService dataService;
 
-    @Autowired
-    private AccountDao accountDao;
+    private final AccountDao accountDao;
 
     private Cache<Long, Account> accountCache =
             new Cache2kBuilder<Long, Account>() {
@@ -85,6 +83,12 @@ public class CacheAdapterImpl implements CacheAdapter {
                     })
                     .expireAfterWrite(1, TimeUnit.DAYS)
                     .build();
+
+    @Autowired
+    public CacheAdapterImpl(ConcurrentDataService dataService, AccountDao accountDao) {
+        this.dataService = dataService;
+        this.accountDao = accountDao;
+    }
 
     @Override
     public Account getAccount(Long l) {
