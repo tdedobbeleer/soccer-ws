@@ -22,5 +22,5 @@ public interface TeamService {
 
     List<TeamDTO> getTeams(Account account);
 
-    boolean deleteTeam(long id, Account a);
+    boolean delete(long id, Account a);
 }

@@ -100,7 +100,7 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     @Transactional(readOnly = false)
-    public boolean deleteTeam(long id, Account a) {
+    public boolean delete(long id, Account a) {
         Team team = teamDao.findOne(id);
         if (team == null) return true;
         if (!matchesDao.getMatchesForTeam(team).isEmpty()) {
