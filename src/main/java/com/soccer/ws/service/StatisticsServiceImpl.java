@@ -21,8 +21,7 @@ import java.util.List;
  */
 @Service
 public class StatisticsServiceImpl implements StatisticsService {
-    private final
-    DTOConversionHelper dtoConversionHelper;
+    private final DTOConversionHelper dtoConversionHelper;
 
     @PersistenceContext
     private EntityManager em;

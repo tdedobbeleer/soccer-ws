@@ -51,7 +51,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public Team getTeam(long id) {
+    public Team get(long id) {
         return teamDao.findOne(id);
     }
 

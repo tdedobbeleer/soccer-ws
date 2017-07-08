@@ -16,8 +16,12 @@ import java.util.List;
 @Service
 @Transactional
 public class AddressServiceImpl implements AddressService {
+    private final AddressDao addressDao;
+
     @Autowired
-    private AddressDao addressDao;
+    public AddressServiceImpl(AddressDao addressDao) {
+        this.addressDao = addressDao;
+    }
 
     @Override
     public List<Address> getAllAddresses() {

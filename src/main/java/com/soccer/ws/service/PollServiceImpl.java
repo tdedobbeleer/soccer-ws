@@ -20,11 +20,14 @@ import java.util.Set;
 @Service
 public class PollServiceImpl implements PollService {
 
-    @Autowired
-    MatchesDao matchesDao;
+    private final MatchesDao matchesDao;
+    private final PollDao pollDao;
 
     @Autowired
-    PollDao pollDao;
+    public PollServiceImpl(MatchesDao matchesDao, PollDao pollDao) {
+        this.matchesDao = matchesDao;
+        this.pollDao = pollDao;
+    }
 
     @Override
     public boolean setMotmPoll(Match match) {

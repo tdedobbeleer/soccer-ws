@@ -16,8 +16,12 @@ import java.util.List;
 @Service
 public class SeasonServiceImpl implements SeasonService {
 
+    private final SeasonDao seasonDao;
+
     @Autowired
-    SeasonDao seasonDao;
+    public SeasonServiceImpl(SeasonDao seasonDao) {
+        this.seasonDao = seasonDao;
+    }
 
     @Override
     public List<Season> getSeasons() {

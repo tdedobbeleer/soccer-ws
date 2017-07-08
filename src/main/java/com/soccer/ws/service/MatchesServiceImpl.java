@@ -39,20 +39,24 @@ import java.util.Map;
 public class MatchesServiceImpl implements MatchesService {
 
     private static final Logger log = LoggerFactory.getLogger(MatchesService.class);
-    @Autowired
-    PollService pollService;
+    private final PollService pollService;
+    private final SeasonDao seasonDao;
+    private final TeamDao teamDao;
+    private final MatchesDao matchesDao;
+    private final AccountDao accountDao;
+    private final CacheAdapter cacheAdapter;
     @Value("${max.seasons}")
     private int maxSeasons;
+
     @Autowired
-    private SeasonDao seasonDao;
-    @Autowired
-    private TeamDao teamDao;
-    @Autowired
-    private MatchesDao matchesDao;
-    @Autowired
-    private AccountDao accountDao;
-    @Autowired
-    private CacheAdapter cacheAdapter;
+    public MatchesServiceImpl(PollService pollService, SeasonDao seasonDao, TeamDao teamDao, MatchesDao matchesDao, AccountDao accountDao, CacheAdapter cacheAdapter) {
+        this.pollService = pollService;
+        this.seasonDao = seasonDao;
+        this.teamDao = teamDao;
+        this.matchesDao = matchesDao;
+        this.accountDao = accountDao;
+        this.cacheAdapter = cacheAdapter;
+    }
 
     @Override
     public Map<Integer, List<Match>> getMatchesForLastSeasons() {
@@ -149,7 +153,7 @@ public class MatchesServiceImpl implements MatchesService {
 
     @Override
     @Transactional(readOnly = false)
-    public MatchDTO updateMatch(MatchDTO matchDTO) {
+    public MatchDTO update(MatchDTO matchDTO) {
         Match m = matchesDao.findOne(matchDTO.getId());
         m.setHomeTeam(teamDao.findOne(matchDTO.getHomeTeam().getId()));
         m.setAwayTeam(teamDao.findOne(matchDTO.getAwayTeam().getId()));
@@ -183,7 +187,7 @@ public class MatchesServiceImpl implements MatchesService {
 
     @Override
     @Transactional(readOnly = false)
-    public void deleteMatch(long id) throws ObjectNotFoundException {
+    public void delete(long id) throws ObjectNotFoundException {
         Match m = matchesDao.findOne(id);
         if (m == null) throw new ObjectNotFoundException(String.format("Match with id %s not found", id));
         matchesDao.delete(id);

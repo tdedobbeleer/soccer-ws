@@ -2,7 +2,10 @@ package com.soccer.ws.service;
 
 import com.soccer.ws.model.Address;
 import com.soccer.ws.model.Match;
-import net.fortuna.ical4j.model.*;
+import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.TimeZoneRegistry;
+import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.property.*;
@@ -19,13 +22,13 @@ import java.util.List;
  */
 @Service
 public class VCalendarServiceImpl implements VCalendarService {
-    // Create a TimeZone
-    TimeZoneRegistry registry = TimeZoneRegistryFactory.getInstance().createRegistry();
-    TimeZone timezone = registry.getTimeZone("Europe/Brussels");
-    VTimeZone tz = timezone.getVTimeZone();
+
+    private final MatchesService matchesService;
 
     @Autowired
-    MatchesService matchesService;
+    public VCalendarServiceImpl(MatchesService matchesService) {
+        this.matchesService = matchesService;
+    }
 
     @Override
     public Calendar getMatchesCalendar(long seasonId) throws SocketException {

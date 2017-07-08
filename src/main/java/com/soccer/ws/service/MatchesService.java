@@ -47,7 +47,7 @@ public interface MatchesService {
     MatchDTO createMatch(MatchDTO matchDTO);
 
     @Transactional(readOnly = false)
-    MatchDTO updateMatch(MatchDTO matchDTO);
+    MatchDTO update(MatchDTO matchDTO);
 
-    void deleteMatch(long id) throws ObjectNotFoundException;
+    void delete(long id) throws ObjectNotFoundException;
 }

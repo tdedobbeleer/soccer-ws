@@ -64,7 +64,7 @@ public class MatchesRestController extends AbstractRestController {
         if (result.hasErrors()) {
             throw new CustomMethodArgumentNotValidException(result);
         }
-        return matchesService.updateMatch(matchDTO);
+        return matchesService.update(matchDTO);
     }
 
     @RequestMapping(value = "/matches/season/{id}", method = RequestMethod.GET)

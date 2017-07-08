@@ -28,19 +28,13 @@ import java.util.Set;
 @Transactional
 public class DoodleServiceImpl implements DoodleService {
 
-    DoodleDao doodleDao;
-
-    AccountDao accountDao;
-
-    HtmlHelper htmlHelper;
-
-    MatchesDao matchesDao;
-
-    MessageSource messageSource;
-
-    MailService mailService;
-
-    Logger log = LoggerFactory.getLogger(this.getClass());
+    private final DoodleDao doodleDao;
+    private final AccountDao accountDao;
+    private final HtmlHelper htmlHelper;
+    private final MatchesDao matchesDao;
+    private final MessageSource messageSource;
+    private final MailService mailService;
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Value("${base.url}")
     private String baseUrl;
