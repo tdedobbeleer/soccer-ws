@@ -1,6 +1,8 @@
 package com.soccer.ws.controllers;
 
 import com.soccer.ws.dto.SeasonDTO;
+import com.soccer.ws.exceptions.CustomMethodArgumentNotValidException;
+import com.soccer.ws.model.Season;
 import com.soccer.ws.service.DTOConversionHelper;
 import com.soccer.ws.service.SeasonService;
 import com.soccer.ws.utils.SecurityUtils;
@@ -9,9 +11,12 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -35,5 +40,15 @@ public class SeasonsRestController extends AbstractRestController {
     @ApiOperation(value = "Get all seasons", nickname = "getSeasons")
     public ResponseEntity<List<SeasonDTO>> getSeasons() {
         return new ResponseEntity<>(DTOConversionHelper.convertSeasons(seasonService.getSeasons()), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/seasons", method = RequestMethod.POST)
+    @ApiOperation(value = "Create a season", nickname = "createSeason")
+    public ResponseEntity<SeasonDTO> createSeason(@Valid @RequestBody SeasonDTO seasonDTO, BindingResult result) throws CustomMethodArgumentNotValidException {
+        if (result.hasErrors()) {
+            throw new CustomMethodArgumentNotValidException(result);
+        }
+        Season season = seasonService.create(seasonDTO.getDescription());
+        return new ResponseEntity<>(DTOConversionHelper.convertSeason(season), HttpStatus.OK);
     }
 }

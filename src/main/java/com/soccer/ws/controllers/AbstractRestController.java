@@ -1,5 +1,6 @@
 package com.soccer.ws.controllers;
 
+import com.soccer.ws.exceptions.CustomMethodArgumentNotValidException;
 import com.soccer.ws.utils.SecurityUtils;
 import com.soccer.ws.validation.ErrorDetailDTO;
 import com.soccer.ws.validation.LocalizedMessageDTO;
@@ -11,7 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.Validator;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -60,6 +63,19 @@ public abstract class AbstractRestController extends AbstractSecurityController 
         errorDetail.setValidationErrorDTOList(getValidationErrors(e));
         log.warn("handleValidationError - Validation errors found ({}), returning http status {}", errorDetail.getValidationErrorDTOList(), HttpStatus.BAD_REQUEST.name());
         return new ResponseEntity<>(errorDetail, null, HttpStatus.BAD_REQUEST);
+    }
+
+    protected void validate(BindingResult result) throws CustomMethodArgumentNotValidException {
+        if (result.hasErrors()) {
+            throw new CustomMethodArgumentNotValidException(result);
+        }
+    }
+
+    protected void validate(final Validator validator, final Object target, final BindingResult result) throws CustomMethodArgumentNotValidException {
+        //Validate first
+        validator.validate(target, result);
+        //Then check result
+        validate(result);
     }
 
     private <T extends ErrorDetailDTO> T createErrorDetail(T errorDetail, int status, HttpServletRequest request, Exception e) {

@@ -9,6 +9,7 @@ import com.soccer.ws.model.News;
 import com.soccer.ws.service.DTOConversionHelper;
 import com.soccer.ws.service.NewsService;
 import com.soccer.ws.utils.SecurityUtils;
+import com.soccer.ws.validators.NewsValidator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -32,13 +34,19 @@ public class NewsRestController extends AbstractRestController {
     private static final Logger logger = LoggerFactory.getLogger(NewsRestController.class);
     private final NewsService newsService;
     private final DTOConversionHelper dtoConversionHelper;
+    private final NewsValidator newsValidator;
 
-    public NewsRestController(SecurityUtils securityUtils, MessageSource messageSource, NewsService newsService, DTOConversionHelper dtoConversionHelper) {
+    public NewsRestController(SecurityUtils securityUtils, MessageSource messageSource, NewsService newsService, DTOConversionHelper dtoConversionHelper, NewsValidator newsValidator) {
         super(securityUtils, messageSource);
         this.newsService = newsService;
         this.dtoConversionHelper = dtoConversionHelper;
+        this.newsValidator = newsValidator;
     }
 
+    @InitBinder("newsDTO")
+    protected void initBinder(WebDataBinder binder) {
+        binder.setValidator(newsValidator);
+    }
 
     @RequestMapping(value = "/news", method = RequestMethod.GET)
     @ApiOperation(value = "Get news", nickname = "getNewsPage")

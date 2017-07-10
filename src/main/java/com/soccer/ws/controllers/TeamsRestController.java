@@ -5,6 +5,7 @@ import com.soccer.ws.exceptions.CustomMethodArgumentNotValidException;
 import com.soccer.ws.service.DTOConversionHelper;
 import com.soccer.ws.service.TeamService;
 import com.soccer.ws.utils.SecurityUtils;
+import com.soccer.ws.validators.TeamValidator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -14,10 +15,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -31,33 +30,38 @@ public class TeamsRestController extends AbstractRestController {
     private static final Logger logger = LoggerFactory.getLogger(TeamsRestController.class);
     private final TeamService teamService;
     private final DTOConversionHelper dtoConversionHelper;
+    private final TeamValidator teamValidator;
 
     @Autowired
-    public TeamsRestController(SecurityUtils securityUtils, MessageSource messageSource, TeamService teamService, DTOConversionHelper dtoConversionHelper) {
+    public TeamsRestController(SecurityUtils securityUtils, MessageSource messageSource, TeamService teamService, DTOConversionHelper dtoConversionHelper, TeamValidator teamValidator) {
         super(securityUtils, messageSource);
         this.teamService = teamService;
         this.dtoConversionHelper = dtoConversionHelper;
+        this.teamValidator = teamValidator;
     }
 
+    @InitBinder("teamDTO")
+    protected void initBinder(WebDataBinder binder) {
+        binder.setValidator(teamValidator);
+    }
 
     @RequestMapping(value = "/teams", method = RequestMethod.GET)
     @ApiOperation(value = "Get teams", nickname = "getTeams")
     public ResponseEntity<List<TeamDTO>> getAllTeams() {
-        return new ResponseEntity<List<TeamDTO>>(dtoConversionHelper.convertTeams(teamService.getAll(), isLoggedIn()), HttpStatus.OK);
+        return new ResponseEntity<>(dtoConversionHelper.convertTeams(teamService.getAll(), isLoggedIn()), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/teams", method = RequestMethod.POST)
     @ApiOperation(value = "Create a new team", nickname = "createTeam")
     public TeamDTO createTeam(@Valid @RequestBody TeamDTO teamDTO, BindingResult result) throws CustomMethodArgumentNotValidException {
-        if (result.hasErrors()) {
-            throw new CustomMethodArgumentNotValidException(result);
-        }
+        validate(result);
         return teamService.create(teamDTO);
     }
 
     @RequestMapping(value = "/teams", method = RequestMethod.PUT)
     @ApiOperation(value = "Create a new team", nickname = "updateTeam")
-    public TeamDTO updateTeam(TeamDTO teamDTO) {
+    public TeamDTO updateTeam(@Valid @RequestBody TeamDTO teamDTO, BindingResult result) throws CustomMethodArgumentNotValidException {
+        validate(result);
         teamService.update(teamDTO);
         return teamDTO;
     }

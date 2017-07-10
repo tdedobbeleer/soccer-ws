@@ -50,9 +50,7 @@ public class MatchesRestController extends AbstractRestController {
     @ResponseBody
     @ApiOperation(value = "Create match", nickname = "createMatch")
     MatchDTO createMatch(@Valid @RequestBody MatchDTO dto, BindingResult result) throws CustomMethodArgumentNotValidException {
-        if (result.hasErrors()) {
-            throw new CustomMethodArgumentNotValidException(result);
-        }
+        validate(createMatchValidator, dto, result);
         return matchesService.createMatch(dto);
     }
 
@@ -60,11 +58,9 @@ public class MatchesRestController extends AbstractRestController {
     public
     @ResponseBody
     @ApiOperation(value = "Update match", nickname = "updateMatch")
-    MatchDTO updateMatch(@Valid @RequestBody MatchDTO matchDTO, BindingResult result) throws CustomMethodArgumentNotValidException {
-        if (result.hasErrors()) {
-            throw new CustomMethodArgumentNotValidException(result);
-        }
-        return matchesService.update(matchDTO);
+    MatchDTO updateMatch(@Valid @RequestBody MatchDTO dto, BindingResult result) throws CustomMethodArgumentNotValidException {
+        validate(updateMatchValidator, dto, result);
+        return matchesService.update(dto);
     }
 
 
@@ -72,7 +68,7 @@ public class MatchesRestController extends AbstractRestController {
     public
     @ResponseBody
     @ApiOperation(value = "Update match", nickname = "deleteMatch")
-    ResponseEntity deleteMatch(MatchDTO matchDTO, BindingResult result) {
+    ResponseEntity deleteMatch(@RequestBody MatchDTO matchDTO) {
         matchesService.delete(matchDTO.getId());
         return new ResponseEntity(HttpStatus.OK);
     }

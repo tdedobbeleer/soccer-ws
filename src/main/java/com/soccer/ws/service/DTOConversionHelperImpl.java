@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.stream.Collectors;
 
 /**
  * Created by u0090265 on 10/2/15.
@@ -129,11 +130,14 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
 
     @Override
     public List<SeasonDTO> convertSeasons(List<Season> seasons) {
-        List<SeasonDTO> list = Lists.newArrayList();
-        for (Season s : seasons) {
-            list.add(new SeasonDTO(s.getId(), s.getDescription()));
-        }
-        return list;
+        return seasons.stream()
+                .map(this::convertSeason)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public SeasonDTO convertSeason(Season season) {
+        return new SeasonDTO(season.getId(), season.getDescription());
     }
 
     @Override
@@ -214,10 +218,6 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
                 address.getCity(),
                 address.getGoogleLink()
         );
-    }
-
-    private SeasonDTO convertSeason(Season season) {
-        return new SeasonDTO(season.getId(), season.getDescription());
     }
 
     private String getModifiedDateIfNeeded(Presence presence) {

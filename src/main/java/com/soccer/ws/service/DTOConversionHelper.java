@@ -30,6 +30,8 @@ public interface DTOConversionHelper {
 
     List<SeasonDTO> convertSeasons(List<Season> seasons);
 
+    SeasonDTO convertSeason(Season season);
+
     List<GoalDTO> convertGoals(SortedSet<Goal> goals, boolean isLoggedIn);
 
     AccountDTO convertAccount(Account account, boolean isLoggedIn);

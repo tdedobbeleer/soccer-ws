@@ -66,7 +66,7 @@ public class NewsServiceImpl implements NewsService {
         Account account = accountDao.findOne(news.getPostedBy().getId());
         if (account == null)
             throw new UsernameNotFoundException("Cannopt post news, user not found");
-        News n = new News(sanitizeHtml(news.getHeader()), sanitizeHtml(news.getContent()), account);
+        News n = new News(news.getHeader(), news.getContent(), account);
         return newsDao.save(n);
     }
 

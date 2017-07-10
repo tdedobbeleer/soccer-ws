@@ -3,6 +3,7 @@ package com.soccer.ws.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Lists;
 import com.soccer.ws.utils.GeneralUtils;
+import com.soccer.ws.validators.SanitizeUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -28,8 +29,8 @@ public class News extends BaseClass {
 
 
     public News(String header, String content, Account account) {
-        this.header = header;
-        this.content = content;
+        setHeader(header);
+        setContent(content);
         this.account = account;
     }
 
@@ -60,7 +61,7 @@ public class News extends BaseClass {
     }
 
     public void setHeader(String header) {
-        this.header = header;
+        this.header = SanitizeUtils.sanitizeHtml(header);
     }
 
     @NotNull
@@ -71,7 +72,7 @@ public class News extends BaseClass {
     }
 
     public void setContent(String content) {
-        this.content = content;
+        this.content = SanitizeUtils.sanitizeHtml(content);
     }
 
     @ManyToOne(fetch = FetchType.EAGER)
