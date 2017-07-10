@@ -3,7 +3,7 @@ package com.soccer.ws.dto;
 /**
  * Created by u0090265 on 09/09/16.
  */
-public class MatchDoodleDTO extends DTOBaseClass {
+public class MatchDoodleDTO extends BaseClassDTO {
     private DoodleDTO doodle;
     private String date;
     private String description;

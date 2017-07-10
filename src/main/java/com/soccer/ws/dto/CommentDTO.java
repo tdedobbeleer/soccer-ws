@@ -5,7 +5,7 @@ import com.soccer.ws.utils.GeneralUtils;
 /**
  * Created by u0090265 on 16/09/16.
  */
-public class CommentDTO extends DTOBaseClass implements Comparable<CommentDTO> {
+public class CommentDTO extends BaseClassDTO implements Comparable<CommentDTO> {
     private AccountDTO postedBy;
     private String content;
     private String postDate;

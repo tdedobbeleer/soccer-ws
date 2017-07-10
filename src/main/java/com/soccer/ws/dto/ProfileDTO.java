@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * Created by u0090265 on 10.07.17.
  */
-public class ProfileDTO extends DTOBaseClass {
+public class ProfileDTO extends BaseClassDTO {
     private String phone;
     private String mobilePhone;
     private MultipartFile avatar;

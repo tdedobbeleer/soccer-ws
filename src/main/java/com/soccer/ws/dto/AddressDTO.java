@@ -3,7 +3,7 @@ package com.soccer.ws.dto;
 /**
  * Created by u0090265 on 17.02.17.
  */
-public class AddressDTO extends DTOBaseClass {
+public class AddressDTO extends BaseClassDTO {
     private Integer postalCode;
     private String address;
     private String city;

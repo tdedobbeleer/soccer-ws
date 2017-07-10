@@ -3,7 +3,7 @@ package com.soccer.ws.dto;
 /**
  * Created by u0090265 on 10/2/15.
  */
-public class TeamDTO extends DTOBaseClass {
+public class TeamDTO extends BaseClassDTO {
     private String name;
     private AddressDTO address;
 

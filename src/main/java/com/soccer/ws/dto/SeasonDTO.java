@@ -3,7 +3,7 @@ package com.soccer.ws.dto;
 /**
  * Created by u0090265 on 08/07/16.
  */
-public class SeasonDTO extends DTOBaseClass {
+public class SeasonDTO extends BaseClassDTO {
     private String description;
 
     public SeasonDTO(String description) {

@@ -3,14 +3,14 @@ package com.soccer.ws.dto;
 /**
  * Created by u0090265 on 10/06/16.
  */
-public abstract class DTOBaseClass {
+public class BaseClassDTO {
     private Long id;
 
-    public DTOBaseClass() {
+    public BaseClassDTO() {
 
     }
 
-    public DTOBaseClass(Long id) {
+    public BaseClassDTO(Long id) {
         this.id = id;
     }
 

@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by u0090265 on 10/2/15.
  */
-public class MatchDTO extends DTOBaseClass {
+public class MatchDTO extends BaseClassDTO {
     private String date;
     private String hour;
     private TeamDTO homeTeam;

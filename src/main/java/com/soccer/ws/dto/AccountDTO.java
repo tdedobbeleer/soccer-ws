@@ -3,7 +3,7 @@ package com.soccer.ws.dto;
 /**
  * Created by u0090265 on 10/06/16.
  */
-public class AccountDTO extends DTOBaseClass implements Comparable<AccountDTO> {
+public class AccountDTO extends BaseClassDTO implements Comparable<AccountDTO> {
     private String name;
     private String firstName;
     private String lastName;

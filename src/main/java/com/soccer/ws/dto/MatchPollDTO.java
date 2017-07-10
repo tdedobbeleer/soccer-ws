@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Created by u0090265 on 10/06/16.
  */
-public class MatchPollDTO extends DTOBaseClass {
+public class MatchPollDTO extends BaseClassDTO {
     private List<VotesDTO> votes;
     private List<AccountDTO> options;
     private int totalVotes;

@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by u0090265 on 16/09/16.
  */
-public class NewsDTO extends DTOBaseClass {
+public class NewsDTO extends BaseClassDTO {
     private String header;
     private String content;
     private String postDate;
