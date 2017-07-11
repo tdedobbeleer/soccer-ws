@@ -59,7 +59,7 @@ public class DataPopulator {
         Season season = seasonService.create("2016-2017");
         SeasonDTO seasonDTO1 = dtoConversionHelper.convertSeasons(Lists.newArrayList(season)).get(0);
 
-        TeamDTO teamDTO1 = teamService.create(new TeamDTO(null, "SVK", new AddressDTO(null, 3000, "Test straat 1", "Leuven", null)));
+        TeamDTO teamDTO1 = teamService.create(new TeamDTO(null, "SVK", new AddressDTO(null, 3000, "Test straat 1", "Leuven", "https://maps.google.be/maps?q=Korbeekdamstraat 42, +3050+Oud-Heverlee&output=embed")));
         TeamDTO teamDTO2 = teamService.create(new TeamDTO(null, "De Kanaries", new AddressDTO(null, 3000, "Test straat 1", "Leuven", null)));
         TeamDTO teamDTO3 = teamService.create(new TeamDTO(null, "KU Leuven", new AddressDTO(null, 3000, "Test straat 1", "Leuven", null)));
 
