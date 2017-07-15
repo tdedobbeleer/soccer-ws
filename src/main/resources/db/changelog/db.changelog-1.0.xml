@@ -244,7 +244,7 @@
             <column name="token" type="VARCHAR(64)">
                 <constraints nullable="false"/>
             </column>
-            <column defaultValueComputed="CURRENT_TIMESTAMP" name="last_used" type="TIMESTAMP(19)">
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="last_used" type="TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
         </createTable>
