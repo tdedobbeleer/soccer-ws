@@ -16,7 +16,7 @@ public class MatchDTO extends BaseClassDTO {
     private Integer htGoals;
     private String status;
     private String locationUrl;
-    private String fullAddress;
+    private AddressDTO address;
     private String statusText;
     private boolean hasDoodle;
     private SeasonDTO season;
@@ -24,7 +24,7 @@ public class MatchDTO extends BaseClassDTO {
     private List<GoalDTO> goals;
 
     public MatchDTO(Long id, String date, String hour, TeamDTO homeTeam, TeamDTO awayTeam, Integer atGoals, Integer
-            htGoals, String status, MatchPollDTO matchPollDTO, List<GoalDTO> goals, String locationUrl, String
+            htGoals, String status, MatchPollDTO matchPollDTO, List<GoalDTO> goals, AddressDTO
                             address, String statusText, boolean hasDoodle, SeasonDTO season) {
         this.date = date;
         this.hour = hour;
@@ -40,7 +40,7 @@ public class MatchDTO extends BaseClassDTO {
         this.goals = goals;
         this.hasDoodle = hasDoodle;
         this.locationUrl = locationUrl;
-        this.fullAddress = address;
+        this.address = address;
     }
 
     public MatchDTO(Long id, String date, String hour, TeamDTO homeTeam, TeamDTO awayTeam, Integer atGoals, Integer
@@ -55,12 +55,12 @@ public class MatchDTO extends BaseClassDTO {
         this.setId(id);
     }
 
-    public String getFullAddress() {
-        return fullAddress;
+    public AddressDTO getAddress() {
+        return address;
     }
 
-    public void setFullAddress(String fullAddress) {
-        this.fullAddress = fullAddress;
+    public void setAddress(AddressDTO address) {
+        this.address = address;
     }
 
     @ApiModelProperty(value = "Goals of this match, orederd", name = "goals")

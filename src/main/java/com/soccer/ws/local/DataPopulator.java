@@ -5,6 +5,8 @@ import com.soccer.ws.dto.*;
 import com.soccer.ws.model.Role;
 import com.soccer.ws.model.Season;
 import com.soccer.ws.service.*;
+import com.soccer.ws.utils.GeneralUtils;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,11 +70,11 @@ public class DataPopulator {
         ));
 
         MatchDTO matchDTO2 = matchesService.createMatch(new MatchDTO(
-                null, "02/01/2017", "20:00", teamDTO2, teamDTO3, null, null, seasonDTO1
+                null, GeneralUtils.convertToStringDate(DateTime.now().plusDays(3)), "20:00", teamDTO2, teamDTO3, null, null, seasonDTO1
         ));
 
         MatchDTO matchDTO3 = matchesService.createMatch(new MatchDTO(
-                null, "03/01/2017", "20:00", teamDTO1, teamDTO3, null, null, seasonDTO1
+                null, GeneralUtils.convertToStringDate(DateTime.now().plusDays(7)), "20:00", teamDTO1, teamDTO3, null, null, seasonDTO1
         ));
 
 

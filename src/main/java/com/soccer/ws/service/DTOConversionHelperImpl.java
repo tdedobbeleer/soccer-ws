@@ -42,8 +42,7 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
                     m.getStatus().name(),
                     convertMatchPoll(m, isLoggedIn),
                     convertGoals(m.getGoals(), isLoggedIn),
-                    m.getHomeTeam().getAddress().getGoogleLink(),
-                    m.getHomeTeam().getAddress().getAddress(),
+                    convertAddress(m.getHomeTeam().getAddress()),
                     m.getStatusText(), m.getMatchDoodle() != null, convertSeason(m.getSeason())));
         }
         return matchDTOs;
@@ -62,8 +61,7 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
                     match.getStatus().name(),
                     convertMatchPoll(match, isLoggedIn),
                     convertGoals(match.getGoals(), isLoggedIn),
-                    match.getHomeTeam().getAddress().getGoogleLink(),
-                    match.getHomeTeam().getAddress().getAddress(),
+                    convertAddress(match.getHomeTeam().getAddress()),
                     match.getStatusText(), match.getMatchDoodle() != null, convertSeason(match.getSeason()));
         }
         return null;
