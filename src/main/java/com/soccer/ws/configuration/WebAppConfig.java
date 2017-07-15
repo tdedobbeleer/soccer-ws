@@ -13,6 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
  */
 @Configuration
 public class WebAppConfig {
+
     @Value("${security.allowed.origin}")
     private String allowedOrigin;
 
