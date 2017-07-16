@@ -262,9 +262,13 @@
     <profiles>
         <profile>
             <id>openshift</id>
-            <properties>
-                <properties.location>classpath:openshift.properties</properties.location>
-            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>spring.profiles.active</name>
+                    <value>openshift</value>
+                </property>
+            </activation>
             <build>
                 <finalName>soccer-api</finalName>
                 <plugins>
