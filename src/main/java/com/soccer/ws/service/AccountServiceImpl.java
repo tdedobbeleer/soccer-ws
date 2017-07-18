@@ -2,6 +2,7 @@ package com.soccer.ws.service;
 
 import com.google.common.collect.Lists;
 import com.soccer.ws.dto.AccountDTO;
+import com.soccer.ws.dto.RegistrationDTO;
 import com.soccer.ws.exceptions.ObjectNotFoundException;
 import com.soccer.ws.model.Account;
 import com.soccer.ws.model.Image;
@@ -32,8 +33,7 @@ public class AccountServiceImpl implements AccountService {
 
     private static final String UPDATE_PASSWORD_SQL = "update account set password = ? where id = ?";
     private static final String GET_PASSWORD = "select password from account where id = ?";
-    final
-    MessageSource messageSource;
+    private final MessageSource messageSource;
     private final AccountDao accountDao;
     private final MailService mailService;
     private final JdbcTemplate jdbcTemplate;
@@ -53,18 +53,16 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccountDTO register(AccountDTO account, String password) {
+    public AccountDTO register(RegistrationDTO registration) {
         Account toBeCreated = new Account.Builder()
-                .firstName(account.getFirstName())
-                .lastName(account.getLastName())
-                .username(account.getUsername())
+                .firstName(registration.getFirstName())
+                .lastName(registration.getLastName())
+                .username(registration.getEmail())
                 .build();
-        Account result = createAccountWithPassword(toBeCreated, password);
+        Account result = createAccountWithPassword(toBeCreated, registration.getPassword());
         mailService.sendPreConfiguredMail(messageSource.getMessage("mail.user.registered", new Object[]{baseUrl,
-                account.getId(), account.toString()}, Locale.ENGLISH));
-        //Account was created, so the id can be set;
-        account.setId(result.getId());
-        return account;
+                result.getId(), registration.toString()}, Locale.ENGLISH));
+        return new AccountDTO(result.getId(), result.getUsername(), result.getFirstName(), result.getLastName());
     }
 
     @Override

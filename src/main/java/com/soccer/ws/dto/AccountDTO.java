@@ -12,7 +12,8 @@ public class AccountDTO extends BaseClassDTO implements Comparable<AccountDTO> {
     public AccountDTO() {
     }
 
-    public AccountDTO(String username, String firstName, String lastName) {
+    public AccountDTO(Long id, String username, String firstName, String lastName) {
+        super(id);
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;

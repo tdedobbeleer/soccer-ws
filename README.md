@@ -8,6 +8,7 @@ rhc env-set JWT_TOKEN_SECRET="secret" --app qapi \
 rhc env-set CLOUDINARY_API_SECRET="dummy" --app qapi \
 rhc env-set CLOUDINARY_API_URL="https://dummy.com" --app qapi \
 rhc env-set MAILGUN_API_KEY="dummy" --app qapi \
+rhc env-set BASE_URL="https://svk-q.herokuapp.com" --app qapi \
 rhc env-set MAILGUN_API_URL="https://dummy.com" --app qapi
 ´´´
 

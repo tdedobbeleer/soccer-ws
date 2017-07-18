@@ -45,14 +45,12 @@ public class DataPopulator {
     private void populateDB() {
         logger.info("Default profile detected, populating DB");
         //Create account1
-        AccountDTO accountDTO1 = new AccountDTO("test1@test.com", "John", "Doe");
-        accountService.register(accountDTO1, "test1");
+        AccountDTO accountDTO1 = accountService.register(new RegistrationDTO("test1@test.com", "John", "Doe", "test1"));
         accountService.activate(accountDTO1);
         accountService.changeRole(accountDTO1, Role.ADMIN);
 
         //Create account2
-        AccountDTO accountDTO2 = new AccountDTO("test2@test.com", "James", "Doe");
-        accountService.register(accountDTO2, "test2");
+        AccountDTO accountDTO2 = accountService.register(new RegistrationDTO("test2@test.com", "James", "Doe", "test2"));
         accountService.activate(accountDTO2);
 
         newsService.create(new NewsDTO(null, "test1", "testNews1", "01/01/2016", accountDTO1));
