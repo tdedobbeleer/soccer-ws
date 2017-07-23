@@ -26,7 +26,7 @@ public interface AccountService {
     //@Transactional
     //Account activateAccount(ActivateAccountForm form, Locale locale, Errors errors);
 
-    void validateUsername(String email, Errors errors);
+    boolean isValidUsername(String email);
 
     void validateUsernameExcludeCurrentId(String email, Long id, Errors errors);
 

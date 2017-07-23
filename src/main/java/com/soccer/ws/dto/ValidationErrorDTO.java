@@ -1,8 +1,11 @@
-package com.soccer.ws.validation;
+package com.soccer.ws.dto;
+
+import io.swagger.annotations.ApiModel;
 
 /**
  * Created by u0090265 on 2/19/16.
  */
+@ApiModel(value = "ValidationErrorDTO")
 public class ValidationErrorDTO {
     private String field;
     private String code;

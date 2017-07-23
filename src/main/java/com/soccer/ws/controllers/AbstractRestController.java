@@ -1,11 +1,11 @@
 package com.soccer.ws.controllers;
 
+import com.soccer.ws.dto.ErrorDetailDTO;
+import com.soccer.ws.dto.LocalizedMessageDTO;
+import com.soccer.ws.dto.ValidationErrorDTO;
+import com.soccer.ws.dto.ValidationErrorDetailDTO;
 import com.soccer.ws.exceptions.CustomMethodArgumentNotValidException;
 import com.soccer.ws.utils.SecurityUtils;
-import com.soccer.ws.validation.ErrorDetailDTO;
-import com.soccer.ws.validation.LocalizedMessageDTO;
-import com.soccer.ws.validation.ValidationErrorDTO;
-import com.soccer.ws.validation.ValidationErrorDetailDTO;
 import com.soccer.ws.validators.SanitizeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +18,7 @@ import org.springframework.validation.Validator;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
@@ -54,6 +55,7 @@ public abstract class AbstractRestController extends AbstractSecurityController 
         this.messageSource = messageSource;
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler
     public ResponseEntity<?> handleValidationError(MethodArgumentNotValidException e, HttpServletRequest request) {
         ValidationErrorDetailDTO errorDetail = createErrorDetail(new ValidationErrorDetailDTO(),
@@ -63,6 +65,17 @@ public abstract class AbstractRestController extends AbstractSecurityController 
         errorDetail.setValidationErrorDTOList(getValidationErrors(e));
         log.warn("handleValidationError - Validation errors found ({}), returning http status {}", errorDetail.getValidationErrorDTOList(), HttpStatus.BAD_REQUEST.name());
         return new ResponseEntity<>(errorDetail, null, HttpStatus.BAD_REQUEST);
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler
+    public ResponseEntity<?> handleInternalError(Exception e, HttpServletRequest request) {
+        ErrorDetailDTO errorDetail = createErrorDetail(new ErrorDetailDTO(),
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                request,
+                e);
+        log.warn("handleInternalError - Internal error: {}, returning http status {}", e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.name());
+        return new ResponseEntity<>(errorDetail, null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     protected void validate(BindingResult result) throws CustomMethodArgumentNotValidException {

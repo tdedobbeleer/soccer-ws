@@ -129,11 +129,8 @@ public class AccountServiceImpl implements AccountService {
      **/
 
     @Transactional(readOnly = true)
-    public void validateUsername(String username, Errors errors) {
-        if (accountDao.findByUsername(username) != null) {
-            errors.rejectValue("username", "error.duplicate.account.email",
-                    new String[]{username}, null);
-        }
+    public boolean isValidUsername(String username) {
+        return accountDao.findByUsername(username) == null;
     }
 
     public void validateUsernameExcludeCurrentId(String username, Long id, Errors errors) {

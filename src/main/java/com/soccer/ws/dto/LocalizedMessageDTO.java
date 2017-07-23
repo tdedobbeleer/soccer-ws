@@ -1,6 +1,7 @@
-package com.soccer.ws.validation;
+package com.soccer.ws.dto;
 
 import com.google.common.base.Preconditions;
+import io.swagger.annotations.ApiModel;
 
 import java.util.Locale;
 
@@ -9,6 +10,7 @@ import static java.util.Locale.ENGLISH;
 /**
  * Created by u0090265 on 3/15/16.
  */
+@ApiModel(value = "LocalizedMessageDTO")
 public class LocalizedMessageDTO {
     private String messageNl;
     private String messageEn;

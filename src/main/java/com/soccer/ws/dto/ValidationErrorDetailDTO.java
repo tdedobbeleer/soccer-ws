@@ -1,4 +1,4 @@
-package com.soccer.ws.validation;
+package com.soccer.ws.dto;
 
 import java.util.List;
 
