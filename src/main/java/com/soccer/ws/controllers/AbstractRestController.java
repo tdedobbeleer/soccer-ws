@@ -56,7 +56,7 @@ public abstract class AbstractRestController extends AbstractSecurityController 
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidationError(MethodArgumentNotValidException e, HttpServletRequest request) {
         ValidationErrorDetailDTO errorDetail = createErrorDetail(new ValidationErrorDetailDTO(),
                 HttpStatus.BAD_REQUEST.value(),
@@ -68,7 +68,7 @@ public abstract class AbstractRestController extends AbstractSecurityController 
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleInternalError(Exception e, HttpServletRequest request) {
         ErrorDetailDTO errorDetail = createErrorDetail(new ErrorDetailDTO(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),

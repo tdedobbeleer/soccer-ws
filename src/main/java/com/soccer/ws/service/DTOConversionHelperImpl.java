@@ -154,11 +154,17 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
             AccountDTO accountDTO = new AccountDTO();
             accountDTO.setName(isLoggedIn ? account.toString() : account.getFullName());
             accountDTO.setId(account.getId());
+            accountDTO.setActivated(isLoggedIn && account.isActive());
+            accountDTO.setRole(isLoggedIn ? account.getRole().name() : "UNKNOWN");
             return accountDTO;
         }
         return null;
     }
 
+    @Override
+    public List<AccountDTO> convertAccounts(List<Account> account, boolean isLoggedIn) {
+        return account.stream().map(a -> convertAccount(a, isLoggedIn)).collect(Collectors.toList());
+    }
     @Override
     public Account convertAccount(AccountDTO account) {
         if (account != null) {

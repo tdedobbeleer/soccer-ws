@@ -91,6 +91,7 @@ public class NewsRestController extends AbstractRestController {
                 HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/news/{id}", method = RequestMethod.DELETE)
     @ApiOperation(value = "Delete news", nickname = "deleteNews")
     public ResponseEntity deleteNews(@PathVariable Long id) {

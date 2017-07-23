@@ -8,15 +8,19 @@ public class AccountDTO extends BaseClassDTO implements Comparable<AccountDTO> {
     private String firstName;
     private String lastName;
     private String username;
+    private String role;
+    private boolean activated;
 
     public AccountDTO() {
     }
 
-    public AccountDTO(Long id, String username, String firstName, String lastName) {
+    public AccountDTO(Long id, String username, String firstName, String lastName, String role, boolean activated) {
         super(id);
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
+        this.role = role;
+        this.activated = activated;
     }
 
     public String getFirstName() {
@@ -49,6 +53,22 @@ public class AccountDTO extends BaseClassDTO implements Comparable<AccountDTO> {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isActivated() {
+        return activated;
+    }
+
+    public void setActivated(boolean activated) {
+        this.activated = activated;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     @Override

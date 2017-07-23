@@ -14,7 +14,7 @@ public interface AccountService {
 
     //Account updateAccount(Account account, AccountProfileForm form);
 
-    void activate(AccountDTO accountDTO);
+    void changeActivation(long id, boolean status);
 
     @Transactional(readOnly = false)
     void changeRole(AccountDTO accountDTO, Role role);

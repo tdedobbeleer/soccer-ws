@@ -39,17 +39,19 @@ public class AccountServiceImpl implements AccountService {
     private final JdbcTemplate jdbcTemplate;
     private final PasswordEncoder passwordEncoder;
     private final ImageService imageService;
+    private final DTOConversionHelper dtoConversionHelper;
     @Value("${base.url}")
     private String baseUrl;
 
     @Autowired
-    public AccountServiceImpl(MessageSource messageSource, AccountDao accountDao, MailService mailService, JdbcTemplate jdbcTemplate, PasswordEncoder passwordEncoder, ImageService imageService) {
+    public AccountServiceImpl(MessageSource messageSource, AccountDao accountDao, MailService mailService, JdbcTemplate jdbcTemplate, PasswordEncoder passwordEncoder, ImageService imageService, DTOConversionHelper dtoConversionHelper) {
         this.messageSource = messageSource;
         this.accountDao = accountDao;
         this.mailService = mailService;
         this.jdbcTemplate = jdbcTemplate;
         this.passwordEncoder = passwordEncoder;
         this.imageService = imageService;
+        this.dtoConversionHelper = dtoConversionHelper;
     }
 
     @Override
@@ -62,16 +64,16 @@ public class AccountServiceImpl implements AccountService {
         Account result = createAccountWithPassword(toBeCreated, registration.getPassword());
         mailService.sendPreConfiguredMail(messageSource.getMessage("mail.user.registered", new Object[]{baseUrl,
                 result.getId(), registration.toString()}, Locale.ENGLISH));
-        return new AccountDTO(result.getId(), result.getUsername(), result.getFirstName(), result.getLastName());
+        return new AccountDTO(result.getId(), result.getUsername(), result.getFirstName(), result.getLastName(), role, activated);
     }
 
     @Override
     @Transactional(readOnly = false)
-    public void activate(AccountDTO accountDTO) {
-        Account account = accountDao.findOne(accountDTO.getId());
+    public void changeActivation(long id, boolean status) {
+        Account account = accountDao.findOne(id);
         if (account == null)
             throw new ObjectNotFoundException("Account not found");
-        account.setActive(true);
+        account.setActive(status);
         accountDao.save(account);
     }
 
