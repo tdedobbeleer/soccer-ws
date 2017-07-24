@@ -5,6 +5,7 @@ import com.soccer.ws.dto.LocalizedMessageDTO;
 import com.soccer.ws.dto.ValidationErrorDTO;
 import com.soccer.ws.dto.ValidationErrorDetailDTO;
 import com.soccer.ws.exceptions.CustomMethodArgumentNotValidException;
+import com.soccer.ws.exceptions.UnauthorizedAccessException;
 import com.soccer.ws.utils.SecurityUtils;
 import com.soccer.ws.validators.SanitizeUtils;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.Validator;
@@ -65,6 +67,28 @@ public abstract class AbstractRestController extends AbstractSecurityController 
         errorDetail.setValidationErrorDTOList(getValidationErrors(e));
         log.warn("handleValidationError - Validation errors found ({}), returning http status {}", errorDetail.getValidationErrorDTOList(), HttpStatus.BAD_REQUEST.name());
         return new ResponseEntity<>(errorDetail, null, HttpStatus.BAD_REQUEST);
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<?> handleAccesDenied(AccessDeniedException e, HttpServletRequest request) {
+        ErrorDetailDTO errorDetail = createErrorDetail(new ErrorDetailDTO(),
+                HttpStatus.FORBIDDEN.value(),
+                request,
+                e);
+        log.warn("handleInternalError - Internal error: {}, returning http status {}", e.getMessage(), HttpStatus.FORBIDDEN.name());
+        return new ResponseEntity<>(errorDetail, null, HttpStatus.FORBIDDEN);
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(UnauthorizedAccessException.class)
+    public ResponseEntity<?> handleUnAuth(UnauthorizedAccessException e, HttpServletRequest request) {
+        ErrorDetailDTO errorDetail = createErrorDetail(new ErrorDetailDTO(),
+                HttpStatus.UNAUTHORIZED.value(),
+                request,
+                e);
+        log.warn("handleInternalError - Internal error: {}, returning http status {}", e.getMessage(), HttpStatus.UNAUTHORIZED.name());
+        return new ResponseEntity<>(errorDetail, null, HttpStatus.UNAUTHORIZED);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

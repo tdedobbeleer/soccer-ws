@@ -64,7 +64,7 @@ public class AccountServiceImpl implements AccountService {
         Account result = createAccountWithPassword(toBeCreated, registration.getPassword());
         mailService.sendPreConfiguredMail(messageSource.getMessage("mail.user.registered", new Object[]{baseUrl,
                 result.getId(), registration.toString()}, Locale.ENGLISH));
-        return new AccountDTO(result.getId(), result.getUsername(), result.getFirstName(), result.getLastName(), role, activated);
+        return new AccountDTO(result.getId(), result.getUsername(), result.getFirstName(), result.getLastName(), result.getRole().name(), result.isActive());
     }
 
     @Override
