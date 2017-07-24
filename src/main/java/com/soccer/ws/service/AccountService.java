@@ -17,6 +17,12 @@ public interface AccountService {
     void changeActivation(long id, boolean status);
 
     @Transactional(readOnly = false)
+    void elevate(long id);
+
+    @Transactional(readOnly = false)
+    void demote(long id);
+
+    @Transactional(readOnly = false)
     void changeRole(AccountDTO accountDTO, Role role);
 
     @Transactional

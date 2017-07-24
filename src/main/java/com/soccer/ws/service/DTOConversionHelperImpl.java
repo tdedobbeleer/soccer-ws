@@ -152,7 +152,7 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
     public AccountDTO convertAccount(Account account, boolean isLoggedIn) {
         if (account != null) {
             AccountDTO accountDTO = new AccountDTO();
-            account.setUsername(isLoggedIn ? account.getUsername() : "");
+            accountDTO.setUsername(isLoggedIn ? account.getUsername() : "");
             accountDTO.setName(isLoggedIn ? account.toString() : account.getFullName());
             accountDTO.setId(account.getId());
             accountDTO.setActivated(isLoggedIn && account.isActive());

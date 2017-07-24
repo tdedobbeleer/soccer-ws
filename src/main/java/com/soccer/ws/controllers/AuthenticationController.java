@@ -74,8 +74,8 @@ public class AuthenticationController extends AbstractRestController {
   @RequestMapping(value = "/auth/full", method = RequestMethod.GET)
   @ResponseBody
   @ApiOperation(value = "Is fully authenticated", nickname = "isFullyAuthenticated")
-  public ResponseEntity<Boolean> isFullyAuthenticated() {
-    return new ResponseEntity<>(getAccountFromSecurity() != null, HttpStatus.OK);
+  public ResponseEntity isFullyAuthenticated() {
+    return getAccountFromSecurity() == null ? new ResponseEntity<>(HttpStatus.UNAUTHORIZED) : new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 
     private List<String> getAuthorities(UserDetailsAdapter userDetailsAdapter) {

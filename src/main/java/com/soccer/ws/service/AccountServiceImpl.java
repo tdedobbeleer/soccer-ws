@@ -79,6 +79,26 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional(readOnly = false)
+    public void elevate(long id) {
+        Account account = accountDao.findOne(id);
+        if (account == null)
+            throw new ObjectNotFoundException("Account not found");
+        account.setRole(Role.ADMIN);
+        accountDao.save(account);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void demote(long id) {
+        Account account = accountDao.findOne(id);
+        if (account == null)
+            throw new ObjectNotFoundException("Account not found");
+        account.setRole(Role.USER);
+        accountDao.save(account);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
     public void changeRole(AccountDTO accountDTO, Role role) {
         Account account = accountDao.findOne(accountDTO.getId());
         if (account == null)
