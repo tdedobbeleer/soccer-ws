@@ -163,7 +163,7 @@ public class MatchesServiceImpl implements MatchesService {
         //Get original match status
         MatchStatusEnum originalMatchStatus = m.getStatus();
         //Set matchstatus
-        MatchStatusEnum updatedStatus = MatchStatusEnum.valueOf(matchDTO.getStatus());
+        MatchStatusEnum updatedStatus = matchDTO.getStatus();
         m.setStatus(updatedStatus);
         m.setStatusText(updatedStatus.equals(MatchStatusEnum.CANCELLED) ? matchDTO.getStatusText() : null);
 

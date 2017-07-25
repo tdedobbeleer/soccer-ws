@@ -1,5 +1,7 @@
 package com.soccer.ws.dto;
 
+import com.soccer.ws.data.MatchStatusEnum;
+import com.soccer.ws.model.Match;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
@@ -14,8 +16,7 @@ public class MatchDTO extends BaseClassDTO {
     private TeamDTO awayTeam;
     private Integer atGoals;
     private Integer htGoals;
-    private String status;
-    private String locationUrl;
+    private MatchStatusEnum status;
     private AddressDTO address;
     private String statusText;
     private boolean hasDoodle;
@@ -24,7 +25,7 @@ public class MatchDTO extends BaseClassDTO {
     private List<GoalDTO> goals;
 
     public MatchDTO(Long id, String date, String hour, TeamDTO homeTeam, TeamDTO awayTeam, Integer atGoals, Integer
-            htGoals, String status, MatchPollDTO matchPollDTO, List<GoalDTO> goals, AddressDTO
+            htGoals, MatchStatusEnum status, MatchPollDTO matchPollDTO, List<GoalDTO> goals, AddressDTO
                             address, String statusText, boolean hasDoodle, SeasonDTO season) {
         this.date = date;
         this.hour = hour;
@@ -39,7 +40,6 @@ public class MatchDTO extends BaseClassDTO {
         this.setId(id);
         this.goals = goals;
         this.hasDoodle = hasDoodle;
-        this.locationUrl = locationUrl;
         this.address = address;
     }
 
@@ -137,21 +137,12 @@ public class MatchDTO extends BaseClassDTO {
     }
 
     @ApiModelProperty(value = "Match status", name = "status")
-    public String getStatus() {
+    public MatchStatusEnum getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(MatchStatusEnum status) {
         this.status = status;
-    }
-
-    @ApiModelProperty(value = "Match location", name = "location")
-    public String getLocationUrl() {
-        return locationUrl;
-    }
-
-    public void setLocationUrl(String locationUrl) {
-        this.locationUrl = locationUrl;
     }
 
     @ApiModelProperty(value = "Match doodle", name = "doodle")
