@@ -5,6 +5,7 @@ import com.soccer.ws.dto.MatchDoodleDTO;
 import com.soccer.ws.dto.PageDTO;
 import com.soccer.ws.dto.PresenceDTO;
 import com.soccer.ws.model.Match;
+import com.soccer.ws.model.Presence;
 import com.soccer.ws.service.DTOConversionHelper;
 import com.soccer.ws.service.DoodleService;
 import com.soccer.ws.service.MatchesService;
@@ -40,7 +41,7 @@ public class DoodleRestController extends AbstractRestController {
 
 
     @RequestMapping(value = "/matchDoodle", method = RequestMethod.GET)
-    @ApiOperation(value = "Get matchdoodles", nickname = "matchdoodles")
+    @ApiOperation(value = "Get matchdoodles", nickname = "matchDoodlesPage")
     public ResponseEntity<PageDTO<MatchDoodleDTO>> getMatchDoodles(@RequestParam int page, @RequestParam(required =
             false) int size) {
         Page<Match> matches = matchesService.getUpcomingMatchesPages(page, size, Optional.absent());
@@ -49,7 +50,7 @@ public class DoodleRestController extends AbstractRestController {
     }
 
     @RequestMapping(value = "/matchDoodle/{id}", method = RequestMethod.GET)
-    @ApiOperation(value = "Get matchdoodles", nickname = "matchdoodles")
+    @ApiOperation(value = "Get matchdoodles", nickname = "matchDoodle")
     public ResponseEntity<MatchDoodleDTO> getMatchDoodle(@PathVariable Long id) {
         Match m = matchesService.getMatch(id);
         return new ResponseEntity<>(DTOConversionHelper.convertMatchDoodle(m, getAccountFromSecurity(),
@@ -58,9 +59,9 @@ public class DoodleRestController extends AbstractRestController {
 
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/doodle/match/{id}/presence/{accountId}", method = RequestMethod.PUT)
-    @ApiOperation(value = "Get matchdoodles", nickname = "matchdoodles")
+    @ApiOperation(value = "Get matchdoodles", nickname = "changePresence")
     public ResponseEntity<PresenceDTO> changePresence(@PathVariable Long id, @PathVariable Long accountId) {
-        doodleService.changePresence(getAccountFromSecurity(), accountId, id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        Presence presence = doodleService.changePresence(getAccountFromSecurity(), accountId, id);
+        return new ResponseEntity<>(DTOConversionHelper.convertPresence(presence, true), HttpStatus.OK);
     }
 }
