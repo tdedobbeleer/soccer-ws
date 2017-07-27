@@ -1,7 +1,5 @@
 package com.soccer.ws.service;
 
-import org.springframework.validation.Errors;
-
 import java.util.Locale;
 
 /**
@@ -11,7 +9,7 @@ import java.util.Locale;
 public interface PwdRecoveryService {
     void deleteExpiredCodes();
 
-    void setRecoveryCodeAndEmail(String email, Errors errors, Locale locale);
+    void setRecoveryCodeAndEmail(String email, Locale locale);
 
-    void checkPwdRecoverCodeAndEmail(String password, String email, String code, Errors errors, Locale locale);
+    void checkPwdRecoverCodeAndEmail(String password, String email, String code);
 }

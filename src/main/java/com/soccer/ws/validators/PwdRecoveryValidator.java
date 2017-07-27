@@ -31,21 +31,15 @@ public class PwdRecoveryValidator implements Validator {
         PasswordRecoveryDTO form = (PasswordRecoveryDTO) o;
         ValidationUtils.rejectIfEmpty(errors, "email", "validation.notempty.message");
 
-        if (form.isNewCode()) {
-            if (form.getEmail() != null && accountService.getActiveAccountByEmail(form.getEmail()) == null) {
-                errors.rejectValue("email", "validation.email.not.exists");
-            }
-        } else {
-            ValidationUtils.rejectIfEmpty(errors, "code", "validation.notempty.message");
-            ValidationUtils.rejectIfEmpty(errors, "newPassword", "validation.notempty.message");
-            ValidationUtils.rejectIfEmpty(errors, "repeatNewPassword", "validation.notempty.message");
-
-            if (!form.getNewPassword().equals(form.getRepeatNewPassword())) {
-                errors.rejectValue("newPassword", "validation.passwords.noMatch");
-            }
-            if (!ValidationHelper.isPasswordMatch(form.getNewPassword()))
-                errors.rejectValue("newPassword", "validation.complexity.password.message");
-
+        if (form.getEmail() != null && accountService.getActiveAccountByEmail(form.getEmail()) == null) {
+            errors.rejectValue("email", "validation.email.not.exists");
         }
+
+        ValidationUtils.rejectIfEmpty(errors, "code", "validation.notempty.message");
+        ValidationUtils.rejectIfEmpty(errors, "password", "validation.notempty.message");
+
+        if (!ValidationHelper.isPasswordMatch(form.getPassword()))
+            errors.rejectValue("password", "validation.complexity.password.message");
+
     }
 }

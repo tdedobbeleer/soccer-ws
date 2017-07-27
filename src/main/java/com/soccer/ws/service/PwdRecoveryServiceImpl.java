@@ -1,5 +1,7 @@
 package com.soccer.ws.service;
 
+import com.soccer.ws.exceptions.EmailNotSentException;
+import com.soccer.ws.exceptions.InvalidRecoveryCodeException;
 import com.soccer.ws.exceptions.ObjectNotFoundException;
 import com.soccer.ws.model.Account;
 import com.soccer.ws.persistence.AccountDao;
@@ -13,7 +15,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.Errors;
 
 import java.util.List;
 import java.util.Locale;
@@ -64,7 +65,7 @@ public class PwdRecoveryServiceImpl implements PwdRecoveryService {
 
     @Override
     @Transactional
-    public void setRecoveryCodeAndEmail(String email, Errors errors, Locale locale) {
+    public void setRecoveryCodeAndEmail(String email, Locale locale) {
         Account account = accountDao.findByUsername(email);
         if (account == null) throw new ObjectNotFoundException(String.format("Account with email %s not found", email));
 
@@ -82,20 +83,20 @@ public class PwdRecoveryServiceImpl implements PwdRecoveryService {
                 account.toString(),
                 messageSource.getMessage("email.pwd.recovery.subject", null, locale),
                 messageSource.getMessage("email.pwd.recovery.body", args, locale))) {
-            errors.rejectValue("email", "validation.email.not.sent");
+            throw new EmailNotSentException("Email could not be sent");
         }
     }
 
     @Override
     @Transactional
-    public void checkPwdRecoverCodeAndEmail(String password, String email, String code, Errors errors, Locale locale) {
+    public void checkPwdRecoverCodeAndEmail(String password, String email, String code) {
         Account account = accountDao.findByUsername(email);
         if (account == null) throw new ObjectNotFoundException(String.format("Account with email %s not found", email));
 
         String dbRecoveryCode = getCodeFromDbString(account.getPwdRecovery());
 
         if (dbRecoveryCode == null || !dbRecoveryCode.equals(code)) {
-            errors.rejectValue("code", "validation.pwd.recovery.code");
+            throw new InvalidRecoveryCodeException("Wrong recovery code");
         } else {
             account.setPwdRecovery(null);
             accountService.setPasswordFor(account, password);

@@ -4,8 +4,7 @@ import com.soccer.ws.dto.ErrorDetailDTO;
 import com.soccer.ws.dto.LocalizedMessageDTO;
 import com.soccer.ws.dto.ValidationErrorDTO;
 import com.soccer.ws.dto.ValidationErrorDetailDTO;
-import com.soccer.ws.exceptions.CustomMethodArgumentNotValidException;
-import com.soccer.ws.exceptions.UnauthorizedAccessException;
+import com.soccer.ws.exceptions.*;
 import com.soccer.ws.utils.SecurityUtils;
 import com.soccer.ws.validators.SanitizeUtils;
 import org.slf4j.Logger;
@@ -69,6 +68,17 @@ public abstract class AbstractRestController extends AbstractSecurityController 
         return new ResponseEntity<>(errorDetail, null, HttpStatus.BAD_REQUEST);
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidRecoveryCodeException.class)
+    public ResponseEntity<?> handleInvalidRecoveryCode(InvalidRecoveryCodeException e, HttpServletRequest request) {
+        ErrorDetailDTO errorDetail = createErrorDetail(new ErrorDetailDTO(),
+                HttpStatus.BAD_REQUEST.value(),
+                request,
+                e);
+        log.warn("handleInvalidRecoveryCode - Bad recovery code, returning http status {}", HttpStatus.BAD_REQUEST.name());
+        return new ResponseEntity<>(errorDetail, null, HttpStatus.BAD_REQUEST);
+    }
+
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<?> handleAccesDenied(AccessDeniedException e, HttpServletRequest request) {
@@ -87,9 +97,32 @@ public abstract class AbstractRestController extends AbstractSecurityController 
                 HttpStatus.UNAUTHORIZED.value(),
                 request,
                 e);
-        log.warn("handleInternalError - Internal error: {}, returning http status {}", e.getMessage(), HttpStatus.UNAUTHORIZED.name());
+        log.warn("handleUnAuth - Unauthorized error: {}, returning http status {}", e.getMessage(), HttpStatus.UNAUTHORIZED.name());
         return new ResponseEntity<>(errorDetail, null, HttpStatus.UNAUTHORIZED);
     }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(ObjectNotFoundException.class)
+    public ResponseEntity<?> handleObjNotFound(ObjectNotFoundException e, HttpServletRequest request) {
+        ErrorDetailDTO errorDetail = createErrorDetail(new ErrorDetailDTO(),
+                HttpStatus.NOT_FOUND.value(),
+                request,
+                e);
+        log.warn("handleObjNotFound - Object not found error: {}, returning http status {}", e.getMessage(), HttpStatus.NOT_FOUND.name());
+        return new ResponseEntity<>(errorDetail, null, HttpStatus.NOT_FOUND);
+    }
+
+    @ResponseStatus(HttpStatus.EXPECTATION_FAILED)
+    @ExceptionHandler(EmailNotSentException.class)
+    public ResponseEntity<?> handleEmailNotSent(EmailNotSentException e, HttpServletRequest request) {
+        ErrorDetailDTO errorDetail = createErrorDetail(new ErrorDetailDTO(),
+                HttpStatus.EXPECTATION_FAILED.value(),
+                request,
+                e);
+        log.warn("handleObjNotFound - Could not send email: {}, returning http status {}", e.getMessage(), HttpStatus.EXPECTATION_FAILED.name());
+        return new ResponseEntity<>(errorDetail, null, HttpStatus.EXPECTATION_FAILED);
+    }
+
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)

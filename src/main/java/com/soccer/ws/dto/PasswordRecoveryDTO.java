@@ -6,9 +6,7 @@ package com.soccer.ws.dto;
 public class PasswordRecoveryDTO {
     private String email;
     private String code;
-    private String newPassword;
-    private String repeatNewPassword;
-    private boolean newCode = true;
+    private String password;
 
     public String getEmail() {
         return email;
@@ -26,27 +24,11 @@ public class PasswordRecoveryDTO {
         this.code = code;
     }
 
-    public String getNewPassword() {
-        return newPassword;
+    public String getPassword() {
+        return password;
     }
 
-    public void setNewPassword(String newPassword) {
-        this.newPassword = newPassword;
-    }
-
-    public String getRepeatNewPassword() {
-        return repeatNewPassword;
-    }
-
-    public void setRepeatNewPassword(String repeatNewPassword) {
-        this.repeatNewPassword = repeatNewPassword;
-    }
-
-    public boolean isNewCode() {
-        return newCode;
-    }
-
-    public void setNewCode(boolean newCode) {
-        this.newCode = newCode;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
