@@ -59,11 +59,10 @@ public abstract class AbstractRestController extends AbstractSecurityController 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidationError(MethodArgumentNotValidException e, HttpServletRequest request) {
-        ValidationErrorDetailDTO errorDetail = createErrorDetail(new ValidationErrorDetailDTO(),
+        ValidationErrorDetailDTO errorDetail = createErrorDetail(new ValidationErrorDetailDTO(getValidationErrors(e)),
                 HttpStatus.BAD_REQUEST.value(),
                 request,
                 e);
-        errorDetail.setValidationErrorDTOList(getValidationErrors(e));
         log.warn("handleValidationError - Validation errors found ({}), returning http status {}", errorDetail.getValidationErrorDTOList(), HttpStatus.BAD_REQUEST.name());
         return new ResponseEntity<>(errorDetail, null, HttpStatus.BAD_REQUEST);
     }
@@ -111,18 +110,6 @@ public abstract class AbstractRestController extends AbstractSecurityController 
         log.warn("handleObjNotFound - Object not found error: {}, returning http status {}", e.getMessage(), HttpStatus.NOT_FOUND.name());
         return new ResponseEntity<>(errorDetail, null, HttpStatus.NOT_FOUND);
     }
-
-    @ResponseStatus(HttpStatus.EXPECTATION_FAILED)
-    @ExceptionHandler(EmailNotSentException.class)
-    public ResponseEntity<?> handleEmailNotSent(EmailNotSentException e, HttpServletRequest request) {
-        ErrorDetailDTO errorDetail = createErrorDetail(new ErrorDetailDTO(),
-                HttpStatus.EXPECTATION_FAILED.value(),
-                request,
-                e);
-        log.warn("handleObjNotFound - Could not send email: {}, returning http status {}", e.getMessage(), HttpStatus.EXPECTATION_FAILED.name());
-        return new ResponseEntity<>(errorDetail, null, HttpStatus.EXPECTATION_FAILED);
-    }
-
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)

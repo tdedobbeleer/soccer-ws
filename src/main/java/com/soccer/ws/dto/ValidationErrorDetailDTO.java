@@ -6,14 +6,14 @@ import java.util.List;
  * Created by u0090265 on 2/19/16.
  */
 public class ValidationErrorDetailDTO extends ErrorDetailDTO {
-    List<ValidationErrorDTO> validationErrorDTOList;
-
     public List<ValidationErrorDTO> getValidationErrorDTOList() {
         return validationErrorDTOList;
     }
 
-    public void setValidationErrorDTOList(List<ValidationErrorDTO> validationErrorDTOList) {
-        this.validationErrorDTOList = validationErrorDTOList;
+    private final List<ValidationErrorDTO> validationErrorDTOList;
+
+    public ValidationErrorDetailDTO(List<ValidationErrorDTO> list) {
+        this.validationErrorDTOList = list;
     }
 
     @Override

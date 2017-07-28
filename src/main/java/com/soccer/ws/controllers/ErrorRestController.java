@@ -1,5 +1,6 @@
 package com.soccer.ws.controllers;
 
+import com.google.common.collect.Lists;
 import com.soccer.ws.dto.ErrorDetailDTO;
 import com.soccer.ws.dto.ValidationErrorDetailDTO;
 import com.soccer.ws.utils.SecurityUtils;
@@ -33,6 +34,6 @@ public class ErrorRestController extends AbstractRestController {
     @RequestMapping(value = "/error/400", method = RequestMethod.GET)
     @ApiOperation(value = "Get example 400 error", nickname = "get400Error")
     public ResponseEntity<ValidationErrorDetailDTO> getValidationError() {
-        return new ResponseEntity<>(new ValidationErrorDetailDTO(), HttpStatus.OK);
+        return new ResponseEntity<>(new ValidationErrorDetailDTO(Lists.newArrayList()), HttpStatus.OK);
     }
 }

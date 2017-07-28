@@ -103,6 +103,15 @@ public class PwdRecoveryServiceImpl implements PwdRecoveryService {
         }
     }
 
+    @Override
+    @Transactional
+    public boolean isValidRecoveryCode(String email, String code) {
+        Account account = accountDao.findByUsername(email);
+        if (account == null) throw new ObjectNotFoundException(String.format("Account with email %s not found", email));
+        String dbRecoveryCode = getCodeFromDbString(account.getPwdRecovery());
+        return !(dbRecoveryCode == null || !dbRecoveryCode.equals(code));
+    }
+
     private String getTimeStamp() {
         DateTime dt = new DateTime();
         DateTimeFormatter fmt = DateTimeFormat.forPattern(TIMESTAMP_PATTERN);

@@ -10,4 +10,9 @@ public class CustomMethodArgumentNotValidException extends MethodArgumentNotVali
     public CustomMethodArgumentNotValidException(BindingResult bindingResult) {
         super(null, bindingResult);
     }
+
+    @Override
+    public String getMessage() {
+        return "Validation error.";
+    }
 }

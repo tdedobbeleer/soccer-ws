@@ -1,5 +1,7 @@
 package com.soccer.ws.service;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Locale;
 
 /**
@@ -12,4 +14,7 @@ public interface PwdRecoveryService {
     void setRecoveryCodeAndEmail(String email, Locale locale);
 
     void checkPwdRecoverCodeAndEmail(String password, String email, String code);
+
+    @Transactional
+    boolean isValidRecoveryCode(String email, String code);
 }

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * Created by u0090265 on 27.07.17.
  */
-@ResponseStatus(value = HttpStatus.EXPECTATION_FAILED)
+@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 public class EmailNotSentException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
