@@ -132,7 +132,7 @@ public class MatchesServiceImpl implements MatchesService {
 
     @Override
     @Transactional(readOnly = false)
-    public Match getMatch(long id) {
+    public Match get(long id) {
         return matchesDao.findOne(id);
     }
 

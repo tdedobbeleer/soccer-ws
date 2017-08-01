@@ -70,7 +70,16 @@ public class MatchesRestController extends AbstractRestController {
     @ApiOperation(value = "Update match", nickname = "deleteMatch")
     ResponseEntity deleteMatch(@RequestBody MatchDTO matchDTO) {
         matchesService.delete(matchDTO.getId());
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+    @RequestMapping(value = "/matches/{id}", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    @ApiOperation(value = "Get match", nickname = "getMatch")
+    ResponseEntity<MatchDTO> getMatch(@PathVariable long id) {
+        Match match = matchesService.get(id);
+        return new ResponseEntity<>(DTOConversionHelper.convertMatch(match, isLoggedIn()), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/matches/season/{id}", method = RequestMethod.GET)
@@ -92,7 +101,7 @@ public class MatchesRestController extends AbstractRestController {
     @RequestMapping(value = "/match/{id}/poll", method = RequestMethod.GET)
     @ApiOperation(value = "Get poll for match", nickname = "matchpoll")
     public ResponseEntity<MatchPollDTO> getMatchPoll(@PathVariable Long id) {
-        Match m = matchesService.getMatch(id);
+        Match m = matchesService.get(id);
         if (m == null) throw new ObjectNotFoundException(String.format("Match with id %s not found", id));
         return new ResponseEntity<>(DTOConversionHelper.convertMatchPoll(m, isLoggedIn()), HttpStatus.OK);
     }

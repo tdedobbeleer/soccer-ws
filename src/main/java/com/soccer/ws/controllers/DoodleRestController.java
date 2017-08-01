@@ -52,7 +52,7 @@ public class DoodleRestController extends AbstractRestController {
     @RequestMapping(value = "/matchDoodle/{id}", method = RequestMethod.GET)
     @ApiOperation(value = "Get matchdoodles", nickname = "matchDoodle")
     public ResponseEntity<MatchDoodleDTO> getMatchDoodle(@PathVariable Long id) {
-        Match m = matchesService.getMatch(id);
+        Match m = matchesService.get(id);
         return new ResponseEntity<>(DTOConversionHelper.convertMatchDoodle(m, getAccountFromSecurity(),
                 isAdmin()), HttpStatus.OK);
     }
