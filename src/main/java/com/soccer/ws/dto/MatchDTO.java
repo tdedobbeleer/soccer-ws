@@ -1,7 +1,6 @@
 package com.soccer.ws.dto;
 
 import com.soccer.ws.data.MatchStatusEnum;
-import com.soccer.ws.model.Match;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
@@ -16,7 +15,7 @@ public class MatchDTO extends BaseClassDTO {
     private TeamDTO awayTeam;
     private Integer atGoals;
     private Integer htGoals;
-    private MatchStatusEnum status;
+    private MatchStatusEnum status = MatchStatusEnum.NOT_PLAYED;
     private AddressDTO address;
     private String statusText;
     private boolean hasDoodle;

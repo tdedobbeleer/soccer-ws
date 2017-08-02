@@ -148,6 +148,8 @@ public class MatchesServiceImpl implements MatchesService {
         matchesDao.save(m);
         log.debug("Match {} created.", m);
         cacheAdapter.resetMatchesCache();
+        //Set id
+        matchDTO.setId(m.getId());
         return matchDTO;
     }
 

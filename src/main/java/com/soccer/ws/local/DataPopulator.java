@@ -1,6 +1,8 @@
 package com.soccer.ws.local;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.soccer.ws.data.MatchStatusEnum;
 import com.soccer.ws.dto.*;
 import com.soccer.ws.model.Role;
 import com.soccer.ws.model.Season;
@@ -64,8 +66,18 @@ public class DataPopulator {
         TeamDTO teamDTO3 = teamService.create(new TeamDTO(null, "KU Leuven", new AddressDTO(null, 3000, "Test straat 1", "Leuven", null)));
 
         MatchDTO matchDTO1 = matchesService.createMatch(new MatchDTO(
-                null, "01/01/2017", "20:00", teamDTO1, teamDTO2, null, null, seasonDTO1
+                null, "01/01/2017", "20:00", teamDTO1, teamDTO2, 3, 1, seasonDTO1
         ));
+
+        matchDTO1.setGoals(ImmutableList.<GoalDTO>builder()
+                .add(new GoalDTO(accountDTO1, accountDTO2, 0))
+                .add(new GoalDTO(accountDTO2, null, 1))
+                .add(new GoalDTO(null, null, 2))
+                .build()
+        );
+
+        matchDTO1.setStatus(MatchStatusEnum.PLAYED);
+        matchesService.update(matchDTO1);
 
         MatchDTO matchDTO2 = matchesService.createMatch(new MatchDTO(
                 null, GeneralUtils.convertToStringDate(DateTime.now().plusDays(3)), "20:00", teamDTO2, teamDTO3, null, null, seasonDTO1
@@ -73,6 +85,10 @@ public class DataPopulator {
 
         MatchDTO matchDTO3 = matchesService.createMatch(new MatchDTO(
                 null, GeneralUtils.convertToStringDate(DateTime.now().plusDays(7)), "20:00", teamDTO1, teamDTO3, null, null, seasonDTO1
+        ));
+
+        MatchDTO matchDTO4 = matchesService.createMatch(new MatchDTO(
+                null, GeneralUtils.convertToStringDate(DateTime.now().plusDays(14)), "20:00", teamDTO3, teamDTO2, null, null, seasonDTO1
         ));
 
 
