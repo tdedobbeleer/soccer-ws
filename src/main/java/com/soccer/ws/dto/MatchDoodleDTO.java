@@ -8,6 +8,8 @@ public class MatchDoodleDTO extends BaseClassDTO {
     private String date;
     private String description;
 
+    public MatchDoodleDTO() {}
+
     public MatchDoodleDTO(long id, DoodleDTO doodle, String date, String description) {
         super(id);
         this.doodle = doodle;

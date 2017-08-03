@@ -1,6 +1,7 @@
 package com.soccer.ws.dto;
 
 import com.soccer.ws.model.BaseClass;
+import com.soccer.ws.model.Doodle;
 
 import java.util.Collections;
 import java.util.List;
@@ -12,6 +13,8 @@ public class DoodleDTO extends BaseClass {
     private List<PresenceDTO> presences;
     private PresenceDTO currentPresence;
     private int total;
+
+    public DoodleDTO() {}
 
     public DoodleDTO(long id, List<PresenceDTO> presences, PresenceDTO currentPresence, int total) {
         this.id = id;

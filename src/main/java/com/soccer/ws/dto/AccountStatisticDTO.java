@@ -4,10 +4,12 @@ package com.soccer.ws.dto;
  * Created by u0090265 on 10/10/15.
  */
 public class AccountStatisticDTO {
-    AccountDTO account;
-    int goals;
-    int assists;
-    int played;
+    private AccountDTO account;
+    private int goals;
+    private int assists;
+    private int played;
+
+    public AccountStatisticDTO() {}
 
     public AccountStatisticDTO(AccountDTO account, int goals, int assists, int played) {
         this.account = account;

@@ -7,6 +7,8 @@ public class ContactDTO {
     private String message;
     private String email;
 
+    public ContactDTO() {}
+
     public ContactDTO(String message, String email) {
         this.message = message;
         this.email = email;

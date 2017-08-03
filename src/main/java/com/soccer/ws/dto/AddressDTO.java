@@ -9,6 +9,8 @@ public class AddressDTO extends BaseClassDTO {
     private String city;
     private String googleLink;
 
+    public AddressDTO() {}
+
     public AddressDTO(Long id, Integer postalCode, String address, String city, String googleLink) {
         super(id);
         this.postalCode = postalCode;

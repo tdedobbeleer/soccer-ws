@@ -15,6 +15,8 @@ public class MatchPollDTO extends BaseClassDTO {
     private String matchDate;
     private Long matchId;
 
+    public MatchPollDTO() {}
+
     public MatchPollDTO(Long id, Long matchId, List<VotesDTO> votes, List<AccountDTO> accounts, int totalVotes,
                         String status, String matchDescription, String matchDate) {
         this.votes = votes;

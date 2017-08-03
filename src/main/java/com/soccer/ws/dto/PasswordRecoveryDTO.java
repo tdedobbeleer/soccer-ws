@@ -8,6 +8,8 @@ public class PasswordRecoveryDTO {
     private String code;
     private String password;
 
+    public PasswordRecoveryDTO() {}
+
     public String getEmail() {
         return email;
     }

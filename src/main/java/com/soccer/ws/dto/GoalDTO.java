@@ -8,6 +8,8 @@ public class GoalDTO {
     private AccountDTO scorer;
     private AccountDTO assist;
 
+    public GoalDTO() {}
+
     public GoalDTO(AccountDTO scorer, AccountDTO assist, Integer order) {
         this.scorer = scorer;
         this.assist = assist;

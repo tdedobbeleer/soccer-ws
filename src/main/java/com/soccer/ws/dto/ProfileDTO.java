@@ -19,6 +19,8 @@ public class ProfileDTO extends BaseClassDTO {
     private String postalCode;
     private String city;
 
+    public ProfileDTO() {}
+
     public boolean isDoodleNotificationMails() {
         return doodleNotificationMails;
     }

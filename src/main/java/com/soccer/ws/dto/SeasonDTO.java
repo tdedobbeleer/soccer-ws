@@ -16,6 +16,8 @@ public class SeasonDTO extends BaseClassDTO {
         this.description = description;
     }
 
+    public SeasonDTO() {}
+
     public String getDescription() {
         return description;
     }

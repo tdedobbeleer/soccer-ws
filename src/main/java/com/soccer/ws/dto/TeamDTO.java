@@ -7,6 +7,8 @@ public class TeamDTO extends BaseClassDTO {
     private String name;
     private AddressDTO address;
 
+    public TeamDTO() {}
+
     public TeamDTO(Long id, String name, AddressDTO address) {
         super(id);
         this.name = name;

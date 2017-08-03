@@ -18,6 +18,8 @@ public class PresenceDTO implements Comparable<PresenceDTO> {
         this.modified = modified;
     }
 
+    public PresenceDTO() {}
+
     public Presence.PresenceType getType() {
         return type;
     }

@@ -91,6 +91,7 @@ public class MatchesRestController extends AbstractRestController {
     }
 
     @RequestMapping(value = "/matches/next", method = RequestMethod.GET)
+    @ApiOperation(value = "Get poll for next match", nickname = "nextMatchPoll")
     public
     @ResponseBody
     MatchDTO getNextMatch() {
@@ -99,7 +100,7 @@ public class MatchesRestController extends AbstractRestController {
     }
 
     @RequestMapping(value = "/match/{id}/poll", method = RequestMethod.GET)
-    @ApiOperation(value = "Get poll for match", nickname = "matchpoll")
+    @ApiOperation(value = "Get poll for match", nickname = "MatchPoll")
     public ResponseEntity<MatchPollDTO> getMatchPoll(@PathVariable Long id) {
         Match m = matchesService.get(id);
         if (m == null) throw new ObjectNotFoundException(String.format("Match with id %s not found", id));
@@ -107,7 +108,7 @@ public class MatchesRestController extends AbstractRestController {
     }
 
     @RequestMapping(value = "/match/latest/poll", method = RequestMethod.GET)
-    @ApiOperation(value = "Get poll for match", nickname = "matchpoll")
+    @ApiOperation(value = "Get poll for match", nickname = "latestMatchPoll")
     public ResponseEntity<MatchPollDTO> getLatestMatchPoll() {
         Match m = matchesService.getLatestMatchWithPoll();
         return new ResponseEntity<>(DTOConversionHelper.convertMatchPoll(m, isLoggedIn()), HttpStatus.OK);

@@ -23,6 +23,8 @@ public class MatchDTO extends BaseClassDTO {
     private MatchPollDTO poll;
     private List<GoalDTO> goals;
 
+    public MatchDTO() {}
+
     public MatchDTO(Long id, String date, String hour, TeamDTO homeTeam, TeamDTO awayTeam, Integer atGoals, Integer
             htGoals, MatchStatusEnum status, MatchPollDTO matchPollDTO, List<GoalDTO> goals, AddressDTO
                             address, String statusText, boolean hasDoodle, SeasonDTO season) {
