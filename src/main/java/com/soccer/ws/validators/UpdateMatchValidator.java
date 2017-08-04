@@ -2,6 +2,7 @@ package com.soccer.ws.validators;
 
 import com.soccer.ws.data.MatchStatusEnum;
 import com.soccer.ws.dto.MatchDTO;
+import com.soccer.ws.utils.ValidationHelper;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -32,6 +33,15 @@ public class UpdateMatchValidator implements Validator {
 
         if (dto.getStatus().equals(MatchStatusEnum.CANCELLED.name())) {
             dto.setStatusText(SanitizeUtils.sanitizeHtml(dto.getStatusText()));
+        }
+
+        if (!errors.hasErrors()) {
+            if (!ValidationHelper.isValidDate(dto.getDate())) {
+                errors.rejectValue("date", "validation.date.wrong", "validation.date.wrong");
+            }
+            if (!ValidationHelper.isValidTime(dto.getHour())) {
+                errors.rejectValue("hour", "validation.hour.wrong", "validation.hour.wrong");
+            }
         }
     }
 }

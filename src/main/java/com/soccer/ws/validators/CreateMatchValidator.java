@@ -1,6 +1,7 @@
 package com.soccer.ws.validators;
 
 import com.soccer.ws.dto.MatchDTO;
+import com.soccer.ws.utils.ValidationHelper;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -19,9 +20,20 @@ public class CreateMatchValidator implements Validator {
     @Override
     public void validate(Object o, Errors errors) {
         MatchDTO dto = (MatchDTO) o;
+        ValidationUtils.rejectIfEmpty(errors, "hour", "validation.notempty.message");
         ValidationUtils.rejectIfEmpty(errors, "date", "validation.notempty.message");
         ValidationUtils.rejectIfEmpty(errors, "homeTeam", "validation.notempty.message");
         ValidationUtils.rejectIfEmpty(errors, "awayTeam", "validation.notempty.message");
         ValidationUtils.rejectIfEmpty(errors, "season", "validation.notempty.message");
+
+        if (!errors.hasErrors()) {
+            if (!ValidationHelper.isValidDate(dto.getDate())) {
+                errors.rejectValue("date", "validation.date.wrong", "validation.date.wrong");
+            }
+            if (!ValidationHelper.isValidTime(dto.getHour())) {
+                errors.rejectValue("hour", "validation.hour.wrong", "validation.hour.wrong");
+            }
+        }
+
     }
 }

@@ -13,12 +13,22 @@ public class ValidationHelper {
     private static final Pattern PASSWORD_PATTERN = Pattern.compile(Constants.PASSWORD_REGEX);
     private static final Pattern PHONE_PATTERN = Pattern.compile(Constants.PHONE_REGEX);
     private static final Pattern NAME_PATTERN = Pattern.compile(Constants.NAME_REGEX);
+    private static final Pattern HOUR_PATTERN = Pattern.compile(Constants.TIME24HOURS_REGEX);
 
     public static boolean isValidDate(String date) {
         try {
             returnDate(date);
             return true;
         } catch (ParseException e) {
+            return false;
+        }
+
+    }
+
+    public static boolean isValidTime(String time) {
+        try {
+            return HOUR_PATTERN.matcher(time).matches();
+        } catch (Exception e) {
             return false;
         }
 
