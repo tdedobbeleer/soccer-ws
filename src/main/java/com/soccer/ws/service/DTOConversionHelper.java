@@ -53,4 +53,8 @@ public interface DTOConversionHelper {
     NewsDTO convertNews(Account account, News news, boolean isAdmin);
 
     CommentDTO convertComment(Account account, Comment comment, boolean isAdmin, boolean isLoggedIn);
+
+    ProfileDTO convertProfile(AccountProfile profile, boolean isLoggedIn);
+
+    ImageDTO convertImage(Image image);
 }

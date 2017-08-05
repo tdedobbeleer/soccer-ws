@@ -28,6 +28,7 @@ public class MatchDTO extends BaseClassDTO {
     public MatchDTO(Long id, String date, String hour, TeamDTO homeTeam, TeamDTO awayTeam, Integer atGoals, Integer
             htGoals, MatchStatusEnum status, MatchPollDTO matchPollDTO, List<GoalDTO> goals, AddressDTO
                             address, String statusText, boolean hasDoodle, SeasonDTO season) {
+        super(id);
         this.date = date;
         this.hour = hour;
         this.homeTeam = homeTeam;
@@ -38,7 +39,6 @@ public class MatchDTO extends BaseClassDTO {
         this.status = status;
         this.statusText = statusText;
         this.season = season;
-        this.setId(id);
         this.goals = goals;
         this.hasDoodle = hasDoodle;
         this.address = address;
@@ -46,6 +46,7 @@ public class MatchDTO extends BaseClassDTO {
 
     public MatchDTO(Long id, String date, String hour, TeamDTO homeTeam, TeamDTO awayTeam, Integer atGoals, Integer
             htGoals, SeasonDTO season) {
+        super(id);
         this.date = date;
         this.hour = hour;
         this.homeTeam = homeTeam;
@@ -53,7 +54,6 @@ public class MatchDTO extends BaseClassDTO {
         this.atGoals = atGoals;
         this.htGoals = htGoals;
         this.season = season;
-        this.setId(id);
     }
 
     public AddressDTO getAddress() {

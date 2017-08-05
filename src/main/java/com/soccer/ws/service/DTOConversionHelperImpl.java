@@ -153,6 +153,7 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
         if (account != null) {
             AccountDTO accountDTO = new AccountDTO();
             accountDTO.setUsername(isLoggedIn ? account.getUsername() : "");
+            accountDTO.setFirstName(account.getFirstName());
             accountDTO.setName(isLoggedIn ? account.toString() : account.getFullName());
             accountDTO.setId(account.getId());
             accountDTO.setActivated(isLoggedIn && account.isActive());
@@ -216,6 +217,7 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
     }
 
     private AddressDTO convertAddress(Address address) {
+        if (address == null) return null;
         return new AddressDTO(
                 address.getId(),
                 address.getPostalCode(),
@@ -278,5 +280,26 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
                     isAdmin || (isLoggedIn && account.equals(comment.getAccount())));
         }
         return null;
+    }
+
+    @Override
+    public ProfileDTO convertProfile(AccountProfile profile, boolean isLoggedIn) {
+        if (profile == null) return null;
+        return new ProfileDTO(
+                profile.getId(),
+                convertAccount(profile.getAccount(), isLoggedIn),
+                isLoggedIn ? profile.getMobilePhone() : null,
+                isLoggedIn ? profile.getPhone() : null,
+                profile.getFavouritePosition(),
+                profile.getDescription(),
+                isLoggedIn ? convertAddress(profile.getAddress()) : null,
+                convertImage(profile.getAvatar())
+        );
+    }
+
+    @Override
+    public ImageDTO convertImage(Image image) {
+        if (image == null) return null;
+        return new ImageDTO(image.getImageId(), image.getImageUrl());
     }
 }

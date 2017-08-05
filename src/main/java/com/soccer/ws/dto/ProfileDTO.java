@@ -1,48 +1,40 @@
 package com.soccer.ws.dto;
 
 import com.soccer.ws.data.PositionsEnum;
-import org.apache.commons.lang3.text.WordUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Created by u0090265 on 10.07.17.
+ * Created by u0090265 on 10/06/16.
  */
 public class ProfileDTO extends BaseClassDTO {
-    private String phone;
+    private AccountDTO account;
     private String mobilePhone;
-    private MultipartFile avatar;
+    private String phone;
     private PositionsEnum position;
-    private boolean doodleNotificationMails;
-    private boolean newsNotificationMails;
-    private String avatarUrl;
-    private String address;
-    private String postalCode;
-    private String city;
+    private String description;
+    private AddressDTO address;
+    private ImageDTO image;
 
-    public ProfileDTO() {}
-
-    public boolean isDoodleNotificationMails() {
-        return doodleNotificationMails;
+    public ProfileDTO() {
     }
 
-    public void setDoodleNotificationMails(boolean doodleNotificationMails) {
-        this.doodleNotificationMails = doodleNotificationMails;
-    }
-
-    public boolean isNewsNotificationMails() {
-        return newsNotificationMails;
-    }
-
-    public void setNewsNotificationMails(boolean newsNotificationMails) {
-        this.newsNotificationMails = newsNotificationMails;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
+    public ProfileDTO(Long id, AccountDTO account, String mobilePhone, String phone, PositionsEnum position, String description, AddressDTO address, ImageDTO image) {
+        super(id);
+        this.account = account;
+        this.mobilePhone = mobilePhone;
         this.phone = phone;
+        this.position = position;
+        this.description = description;
+        this.address = address;
+        this.image = image;
+    }
+
+
+    public AccountDTO getAccount() {
+        return account;
+    }
+
+    public void setAccount(AccountDTO account) {
+        this.account = account;
     }
 
     public String getMobilePhone() {
@@ -53,20 +45,12 @@ public class ProfileDTO extends BaseClassDTO {
         this.mobilePhone = mobilePhone;
     }
 
-    public MultipartFile getAvatar() {
-        return avatar;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setAvatar(MultipartFile avatar) {
-        this.avatar = avatar;
-    }
-
-    public String getAvatarUrl() {
-        return avatarUrl;
-    }
-
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public PositionsEnum getPosition() {
@@ -77,43 +61,27 @@ public class ProfileDTO extends BaseClassDTO {
         this.position = position;
     }
 
-    public String getAddress() {
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public AddressDTO getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
-        this.address = WordUtils.capitalize(address);
+    public void setAddress(AddressDTO address) {
+        this.address = address;
     }
 
-    public String getPostalCode() {
-        return postalCode;
+    public ImageDTO getImage() {
+        return image;
     }
 
-    public void setPostalCode(String postalCode) {
-        this.postalCode = postalCode;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = WordUtils.capitalize(city);
-    }
-
-    @Override
-    public String toString() {
-        return "ProfileDTO{" +
-                ", phone='" + phone + '\'' +
-                ", mobilePhone='" + mobilePhone + '\'' +
-                ", avatar=" + avatar +
-                ", position=" + position +
-                ", doodleNotificationMails=" + doodleNotificationMails +
-                ", newsNotificationMails=" + newsNotificationMails +
-                ", avatarUrl='" + avatarUrl + '\'' +
-                ", address='" + address + '\'' +
-                ", postalCode='" + postalCode + '\'' +
-                ", city='" + city + '\'' +
-                "} " + super.toString();
+    public void setImage(ImageDTO image) {
+        this.image = image;
     }
 }

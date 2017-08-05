@@ -66,7 +66,7 @@ public class DataPopulator {
         TeamDTO teamDTO3 = teamService.create(new TeamDTO(null, "KU Leuven", new AddressDTO(null, 3000, "Test straat 1", "Leuven", null)));
 
         MatchDTO matchDTO1 = matchesService.createMatch(new MatchDTO(
-                null, "01/01/2017", "20:00", teamDTO1, teamDTO2, 3, 1, seasonDTO1
+                null, "01/01/2017", "20:00", teamDTO1, teamDTO2, 1, 3, seasonDTO1
         ));
 
         matchDTO1.setGoals(ImmutableList.<GoalDTO>builder()
