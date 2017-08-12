@@ -1,6 +1,8 @@
 package com.soccer.ws.controllers;
 
 import com.soccer.ws.dto.ProfileDTO;
+import com.soccer.ws.model.Account;
+import com.soccer.ws.model.Role;
 import com.soccer.ws.service.AccountService;
 import com.soccer.ws.service.DTOConversionHelper;
 import com.soccer.ws.utils.SecurityUtils;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,13 +32,20 @@ public class AccountProfileRestController extends AbstractRestController {
         this.dtoConversionHelper = dtoConversionHelper;
     }
 
+    @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/profiles/{id}", method = RequestMethod.GET)
     @ResponseBody
     @ApiOperation(value = "Get Account profile", nickname = "getProfile")
     public ResponseEntity<ProfileDTO> getProfile(@PathVariable long id) {
-        return new ResponseEntity<>(dtoConversionHelper.convertProfile(accountService.getAccount(id).getAccountProfile(), isLoggedIn()), HttpStatus.OK);
+        final Account account = getAccountFromSecurity();
+        if (account.getId().equals(id) || account.getRole().equals(Role.ADMIN)) {
+            return new ResponseEntity<>(dtoConversionHelper.convertProfile(accountService.getAccount(id).getAccountProfile(), isLoggedIn()), HttpStatus.OK);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
+    @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/profiles", method = RequestMethod.GET)
     @ResponseBody
     @ApiOperation(value = "Get all Account profiles", nickname = "getAllProfiles")

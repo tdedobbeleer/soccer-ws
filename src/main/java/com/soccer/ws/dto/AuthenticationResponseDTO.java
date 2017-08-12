@@ -2,24 +2,23 @@ package com.soccer.ws.dto;
 
 import java.util.List;
 
-public class AuthenticationResponseDTO {
+public class AuthenticationResponseDTO extends BaseClassDTO {
 
 	private static final long serialVersionUID = -6624726180748515507L;
 	private String token;
 	private String firstName;
 	private String lastName;
-	private String userName;
 	private List<String> roles;
 
 	public AuthenticationResponseDTO() {
 		super();
 	}
 
-	public AuthenticationResponseDTO(String token, String firstName, String lastName, String userName, List<String> roles) {
+	public AuthenticationResponseDTO(String token, long id, String firstName, String lastName, List<String> roles) {
+		super(id);
 		this.setToken(token);
 		this.setFirstName(firstName);
 		this.setLastName(lastName);
-		this.setUserName(userName);
 		this.setRoles(roles);
 	}
 
@@ -45,14 +44,6 @@ public class AuthenticationResponseDTO {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
-	}
-
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
 	}
 
 	public List<String> getRoles() {

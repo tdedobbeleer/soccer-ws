@@ -67,7 +67,7 @@ public class AuthenticationController extends AbstractRestController {
       String token = this.tokenUtils.generateToken(user, device, request.getHeader("User-Agent"), authenticationRequestDTO.isRememberMe());
 
     // Return the token
-      return ResponseEntity.ok(new AuthenticationResponseDTO(token, user.getFirstName(), user.getLastName(), user.getUsername(), getAuthorities(user)));
+    return ResponseEntity.ok(new AuthenticationResponseDTO(token, user.getId(), user.getFirstName(), user.getLastName(), getAuthorities(user)));
 
   }
 
