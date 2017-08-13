@@ -2,11 +2,11 @@ package com.soccer.ws.service;
 
 import com.google.common.collect.Lists;
 import com.soccer.ws.dto.AccountDTO;
+import com.soccer.ws.dto.AddressDTO;
+import com.soccer.ws.dto.ProfileDTO;
 import com.soccer.ws.dto.RegistrationDTO;
 import com.soccer.ws.exceptions.ObjectNotFoundException;
-import com.soccer.ws.model.Account;
-import com.soccer.ws.model.Image;
-import com.soccer.ws.model.Role;
+import com.soccer.ws.model.*;
 import com.soccer.ws.persistence.AccountDao;
 import com.soccer.ws.utils.GeneralUtils;
 import org.slf4j.Logger;
@@ -118,38 +118,6 @@ public class AccountServiceImpl implements AccountService {
         return resultAccount;
     }
 
-    /**
-     * @Transactional(readOnly = false)
-     * public Account updateAccount(Account account, AccountProfileForm form) {
-     * //To do: why is object detached when coming from security?
-     * //return accountDao.save(getUpdatedAccount(account, form));
-     * return null;
-     * }
-     **/
-
-    @Override
-    public Account saveAccount(Account account) {
-        return accountDao.save(account);
-    }
-
-    /**
-     * @Override
-     * @Transactional public Account activateAccount(ActivateAccountForm form, Locale locale, Errors errors) {
-     * Account account = accountDao.findOne(form.getAccountId());
-     * if (account == null) throw new ObjectNotFoundException(String.format("Object with id %s not found", form
-     * .getAccountId()));
-     * account.setActive(true);
-     * if (form.isSendEmail()) {
-     * if (!mailService.sendMail(account.getUsername(),
-     * messageSource.getMessage("email.activation.subject", null, locale),
-     * messageSource.getMessage("email.activation.body", new String[]{account.getFirstName()}, locale))) {
-     * errors.reject("sendEmail");
-     * }
-     * }
-     * return account;
-     * }
-     **/
-
     @Transactional(readOnly = true)
     public boolean isValidUsername(String username) {
         return accountDao.findByUsername(username) == null;
@@ -164,14 +132,18 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional(readOnly = false)
-    public void setPasswordFor(Account account, String password) {
+    public void setPasswordFor(long id, String password) {
+        final Account account = accountDao.findOne(id);
+        if (account == null) throw new ObjectNotFoundException("Account not found");
         String encPassword = passwordEncoder.encode(password);
-        jdbcTemplate.update(UPDATE_PASSWORD_SQL, encPassword, account.getId());
+        jdbcTemplate.update(UPDATE_PASSWORD_SQL, encPassword, id);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public boolean checkOldPassword(Account account, String password) {
+    public boolean checkOldPassword(long id, String password) {
+        final Account account = accountDao.findOne(id);
+        if (account == null) throw new ObjectNotFoundException("Account cannot be found");
         String encodedPassword = getCurrentEncodedPasswordFor(account);
         return !(encodedPassword == null || encodedPassword.isEmpty()) && passwordEncoder.matches(password,
                 encodedPassword);
@@ -182,6 +154,16 @@ public class AccountServiceImpl implements AccountService {
     public boolean passwordIsNullOrEmpty(Account account) {
         String encodedPassword = getCurrentEncodedPasswordFor(account);
         return encodedPassword == null || encodedPassword.isEmpty();
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public Account update(ProfileDTO profileDTO) {
+        Account account = accountDao.findOne(profileDTO.getId());
+        if (account == null)
+            throw new ObjectNotFoundException("Account not found");
+        setAccountProfile(account, profileDTO);
+        return accountDao.save(account);
     }
 
     @Override
@@ -245,35 +227,29 @@ public class AccountServiceImpl implements AccountService {
         return jdbcTemplate.queryForObject(GET_PASSWORD, String.class, account.getId());
     }
 
-    /**
-     * private void setAccountProfile(Account oldAccount, Account updatedAccount, AccountProfileForm form) {
-     * updatedAccount.setAccountProfile(oldAccount.getAccountProfile() == null ?
-     * new AccountProfile() : oldAccount.getAccountProfile());
-     * AccountProfile accountProfile = updatedAccount.getAccountProfile();
-     * //Set enum
-     * accountProfile.setFavouritePosition(form.getPosition());
-     * //Set mobile, phone, address, etc
-     * accountProfile.setPhone(form.getPhone());
-     * accountProfile.setMobilePhone(form.getMobilePhone());
-     * accountProfile.setAddress(createAddress(accountProfile.getAddress(), form));
-     * //Set image as a null value to remove, else set profile image with provided image.
-     * updatedAccount.getAccountProfile().setAvatar(form.isRemoveAvatar() ?
-     * null :
-     * createProfileImage(updatedAccount.getAccountProfile().getAvatar(), form.getAvatar()));
-     * }
-     * <p>
-     * <p>
-     * private Address createAddress(Address address, AccountProfileForm form) {
-     * if (!Strings.isNullOrEmpty(form.getAddress()) && !Strings.isNullOrEmpty(form.getPostalCode()) && !Strings
-     * .isNullOrEmpty(form.getCity())) {
-     * if (address == null) address = new Address();
-     * address.setAddress(form.getAddress());
-     * address.setCity(form.getCity());
-     * address.setPostalCode(Integer.parseInt(form.getPostalCode()));
-     * }
-     * return address;
-     * }
-     **/
+    private void setAccountProfile(Account account, ProfileDTO profileDTO) {
+        AccountProfile accountProfile = account.getAccountProfile();
+        //Set enum
+        accountProfile.setFavouritePosition(profileDTO.getPosition());
+        //Set mobile, phone, address, etc
+        accountProfile.setPhone(profileDTO.getPhone());
+        accountProfile.setMobilePhone(profileDTO.getMobilePhone());
+        accountProfile.setAddress(createAddress(accountProfile.getAddress(), profileDTO.getAddress()));
+        //Set image as a null value to remove, else set profile image with provided image.
+        //updatedAccount.getAccountProfile().setAvatar(form.isRemoveAvatar() ?
+        //null :
+        //createProfileImage(updatedAccount.getAccountProfile().getAvatar(), form.getAvatar()));
+    }
+
+    private Address createAddress(Address address, AddressDTO addressDTO) {
+        if (addressDTO == null) return null;
+        if (address == null) address = new Address();
+        address.setAddress(addressDTO.getAddress());
+        address.setCity(addressDTO.getCity());
+        address.setPostalCode(addressDTO.getPostalCode());
+        return address;
+    }
+     
 
     private Image createProfileImage(Image image, MultipartFile file) {
         if (file != null && !file.isEmpty()) {

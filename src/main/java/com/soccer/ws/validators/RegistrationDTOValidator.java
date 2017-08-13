@@ -53,6 +53,10 @@ public class RegistrationDTOValidator implements Validator {
             errors.rejectValue("lastName", "validation.minimum.length", new Object[]{Constants.TWO}, "validation.minimum.length");
         }
 
+        if (!ValidationHelper.isPasswordMatch(registrationDTO.getPassword())) {
+            errors.rejectValue("password", "validation.complexity.newpassword.message");
+        }
+
         if (!ValidationHelper.isEmailMatch(registrationDTO.getEmail())) {
             errors.rejectValue("email", "validation.noEmail", "validation.noEmail");
 

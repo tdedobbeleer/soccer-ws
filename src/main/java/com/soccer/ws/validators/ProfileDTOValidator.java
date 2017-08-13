@@ -2,8 +2,10 @@ package com.soccer.ws.validators;
 
 import com.google.common.base.Strings;
 import com.soccer.ws.dto.ProfileDTO;
+import com.soccer.ws.service.AccountService;
 import com.soccer.ws.utils.GeneralUtils;
 import com.soccer.ws.utils.ValidationHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -13,7 +15,14 @@ import org.springframework.validation.Validator;
  * Created by u0090265 on 11/11/15.
  */
 @Component
-public class ProfileValidator implements Validator {
+public class ProfileDTOValidator implements Validator {
+    private final AccountService accountService;
+
+    @Autowired
+    public ProfileDTOValidator(AccountService accountService) {
+        this.accountService = accountService;
+    }
+
     @Override
     public boolean supports(Class<?> aClass) {
         return ProfileDTO.class.equals(aClass);
@@ -23,6 +32,11 @@ public class ProfileValidator implements Validator {
     public void validate(Object o, Errors errors) {
         ProfileDTO dto = (ProfileDTO) o;
         sanitize(dto);
+
+        ValidationUtils.rejectIfEmpty(errors, "account.firstName", "validation.firstName.notEmpty");
+        ValidationUtils.rejectIfEmpty(errors, "account.lastName", "validation.lastName.notEmpty");
+        ValidationUtils.rejectIfEmpty(errors, "account.username", "validation.userName.notEmpty");
+
 
         if (dto.getAddress() != null || !Strings.isNullOrEmpty(dto.getAddress().getCity())) {
             ValidationUtils.rejectIfEmpty(errors, "address.address", "validation.address.notempty.message");
@@ -36,6 +50,11 @@ public class ProfileValidator implements Validator {
 
         if (!Strings.isNullOrEmpty(dto.getMobilePhone()) && !ValidationHelper.isPhoneMatch(dto.getMobilePhone())) {
             errors.rejectValue("mobilePhone", "validation.phone.mismatch");
+        }
+
+        //Check for username issues
+        if (!errors.hasFieldErrors("username")) {
+            accountService.validateUsernameExcludeCurrentId(dto.getAccount().getUsername(), dto.getId(), errors);
         }
     }
 
