@@ -24,7 +24,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -76,7 +75,8 @@ public class NewsServiceImpl implements NewsService {
         News n = newsDao.findOne(news.getId());
         if (n == null)
             throw new ObjectNotFoundException(String.format("Object news with id %s not found", news.getId()));
-        n.setPostDate(new Date());
+        n.setContent(news.getContent());
+        n.setHeader(news.getHeader());
         return newsDao.save(n);
     }
 

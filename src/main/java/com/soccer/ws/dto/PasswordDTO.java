@@ -7,6 +7,9 @@ public class PasswordDTO extends BaseClassDTO {
     private String oldPassword;
     private String newPassword;
 
+    public PasswordDTO() {
+    }
+
     public PasswordDTO(long id, String newPassword, String oldPassword) {
         super(id);
         this.oldPassword = oldPassword;

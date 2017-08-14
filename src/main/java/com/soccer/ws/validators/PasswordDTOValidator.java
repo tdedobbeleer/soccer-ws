@@ -38,8 +38,8 @@ public class PasswordDTOValidator implements Validator {
             errors.rejectValue("newPassword", "validation.complexity.newpassword.message");
         }
 
-        if (!accountService.checkOldPassword(dto.getId(), dto.getOldPassword())) {
-            ValidationUtils.rejectIfEmpty(errors, "oldPassword", "validation.oldPassword.noMatch");
+        if (!errors.hasErrors() && !accountService.checkOldPassword(dto.getId(), dto.getOldPassword())) {
+            errors.rejectValue("oldPassword", "validation.oldPassword.noMatch");
         }
     }
 }

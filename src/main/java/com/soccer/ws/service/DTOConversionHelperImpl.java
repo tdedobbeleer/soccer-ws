@@ -154,6 +154,7 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
             AccountDTO accountDTO = new AccountDTO();
             accountDTO.setUsername(isLoggedIn ? account.getUsername() : "");
             accountDTO.setFirstName(account.getFirstName());
+            accountDTO.setLastName(isLoggedIn ? account.getLastName() : null);
             accountDTO.setName(isLoggedIn ? account.toString() : account.getFullName());
             accountDTO.setId(account.getId());
             accountDTO.setActivated(isLoggedIn && account.isActive());

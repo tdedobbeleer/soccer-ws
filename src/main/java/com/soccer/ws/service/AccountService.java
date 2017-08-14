@@ -6,7 +6,6 @@ import com.soccer.ws.dto.RegistrationDTO;
 import com.soccer.ws.model.Account;
 import com.soccer.ws.model.Role;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.Errors;
 
 import java.util.List;
 
@@ -32,7 +31,7 @@ public interface AccountService {
 
     boolean isValidUsername(String email);
 
-    void validateUsernameExcludeCurrentId(String email, Long id, Errors errors);
+    boolean isValidUsernameExcludeCurrentId(String username, Long id);
 
     @Transactional(readOnly = false)
     void setPasswordFor(long id, String password);

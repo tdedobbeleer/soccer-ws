@@ -52,9 +52,13 @@ public class ProfileDTOValidator implements Validator {
             errors.rejectValue("mobilePhone", "validation.phone.mismatch");
         }
 
+        if (!errors.hasFieldErrors("account.username") && !ValidationHelper.isEmailMatch(dto.getAccount().getUsername())) {
+            errors.rejectValue("account.username", "validation.account.username");
+        }
+
         //Check for username issues
-        if (!errors.hasFieldErrors("username")) {
-            accountService.validateUsernameExcludeCurrentId(dto.getAccount().getUsername(), dto.getId(), errors);
+        if (!errors.hasFieldErrors("account.username") && !accountService.isValidUsernameExcludeCurrentId(dto.getAccount().getUsername(), dto.getId())) {
+            errors.rejectValue("account.username", "error.duplicate.account.email");
         }
     }
 

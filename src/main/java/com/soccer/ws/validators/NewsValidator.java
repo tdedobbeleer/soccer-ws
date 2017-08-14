@@ -18,7 +18,15 @@ public class NewsValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
+        final NewsDTO dto = (NewsDTO) target;
+
         ValidationUtils.rejectIfEmpty(errors, "header", "validation.notempty.message");
         ValidationUtils.rejectIfEmpty(errors, "content", "validation.notempty.message");
+    }
+
+    private void sanitize(final NewsDTO newsDTO) {
+        newsDTO.setHeader(SanitizeUtils.sanitizeHtml(newsDTO.getHeader()));
+        newsDTO.setContent(SanitizeUtils.sanitizeHtml(newsDTO.getContent()));
+
     }
 }

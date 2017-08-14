@@ -99,7 +99,7 @@ public class PwdRecoveryServiceImpl implements PwdRecoveryService {
             throw new InvalidRecoveryCodeException("Wrong recovery code");
         } else {
             account.setPwdRecovery(null);
-            accountService.setPasswordFor(account, password);
+            accountService.setPasswordFor(account.getId(), password);
         }
     }
 

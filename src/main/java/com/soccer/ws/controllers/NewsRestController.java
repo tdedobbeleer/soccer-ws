@@ -80,7 +80,19 @@ public class NewsRestController extends AbstractRestController {
             }
 
         }
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/news", method = RequestMethod.PUT)
+    @ApiOperation(value = "Update news", nickname = "updateNews")
+    public ResponseEntity updateNews(@Valid @RequestBody NewsDTO newsDTO, BindingResult bindingResult) throws CustomMethodArgumentNotValidException {
+        if (bindingResult.hasErrors()) {
+            throw new CustomMethodArgumentNotValidException(bindingResult);
+        } else {
+            newsService.update(newsDTO, getAccountFromSecurity());
+        }
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     @RequestMapping(value = "/news/{id}", method = RequestMethod.GET)
@@ -96,6 +108,6 @@ public class NewsRestController extends AbstractRestController {
     @ApiOperation(value = "Delete news", nickname = "deleteNews")
     public ResponseEntity deleteNews(@PathVariable Long id) {
         newsService.deleteNews(id, getAccountFromSecurity());
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
