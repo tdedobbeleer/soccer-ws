@@ -1,7 +1,9 @@
 package com.soccer.ws.controllers;
 
+import com.soccer.ws.dto.AddressDTO;
 import com.soccer.ws.dto.TeamDTO;
 import com.soccer.ws.exceptions.CustomMethodArgumentNotValidException;
+import com.soccer.ws.service.AddressService;
 import com.soccer.ws.service.DTOConversionHelper;
 import com.soccer.ws.service.TeamService;
 import com.soccer.ws.utils.SecurityUtils;
@@ -31,13 +33,15 @@ public class TeamsRestController extends AbstractRestController {
     private final TeamService teamService;
     private final DTOConversionHelper dtoConversionHelper;
     private final TeamValidator teamValidator;
+    private final AddressService addressService;
 
     @Autowired
-    public TeamsRestController(SecurityUtils securityUtils, MessageSource messageSource, TeamService teamService, DTOConversionHelper dtoConversionHelper, TeamValidator teamValidator) {
+    public TeamsRestController(SecurityUtils securityUtils, MessageSource messageSource, TeamService teamService, DTOConversionHelper dtoConversionHelper, TeamValidator teamValidator, AddressService addressService) {
         super(securityUtils, messageSource);
         this.teamService = teamService;
         this.dtoConversionHelper = dtoConversionHelper;
         this.teamValidator = teamValidator;
+        this.addressService = addressService;
     }
 
     @InitBinder("teamDTO")
@@ -53,25 +57,31 @@ public class TeamsRestController extends AbstractRestController {
 
     @RequestMapping(value = "/teams", method = RequestMethod.POST)
     @ApiOperation(value = "Create a new team", nickname = "createTeam")
-    public TeamDTO createTeam(@Valid @RequestBody TeamDTO teamDTO, BindingResult result) throws CustomMethodArgumentNotValidException {
+    public ResponseEntity<TeamDTO> createTeam(@Valid @RequestBody TeamDTO teamDTO, BindingResult result) throws CustomMethodArgumentNotValidException {
         validate(result);
-        return teamService.create(teamDTO);
+        return new ResponseEntity<>(teamService.create(teamDTO), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/teams", method = RequestMethod.PUT)
-    @ApiOperation(value = "Create a new team", nickname = "updateTeam")
-    public TeamDTO updateTeam(@Valid @RequestBody TeamDTO teamDTO, BindingResult result) throws CustomMethodArgumentNotValidException {
+    @ApiOperation(value = "Update a team", nickname = "updateTeam")
+    public ResponseEntity updateTeam(@Valid @RequestBody TeamDTO teamDTO, BindingResult result) throws CustomMethodArgumentNotValidException {
         validate(result);
         teamService.update(teamDTO);
-        return teamDTO;
+        return ResponseEntity.noContent().build();
     }
 
-    @RequestMapping(value = "/teams", method = RequestMethod.DELETE)
-    @ApiOperation(value = "Create a new team", nickname = "deleteTeam")
-    public ResponseEntity deleteTeam(TeamDTO teamDTO) {
-        if (!teamService.delete(teamDTO.getId(), getAccountFromSecurity())) {
+    @RequestMapping(value = "/teams/{id}", method = RequestMethod.DELETE)
+    @ApiOperation(value = "Delete a team", nickname = "deleteTeam")
+    public ResponseEntity deleteTeam(@PathVariable long id) {
+        if (!teamService.delete(id, getAccountFromSecurity())) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+    @RequestMapping(value = "/teams/addresses", method = RequestMethod.GET)
+    @ApiOperation(value = "Get all addresses", nickname = "getTeamAddresses")
+    public ResponseEntity<List<AddressDTO>> deleteTeam() {
+        return new ResponseEntity<>(dtoConversionHelper.convertAddressList(addressService.getAllAddresses()), HttpStatus.OK);
     }
 }

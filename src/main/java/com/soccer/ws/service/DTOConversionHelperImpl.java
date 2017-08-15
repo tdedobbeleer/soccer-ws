@@ -68,6 +68,11 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
     }
 
     @Override
+    public List<AddressDTO> convertAddressList(List<Address> addressList) {
+        return addressList.stream().map(this::convertAddress).collect(Collectors.toList());
+    }
+
+    @Override
     public List<TeamDTO> convertTeams(List<Team> teamList, boolean isLoggedIn) {
         List<TeamDTO> teamDTOs = Lists.newArrayList();
         for (Team t : teamList) {
