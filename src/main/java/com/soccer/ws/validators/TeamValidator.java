@@ -22,10 +22,10 @@ public class TeamValidator implements Validator {
         TeamDTO dto = (TeamDTO) o;
         sanitizeAll(dto);
 
-        ValidationUtils.rejectIfEmpty(errors, "teamName", "validation.notempty.message");
-        ValidationUtils.rejectIfEmpty(errors, "address", "validation.notempty.message");
-        ValidationUtils.rejectIfEmpty(errors, "postalCode", "validation.notempty.message");
-        ValidationUtils.rejectIfEmpty(errors, "city", "validation.notempty.message");
+        ValidationUtils.rejectIfEmpty(errors, "name", "validation.notempty.message");
+        ValidationUtils.rejectIfEmpty(errors, "address.address", "validation.notempty.message");
+        ValidationUtils.rejectIfEmpty(errors, "address.postalCode", "validation.notempty.message");
+        ValidationUtils.rejectIfEmpty(errors, "address.city", "validation.notempty.message");
     }
 
     private void sanitizeAll(TeamDTO dto) {
