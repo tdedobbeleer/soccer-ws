@@ -2,6 +2,8 @@ package com.soccer.ws.validators;
 
 import com.soccer.ws.dto.AddressDTO;
 import com.soccer.ws.dto.TeamDTO;
+import com.soccer.ws.service.TeamService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -12,6 +14,13 @@ import org.springframework.validation.Validator;
  */
 @Component
 public class TeamValidator implements Validator {
+    private final TeamService teamService;
+
+    @Autowired
+    public TeamValidator(TeamService teamService) {
+        this.teamService = teamService;
+    }
+
     @Override
     public boolean supports(Class<?> aClass) {
         return TeamDTO.class.equals(aClass);
@@ -22,10 +31,14 @@ public class TeamValidator implements Validator {
         TeamDTO dto = (TeamDTO) o;
         sanitizeAll(dto);
 
-        ValidationUtils.rejectIfEmpty(errors, "name", "validation.notempty.message");
-        ValidationUtils.rejectIfEmpty(errors, "address.address", "validation.notempty.message");
-        ValidationUtils.rejectIfEmpty(errors, "address.postalCode", "validation.notempty.message");
-        ValidationUtils.rejectIfEmpty(errors, "address.city", "validation.notempty.message");
+        ValidationUtils.rejectIfEmpty(errors, "name", "validation.name.notEmpty");
+        ValidationUtils.rejectIfEmpty(errors, "address.address", "validation.address.notEmpty");
+        ValidationUtils.rejectIfEmpty(errors, "address.postalCode", "validation.postalCode.notEmpty");
+        ValidationUtils.rejectIfEmpty(errors, "address.city", "validation.city.notEmpty");
+
+        if (!errors.hasErrors() && teamService.teamExists(dto.getName())) {
+            errors.rejectValue("name", "validation.team.name.exists");
+        }
     }
 
     private void sanitizeAll(TeamDTO dto) {
