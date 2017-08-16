@@ -7,7 +7,8 @@ import com.soccer.ws.service.AddressService;
 import com.soccer.ws.service.DTOConversionHelper;
 import com.soccer.ws.service.TeamService;
 import com.soccer.ws.utils.SecurityUtils;
-import com.soccer.ws.validators.TeamValidator;
+import com.soccer.ws.validators.CreateTeamValidator;
+import com.soccer.ws.validators.UpdateTeamValidator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
@@ -32,21 +34,18 @@ public class TeamsRestController extends AbstractRestController {
     private static final Logger logger = LoggerFactory.getLogger(TeamsRestController.class);
     private final TeamService teamService;
     private final DTOConversionHelper dtoConversionHelper;
-    private final TeamValidator teamValidator;
+    private final CreateTeamValidator createTeamValidator;
+    private final UpdateTeamValidator updateTeamValidator;
     private final AddressService addressService;
 
     @Autowired
-    public TeamsRestController(SecurityUtils securityUtils, MessageSource messageSource, TeamService teamService, DTOConversionHelper dtoConversionHelper, TeamValidator teamValidator, AddressService addressService) {
+    public TeamsRestController(SecurityUtils securityUtils, MessageSource messageSource, TeamService teamService, DTOConversionHelper dtoConversionHelper, CreateTeamValidator teamValidator, UpdateTeamValidator updateTeamValidator, AddressService addressService) {
         super(securityUtils, messageSource);
         this.teamService = teamService;
         this.dtoConversionHelper = dtoConversionHelper;
-        this.teamValidator = teamValidator;
+        this.createTeamValidator = teamValidator;
+        this.updateTeamValidator = updateTeamValidator;
         this.addressService = addressService;
-    }
-
-    @InitBinder("teamDTO")
-    protected void initBinder(WebDataBinder binder) {
-        binder.setValidator(teamValidator);
     }
 
     @RequestMapping(value = "/teams", method = RequestMethod.GET)
@@ -55,22 +54,32 @@ public class TeamsRestController extends AbstractRestController {
         return new ResponseEntity<>(dtoConversionHelper.convertTeams(teamService.getAll(), isLoggedIn()), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/teams/{id}", method = RequestMethod.GET)
+    @ApiOperation(value = "Get team by id", nickname = "getTeam")
+    public ResponseEntity<TeamDTO> getTeam(@PathVariable long id) {
+        return new ResponseEntity<>(dtoConversionHelper.convertTeam(teamService.get(id), isLoggedIn()), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/teams", method = RequestMethod.POST)
     @ApiOperation(value = "Create a new team", nickname = "createTeam")
     public ResponseEntity<TeamDTO> createTeam(@Valid @RequestBody TeamDTO teamDTO, BindingResult result) throws CustomMethodArgumentNotValidException {
-        validate(result);
+        validate(createTeamValidator, teamDTO, result);
         return new ResponseEntity<>(teamService.create(teamDTO), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/teams", method = RequestMethod.PUT)
     @ApiOperation(value = "Update a team", nickname = "updateTeam")
     public ResponseEntity updateTeam(@Valid @RequestBody TeamDTO teamDTO, BindingResult result) throws CustomMethodArgumentNotValidException {
-        validate(result);
+        validate(updateTeamValidator, teamDTO, result);
         teamService.update(teamDTO);
         return ResponseEntity.noContent().build();
     }
 
-    @RequestMapping(value = "/teams/{id}", method = RequestMethod.DELETE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/teams/{id}",
+            method = RequestMethod.DELETE)
     @ApiOperation(value = "Delete a team", nickname = "deleteTeam")
     public ResponseEntity deleteTeam(@PathVariable long id) {
         if (!teamService.delete(id, getAccountFromSecurity())) {

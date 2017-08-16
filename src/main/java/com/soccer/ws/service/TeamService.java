@@ -14,6 +14,8 @@ public interface TeamService {
 
     boolean teamExists(String name);
 
+    boolean teamExistsExcludeId(String name, long id);
+
     Team get(long id);
 
     TeamDTO create(TeamDTO dto);

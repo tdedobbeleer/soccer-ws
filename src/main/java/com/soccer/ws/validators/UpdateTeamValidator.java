@@ -13,11 +13,11 @@ import org.springframework.validation.Validator;
  * Created by u0090265 on 5/11/14.
  */
 @Component
-public class TeamValidator implements Validator {
+public class UpdateTeamValidator implements Validator {
     private final TeamService teamService;
 
     @Autowired
-    public TeamValidator(TeamService teamService) {
+    public UpdateTeamValidator(TeamService teamService) {
         this.teamService = teamService;
     }
 
@@ -36,7 +36,7 @@ public class TeamValidator implements Validator {
         ValidationUtils.rejectIfEmpty(errors, "address.postalCode", "validation.postalCode.notEmpty");
         ValidationUtils.rejectIfEmpty(errors, "address.city", "validation.city.notEmpty");
 
-        if (!errors.hasErrors() && teamService.teamExists(dto.getName())) {
+        if (!errors.hasErrors() && teamService.teamExistsExcludeId(dto.getName(), dto.getId())) {
             errors.rejectValue("name", "validation.team.name.exists");
         }
     }

@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,6 +46,7 @@ public class MatchesRestController extends AbstractRestController {
         this.createMatchValidator = createMatchValidator;
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/matches", method = RequestMethod.POST)
     public
     @ResponseBody
@@ -54,6 +56,7 @@ public class MatchesRestController extends AbstractRestController {
         return matchesService.createMatch(dto);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/matches", method = RequestMethod.PUT)
     public
     @ResponseBody
@@ -64,6 +67,7 @@ public class MatchesRestController extends AbstractRestController {
     }
 
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/matches", method = RequestMethod.DELETE)
     public
     @ResponseBody
