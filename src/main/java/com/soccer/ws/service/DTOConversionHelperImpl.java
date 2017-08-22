@@ -299,7 +299,9 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
                 profile.getFavouritePosition(),
                 profile.getDescription(),
                 isLoggedIn ? convertAddress(profile.getAddress()) : null,
-                convertImage(profile.getAvatar())
+                convertImage(profile.getAvatar()),
+                profile.getAccount().getAccountSettings().isSendDoodleNotifications(),
+                profile.getAccount().getAccountSettings().isSendNewsNotifications()
         );
     }
 

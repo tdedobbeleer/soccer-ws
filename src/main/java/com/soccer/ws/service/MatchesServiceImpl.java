@@ -5,7 +5,6 @@ import com.soccer.ws.data.MatchStatusEnum;
 import com.soccer.ws.dto.GoalDTO;
 import com.soccer.ws.dto.MatchDTO;
 import com.soccer.ws.exceptions.ObjectNotFoundException;
-import com.soccer.ws.model.Account;
 import com.soccer.ws.model.Goal;
 import com.soccer.ws.model.Match;
 import com.soccer.ws.model.Season;
@@ -83,9 +82,9 @@ public class MatchesServiceImpl implements MatchesService {
     }
 
     @Override
-    public List<MatchDTO> getMatchesForSeason(long seasonId, Account
-            account) {
-        return cacheAdapter.getMatchesForSeason(seasonId, account);
+    public List<MatchDTO> getMatchesForSeason(long seasonId, boolean
+            isLoggedIn) {
+        return cacheAdapter.getMatchesForSeason(seasonId, isLoggedIn);
     }
 
 

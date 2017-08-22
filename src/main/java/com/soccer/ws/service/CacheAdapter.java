@@ -14,9 +14,9 @@ public interface CacheAdapter {
 
     List<Account> getActiveAccounts();
 
-    List<MatchDTO> getMatchesForSeason(long seasonId, Account account);
+    List<MatchDTO> getMatchesForSeason(long seasonId, boolean isLoggedIn);
 
-    List<AccountStatisticDTO> getStatisticsForSeason(long seasonId, Account account);
+    List<AccountStatisticDTO> getStatisticsForSeason(long seasonId, boolean isLoggedIn);
 
     void resetStatisticsCache();
 

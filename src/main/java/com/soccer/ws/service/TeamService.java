@@ -22,7 +22,7 @@ public interface TeamService {
 
     void update(TeamDTO teamDTO);
 
-    List<TeamDTO> getTeams(Account account);
+    List<TeamDTO> getTeams(boolean isLoggedIn);
 
     boolean delete(long id, Account a);
 }

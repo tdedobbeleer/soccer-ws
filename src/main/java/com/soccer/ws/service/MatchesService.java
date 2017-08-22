@@ -3,7 +3,6 @@ package com.soccer.ws.service;
 import com.google.common.base.Optional;
 import com.soccer.ws.dto.MatchDTO;
 import com.soccer.ws.exceptions.ObjectNotFoundException;
-import com.soccer.ws.model.Account;
 import com.soccer.ws.model.Match;
 import com.soccer.ws.model.Season;
 import org.springframework.data.domain.Page;
@@ -23,7 +22,7 @@ public interface MatchesService {
 
     Page<Match> getUpcomingMatchesPages(int page, int pageSize, Optional<Sort> sort);
 
-    List<MatchDTO> getMatchesForSeason(long seasonId, Account account);
+    List<MatchDTO> getMatchesForSeason(long seasonId, boolean isLoggedIn);
 
     List<Match> getMatchesForSeason(long seasonId);
 

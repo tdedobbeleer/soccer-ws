@@ -38,10 +38,13 @@ public class ProfileDTOValidator implements Validator {
         ValidationUtils.rejectIfEmpty(errors, "account.username", "validation.userName.notEmpty");
 
 
-        if (dto.getAddress() != null || !Strings.isNullOrEmpty(dto.getAddress().getCity())) {
-            ValidationUtils.rejectIfEmpty(errors, "address.address", "validation.address.notempty.message");
-            ValidationUtils.rejectIfEmpty(errors, "address.city", "validation.address.notempty.message");
-            ValidationUtils.rejectIfEmpty(errors, "address.postalCode", "validation.address.notempty.message");
+        if (dto.getAddress() != null && (
+                !Strings.isNullOrEmpty(dto.getAddress().getAddress()) ||
+                        !Strings.isNullOrEmpty(dto.getAddress().getCity()) ||
+                        dto.getAddress().getPostalCode() != null)) {
+            if (!dto.getAddress().isFullAddress()) {
+                errors.rejectValue("address.address", "validation.address.notempty.message");
+            }
         }
 
         if (!Strings.isNullOrEmpty(dto.getPhone()) && !ValidationHelper.isPhoneMatch(dto.getPhone())) {

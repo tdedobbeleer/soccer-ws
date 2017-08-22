@@ -232,6 +232,8 @@ public class AccountServiceImpl implements AccountService {
         accountProfile.setPhone(profileDTO.getPhone());
         accountProfile.setMobilePhone(profileDTO.getMobilePhone());
         accountProfile.setAddress(createAddress(accountProfile.getAddress(), profileDTO.getAddress()));
+        account.getAccountSettings().setSendDoodleNotifications(profileDTO.isDoodleNotifications());
+        account.getAccountSettings().setSendNewsNotifications(profileDTO.isNewsNotifications());
         //Set image as a null value to remove, else set profile image with provided image.
         //updatedAccount.getAccountProfile().setAvatar(form.isRemoveAvatar() ?
         //null :
@@ -240,10 +242,12 @@ public class AccountServiceImpl implements AccountService {
 
     private Address createAddress(Address address, AddressDTO addressDTO) {
         if (addressDTO == null) return null;
-        if (address == null) address = new Address();
-        address.setAddress(addressDTO.getAddress());
-        address.setCity(addressDTO.getCity());
-        address.setPostalCode(addressDTO.getPostalCode());
+        if (addressDTO.isFullAddress()) {
+            if (address == null) address = new Address();
+            address.setAddress(addressDTO.getAddress());
+            address.setCity(addressDTO.getCity());
+            address.setPostalCode(addressDTO.getPostalCode());
+        }
         return address;
     }
      

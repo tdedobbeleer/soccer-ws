@@ -1,5 +1,8 @@
 package com.soccer.ws.dto;
 
+import com.google.common.base.Strings;
+import org.springframework.data.annotation.Transient;
+
 /**
  * Created by u0090265 on 17.02.17.
  */
@@ -49,6 +52,14 @@ public class AddressDTO extends BaseClassDTO {
 
     public void setGoogleLink(String googleLink) {
         this.googleLink = googleLink;
+    }
+
+    @Transient
+    public boolean isFullAddress() {
+        //Only return true if all data is filled in
+        return !Strings.isNullOrEmpty(this.address) &&
+                !Strings.isNullOrEmpty(this.city) &&
+                postalCode != null;
     }
 
     @Override

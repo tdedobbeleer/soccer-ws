@@ -58,8 +58,12 @@ public class DataPopulator {
         newsService.create(new NewsDTO(null, "test1", "testNews1", "01/01/2016", accountDTO1));
         newsService.create(new NewsDTO(null, "test2", "testNews2", "01/01/2016", accountDTO2));
 
-        Season season = seasonService.create("2016-2017");
-        SeasonDTO seasonDTO1 = dtoConversionHelper.convertSeasons(Lists.newArrayList(season)).get(0);
+        Season season1 = seasonService.create("2016-2017");
+        Season season2 = seasonService.create("2017-2018");
+        Season season3 = seasonService.create("2018-2019");
+        SeasonDTO seasonDTO1 = dtoConversionHelper.convertSeasons(Lists.newArrayList(season1)).get(0);
+        SeasonDTO seasonDTO2 = dtoConversionHelper.convertSeasons(Lists.newArrayList(season2)).get(0);
+        SeasonDTO seasonDTO3 = dtoConversionHelper.convertSeasons(Lists.newArrayList(season3)).get(0);
 
         TeamDTO teamDTO1 = teamService.create(new TeamDTO(null, "SVK", new AddressDTO(null, 3000, "Test straat 1", "Leuven", "https://maps.google.be/maps?q=Korbeekdamstraat 42, +3050+Oud-Heverlee&output=embed")));
         TeamDTO teamDTO2 = teamService.create(new TeamDTO(null, "De Kanaries", new AddressDTO(null, 3000, "Test straat 1", "Leuven", null)));
@@ -91,6 +95,15 @@ public class DataPopulator {
                 null, GeneralUtils.convertToStringDate(DateTime.now().plusDays(14)), "20:00", teamDTO3, teamDTO2, null, null, seasonDTO1
         ));
 
+
+        Lists.newArrayList(seasonDTO1, seasonDTO2, seasonDTO3).forEach(s -> {
+            for (int i = 0; i < 5; i++) {
+                matchesService.createMatch(new MatchDTO(
+                        null, GeneralUtils.convertToStringDate(DateTime.now().plusDays(i)), "20:00", teamDTO3, teamDTO2, null, null, s));
+
+            }
+
+        });
 
         logger.info("DB population succesful");
     }

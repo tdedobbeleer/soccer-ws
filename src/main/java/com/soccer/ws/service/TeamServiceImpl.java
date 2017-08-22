@@ -103,8 +103,8 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public List<TeamDTO> getTeams(final Account account) {
-        return concurrentDataService.getTeams(account);
+    public List<TeamDTO> getTeams(boolean isLoggedIn) {
+        return concurrentDataService.getTeams(isLoggedIn);
     }
 
     @Override

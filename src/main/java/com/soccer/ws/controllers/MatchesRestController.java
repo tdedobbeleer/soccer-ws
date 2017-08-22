@@ -91,7 +91,7 @@ public class MatchesRestController extends AbstractRestController {
     @ResponseBody
     @ApiOperation(value = "Get matches for season", nickname = "matchesForSeason")
     List<MatchDTO> getMatchesForSeason(@PathVariable Long id, Locale locale) {
-        return matchesService.getMatchesForSeason(id, getAccountFromSecurity());
+        return matchesService.getMatchesForSeason(id, isLoggedIn());
     }
 
     @RequestMapping(value = "/matches/next", method = RequestMethod.GET)

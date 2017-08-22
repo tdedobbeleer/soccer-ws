@@ -5,7 +5,6 @@ import com.soccer.ws.dto.AccountStatisticDTO;
 import com.soccer.ws.dto.MatchDTO;
 import com.soccer.ws.dto.TeamDTO;
 import com.soccer.ws.exceptions.ObjectNotFoundException;
-import com.soccer.ws.model.Account;
 import com.soccer.ws.model.Match;
 import com.soccer.ws.model.Season;
 import com.soccer.ws.model.Team;
@@ -47,31 +46,31 @@ public class ConcurrentDataServiceImpl implements ConcurrentDataService {
     }
 
     @Override
-    public List<AccountStatisticDTO> getAccountStatisticsForSeason(long seasonId, Account account) {
+    public List<AccountStatisticDTO> getAccountStatisticsForSeason(final long seasonId, final boolean isLoggedIn) {
         Season season = seasonDao.findOne(seasonId);
         if (season == null) throw new ObjectNotFoundException(String.format("Season with id %s not found", seasonId));
         List<Match> matches = matchesDao.getMatchesForSeason(season);
 
         return accountService.getAccountsByActivationStatus(true)
                 .parallelStream()
-                .map(a -> statisticsService.getAccountStatistic(matches, a, account != null))
+                .map(a -> statisticsService.getAccountStatistic(matches, a, isLoggedIn))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<MatchDTO> getMatchForSeason(final long seasonId, final Account account) {
+    public List<MatchDTO> getMatchForSeason(final long seasonId, final boolean isLoggedIn) {
         Season season = seasonDao.findOne(seasonId);
 
         return matchesDao.getMatchesForSeason(season).stream()
-                .map(m -> DTOConversionHelper.convertMatch(m, account != null))
+                .map(m -> DTOConversionHelper.convertMatch(m, isLoggedIn))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<TeamDTO> getTeams(Account account) {
+    public List<TeamDTO> getTeams(boolean isLoggedIn) {
         List<Team> teams = Lists.newArrayList(teamDao.findAll());
         return teams.parallelStream()
-                .map(t -> DTOConversionHelper.convertTeam(t, account != null))
+                .map(t -> DTOConversionHelper.convertTeam(t, isLoggedIn))
                 .collect(Collectors.toList());
     }
 }

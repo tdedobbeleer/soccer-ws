@@ -65,7 +65,7 @@ public class CacheAdapterImpl implements CacheAdapter {
                     .loader(new CacheLoader<Parameters, List<AccountStatisticDTO>>() {
                         @Override
                         public List<AccountStatisticDTO> load(Parameters p) throws Exception {
-                            return dataService.getAccountStatisticsForSeason(p.seasonId, p.account);
+                            return dataService.getAccountStatisticsForSeason(p.seasonId, p.isLoggedIn);
                         }
                     })
                     .expireAfterWrite(1, TimeUnit.DAYS)
@@ -78,7 +78,7 @@ public class CacheAdapterImpl implements CacheAdapter {
 
                         @Override
                         public List<MatchDTO> load(Parameters s) throws Exception {
-                            return dataService.getMatchForSeason(s.seasonId, s.account);
+                            return dataService.getMatchForSeason(s.seasonId, s.isLoggedIn);
                         }
                     })
                     .expireAfterWrite(1, TimeUnit.DAYS)
@@ -101,15 +101,15 @@ public class CacheAdapterImpl implements CacheAdapter {
     }
 
     @Override
-    public List<MatchDTO> getMatchesForSeason(long seasonId, Account account) {
+    public List<MatchDTO> getMatchesForSeason(final long seasonId, final boolean isLoggedIn) {
         log.debug("Getting matchActionWrappers");
-        return matchesCache.get(new Parameters(seasonId, account));
+        return matchesCache.get(new Parameters(seasonId, isLoggedIn));
     }
 
     @Override
-    public List<AccountStatisticDTO> getStatisticsForSeason(long seasonId, Account account) {
+    public List<AccountStatisticDTO> getStatisticsForSeason(final long seasonId, final boolean isLoggedIn) {
         log.debug("Getting account statistics");
-        return statisticsCache.get(new Parameters(seasonId, account));
+        return statisticsCache.get(new Parameters(seasonId, isLoggedIn));
     }
 
     @Override
@@ -126,11 +126,11 @@ public class CacheAdapterImpl implements CacheAdapter {
 
     private class Parameters {
         private final long seasonId;
-        private final Account account;
+        private final boolean isLoggedIn;
 
-        public Parameters(long seasonId, Account account) {
+        Parameters(long seasonId, boolean isLoggedIn) {
             this.seasonId = seasonId;
-            this.account = account;
+            this.isLoggedIn = isLoggedIn;
         }
 
         @Override
@@ -141,14 +141,13 @@ public class CacheAdapterImpl implements CacheAdapter {
             Parameters that = (Parameters) o;
 
             if (seasonId != that.seasonId) return false;
-            return !(account != null ? !account.equals(that.account) : that.account != null);
-
+            return isLoggedIn == that.isLoggedIn;
         }
 
         @Override
         public int hashCode() {
             int result = (int) (seasonId ^ (seasonId >>> 32));
-            result = 31 * result + (account != null ? account.hashCode() : 0);
+            result = 31 * result + (isLoggedIn ? 1 : 0);
             return result;
         }
     }

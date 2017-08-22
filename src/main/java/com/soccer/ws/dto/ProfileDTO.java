@@ -13,11 +13,13 @@ public class ProfileDTO extends BaseClassDTO {
     private String description;
     private AddressDTO address;
     private ImageDTO image;
+    private boolean doodleNotifications;
+    private boolean newsNotifications;
 
     public ProfileDTO() {
     }
 
-    public ProfileDTO(Long id, AccountDTO account, String mobilePhone, String phone, PositionsEnum position, String description, AddressDTO address, ImageDTO image) {
+    public ProfileDTO(Long id, AccountDTO account, String mobilePhone, String phone, PositionsEnum position, String description, AddressDTO address, ImageDTO image, boolean doodleNotifications, boolean newsNotifications) {
         super(id);
         this.account = account;
         this.mobilePhone = mobilePhone;
@@ -26,6 +28,8 @@ public class ProfileDTO extends BaseClassDTO {
         this.description = description;
         this.address = address;
         this.image = image;
+        this.doodleNotifications = doodleNotifications;
+        this.newsNotifications = newsNotifications;
     }
 
 
@@ -83,5 +87,21 @@ public class ProfileDTO extends BaseClassDTO {
 
     public void setImage(ImageDTO image) {
         this.image = image;
+    }
+
+    public boolean isNewsNotifications() {
+        return newsNotifications;
+    }
+
+    public void setNewsNotifications(boolean newsNotifications) {
+        this.newsNotifications = newsNotifications;
+    }
+
+    public boolean isDoodleNotifications() {
+        return doodleNotifications;
+    }
+
+    public void setDoodleNotifications(boolean doodleNotifications) {
+        this.doodleNotifications = doodleNotifications;
     }
 }

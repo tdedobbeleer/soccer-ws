@@ -15,7 +15,7 @@ public class PageDTO<T> {
     private boolean hasPrevious;
 
     public PageDTO(List<T> list, int totalPages, boolean hasNext, boolean hasPrevious) {
-        Assert.notNull(list);
+        Assert.notNull(list, "List cannot be null");
         this.list = list;
         this.totalPages = totalPages;
         this.hasNext = hasNext;
