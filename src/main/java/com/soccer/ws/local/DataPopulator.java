@@ -31,14 +31,16 @@ public class DataPopulator {
     private final SeasonService seasonService;
     private final TeamService teamService;
     private final DTOConversionHelper dtoConversionHelper;
+    private final DoodleService doodleService;
 
     @Autowired
-    public DataPopulator(AccountService accountService, NewsService newsService, MatchesService matchesService, SeasonService seasonService, TeamService teamService) {
+    public DataPopulator(AccountService accountService, NewsService newsService, MatchesService matchesService, SeasonService seasonService, TeamService teamService, DoodleService doodleService) {
         this.accountService = accountService;
         this.newsService = newsService;
         this.matchesService = matchesService;
         this.seasonService = seasonService;
         this.teamService = teamService;
+        this.doodleService = doodleService;
         this.dtoConversionHelper = new DTOConversionHelperImpl(null);
     }
 
@@ -54,6 +56,22 @@ public class DataPopulator {
         //Create account2
         AccountDTO accountDTO2 = accountService.register(new RegistrationDTO("test2@test.com", "James", "Doe", "test2"));
         accountService.changeActivation(accountDTO2.getId(), true);
+
+        //Create account3
+        AccountDTO accountDTO3 = accountService.register(new RegistrationDTO("test3@test.com", "Jules", "Doe", "test2"));
+        accountService.changeActivation(accountDTO3.getId(), true);
+
+        //Create account4
+        AccountDTO accountDTO4 = accountService.register(new RegistrationDTO("test4@test.com", "Jef", "Doe", "test2"));
+        accountService.changeActivation(accountDTO4.getId(), true);
+
+        //Create account5
+        AccountDTO accountDTO5 = accountService.register(new RegistrationDTO("test5@test.com", "Johnny", "Doe", "test2"));
+        accountService.changeActivation(accountDTO5.getId(), true);
+
+        //Create account6
+        AccountDTO accountDTO6 = accountService.register(new RegistrationDTO("test6@test.com", "Javier", "Doe", "test2"));
+        accountService.changeActivation(accountDTO6.getId(), true);
 
         newsService.create(new NewsDTO(null, "test1", "testNews1", "01/01/2016", accountDTO1));
         newsService.create(new NewsDTO(null, "test2", "testNews2", "01/01/2016", accountDTO2));
@@ -79,6 +97,13 @@ public class DataPopulator {
                 .add(new GoalDTO(null, null, 2))
                 .build()
         );
+
+        doodleService.changePresence(accountDTO1.getId(), matchDTO1.getId(), true);
+        doodleService.changePresence(accountDTO2.getId(), matchDTO1.getId(), true);
+        doodleService.changePresence(accountDTO3.getId(), matchDTO1.getId(), true);
+        doodleService.changePresence(accountDTO4.getId(), matchDTO1.getId(), true);
+        doodleService.changePresence(accountDTO5.getId(), matchDTO1.getId(), true);
+        doodleService.changePresence(accountDTO6.getId(), matchDTO1.getId(), true);
 
         matchDTO1.setStatus(MatchStatusEnum.PLAYED);
         matchesService.update(matchDTO1);

@@ -36,7 +36,7 @@ public class AccountRestController extends AbstractRestController {
         this.passwordDTOValidator = passwordDTOValidator;
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/accounts", method = RequestMethod.GET)
     @ResponseBody
     @ApiOperation(value = "Get Accounts", nickname = "getAccounts")

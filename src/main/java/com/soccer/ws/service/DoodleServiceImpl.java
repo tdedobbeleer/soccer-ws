@@ -2,7 +2,10 @@ package com.soccer.ws.service;
 
 import com.soccer.ws.data.MatchStatusEnum;
 import com.soccer.ws.exceptions.ObjectNotFoundException;
-import com.soccer.ws.model.*;
+import com.soccer.ws.model.Account;
+import com.soccer.ws.model.Doodle;
+import com.soccer.ws.model.Match;
+import com.soccer.ws.model.Presence;
 import com.soccer.ws.persistence.AccountDao;
 import com.soccer.ws.persistence.DoodleDao;
 import com.soccer.ws.persistence.MatchesDao;
@@ -30,7 +33,6 @@ public class DoodleServiceImpl implements DoodleService {
 
     private final DoodleDao doodleDao;
     private final AccountDao accountDao;
-    private final HtmlHelper htmlHelper;
     private final MatchesDao matchesDao;
     private final MessageSource messageSource;
     private final MailService mailService;
@@ -44,71 +46,34 @@ public class DoodleServiceImpl implements DoodleService {
             matchesDao, MessageSource messageSource, MailService mailService) {
         this.doodleDao = doodleDao;
         this.accountDao = accountDao;
-        this.htmlHelper = htmlHelper;
         this.matchesDao = matchesDao;
         this.mailService = mailService;
         this.messageSource = messageSource;
     }
 
     @Override
-    public String changeMatchPresence(Account account, long matchId, boolean present) {
-        /**
-         Match match = matchesDao.findOne(matchId);
-         if (match == null) throw new ObjectNotFoundException(String.format("Match with id %s not found.", matchId));
-         Doodle doodle = match.getMatchDoodle();
+    public Presence changePresence(final long accountId, final long matchId, final boolean isAdmin) {
+        Account accountInUse = accountDao.findOne(accountId);
+        if (accountInUse == null)
+            throw new ObjectNotFoundException(String.format("Account with id %s not found.", accountId));
 
-         Presence presence = null;
-         for (Presence p : doodle.getPresences()) {
-         if (p.getAccount().equals(account)) {
-         presence = p;
-         break;
-         }
-         }
-         changePresence(doodle, presence, present, account);
-         matchesDao.save(match);
+        Match match = matchesDao.findOne(matchId);
+        if (match == null) throw new ObjectNotFoundException(String.format("Match with id %s not found.", matchId));
+        if (!isAdmin && !match.getStatus().equals(MatchStatusEnum.NOT_PLAYED))
+            throw new RuntimeException(String.format("Altering match with id %s not succeeded, match is " +
+                    "finished/Cancelled.", matchId));
+        Doodle d = match.getMatchDoodle();
 
-         log.info("Changed presence ({}) for match {} for account {}", present, matchId, account.getUsername() );
-         return htmlHelper.getPresenceBtns(match, account);
-         **/
-        return null;
-    }
-
-    @Override
-    public Presence changePresence(Account requestingAccount, long accountId, long matchId) {
-        boolean isAdmin = requestingAccount.getRole().equals(Role.ADMIN);
-        if (requestingAccount.getId().equals(accountId) || isAdmin) {
-            //Set the account that needs to be changed
-            Account accountInUse = requestingAccount;
-            if (!requestingAccount.getId().equals(accountId)) {
-                accountInUse = accountDao.findOne(accountId);
-                if (accountInUse == null)
-                    throw new ObjectNotFoundException(String.format("Account with id %s not found.", accountId));
+        Presence presence = null;
+        for (Presence p : d.getPresences()) {
+            if (p.getAccount().equals(accountInUse)) {
+                presence = p;
+                break;
             }
-            Match match = matchesDao.findOne(matchId);
-            if (match == null) throw new ObjectNotFoundException(String.format("Match with id %s not found.", matchId));
-            if (!isAdmin && !match.getStatus().equals(MatchStatusEnum.NOT_PLAYED))
-                throw new RuntimeException(String.format("Altering match with id %s not succeeded, match is " +
-                        "finished/Cancelled.", matchId));
-            Doodle d = match.getMatchDoodle();
-
-            Presence presence = null;
-            for (Presence p : d.getPresences()) {
-                if (p.getAccount().equals(accountInUse)) {
-                    presence = p;
-                    break;
-                }
-            }
-            presence = changePresence(d, presence, accountInUse);
-            doodleDao.save(d);
-
-            log.info("Account {} changed presence (id:{}, value: {}) for doodle {} for account {}", requestingAccount
-                    .getUsername(), presence.getId(), presence.isPresent(), matchId, accountInUse.getUsername());
-            return presence;
-        } else {
-            log.error("Account {} is not entitled to change presence for accountId {}", requestingAccount.getUsername
-                    (), accountId);
-            throw new RuntimeException("Security error");
         }
+        presence = changePresence(d, presence, accountInUse);
+        doodleDao.save(d);
+        return presence;
     }
 
     @Override

@@ -13,6 +13,7 @@ import com.soccer.ws.service.MatchesService;
 import com.soccer.ws.service.PollService;
 import com.soccer.ws.utils.SecurityUtils;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -45,20 +46,22 @@ public class PollRestController extends AbstractRestController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/poll/{id}/reset", method = RequestMethod.PUT)
+    @ApiOperation(value = "Reset match poll", nickname = "resetMatchPoll")
     public ResponseEntity resetPoll(@PathVariable Long id) {
         pollService.reset(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/matchPoll/match/{id}/refresh", method = RequestMethod.PUT)
+    @ApiOperation(value = "Refresh match poll", nickname = "refreshMatchPoll")
     public ResponseEntity<List<AccountDTO>> refreshMatchPoll(@PathVariable Long id) {
         return new ResponseEntity<>(DTOConversionHelper.convertIdentityOptions(pollService.refreshPlayerOptions(id),
                 isLoggedIn()), HttpStatus.OK);
     }
 
-    @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/matchPoll/{id}", method = RequestMethod.GET)
+    @ApiOperation(value = "Get match poll by id", nickname = "getMatchPollById")
     public ResponseEntity<MatchPollDTO> getMatchPoll(@PathVariable Long id) {
         return new ResponseEntity<>(DTOConversionHelper.convertMatchPoll(matchesService.getMatchByPoll(id),
                 isLoggedIn()), HttpStatus.OK);
@@ -66,6 +69,7 @@ public class PollRestController extends AbstractRestController {
 
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/matchPoll/{id}/vote", method = RequestMethod.POST)
+    @ApiOperation(value = "Vote", nickname = "matchPollVote")
     public ResponseEntity<MultipleChoiceVoteDTO<Long>> postMatchPoll(@PathVariable Long id, @RequestBody
     MultipleChoiceVoteDTO<Long>
             vote) {
@@ -75,11 +79,12 @@ public class PollRestController extends AbstractRestController {
             logger.debug("Teapot, selfvote not allowed");
             return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }
-        pollService.vote(id, new MultipleChoicePlayerVote(getAccountFromSecurity(), vote.getAnswer()));
-        return new ResponseEntity<>(HttpStatus.OK);
+        pollService.vote(id, new MultipleChoicePlayerVote(account, vote.getAnswer()));
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @RequestMapping(value = "/matchPoll", method = RequestMethod.GET)
+    @ApiOperation(value = "Get all match polls", nickname = "getMatchPolls")
     public ResponseEntity<PageDTO<MatchPollDTO>> getAllMatchPolls(@RequestParam int page, @RequestParam(required =
             false) int size, @RequestParam(required = false) String sort) {
         Page<Match> playersPolls = matchesService.getMatchesWithPolls(page, size, Optional.absent(), Optional

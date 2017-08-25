@@ -10,9 +10,7 @@ import java.util.Set;
  * Created by u0090265 on 10/1/14.
  */
 public interface DoodleService {
-    String changeMatchPresence(Account account, long matchId, boolean present);
-
-    Presence changePresence(Account account, long accountId, long doodleId);
+    Presence changePresence(long accountId, long matchId, boolean isAdmin);
 
     boolean sendDoodleNotificationsFor(Match match, Set<Account> accounts);
 }

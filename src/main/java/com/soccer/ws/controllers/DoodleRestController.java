@@ -4,6 +4,8 @@ import com.google.common.base.Optional;
 import com.soccer.ws.dto.MatchDoodleDTO;
 import com.soccer.ws.dto.PageDTO;
 import com.soccer.ws.dto.PresenceDTO;
+import com.soccer.ws.exceptions.UnauthorizedAccessException;
+import com.soccer.ws.model.Account;
 import com.soccer.ws.model.Match;
 import com.soccer.ws.model.Presence;
 import com.soccer.ws.service.DTOConversionHelper;
@@ -12,6 +14,8 @@ import com.soccer.ws.service.MatchesService;
 import com.soccer.ws.utils.SecurityUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -31,6 +35,8 @@ public class DoodleRestController extends AbstractRestController {
     private final MatchesService matchesService;
     private final DTOConversionHelper DTOConversionHelper;
     private final DoodleService doodleService;
+
+    private final Logger log = LoggerFactory.getLogger(DoodleRestController.class);
 
     public DoodleRestController(SecurityUtils securityUtils, MessageSource messageSource, MatchesService matchesService, DTOConversionHelper dtoConversionHelper, DoodleService doodleService) {
         super(securityUtils, messageSource);
@@ -61,7 +67,14 @@ public class DoodleRestController extends AbstractRestController {
     @RequestMapping(value = "/doodle/match/{id}/presence/{accountId}", method = RequestMethod.PUT)
     @ApiOperation(value = "Get matchdoodles", nickname = "changePresence")
     public ResponseEntity<PresenceDTO> changePresence(@PathVariable Long id, @PathVariable Long accountId) {
-        Presence presence = doodleService.changePresence(getAccountFromSecurity(), accountId, id);
-        return new ResponseEntity<>(DTOConversionHelper.convertPresence(presence, true), HttpStatus.OK);
+        final Account requestingAccount = getAccountFromSecurity();
+        if (requestingAccount.getId().equals(accountId) || isAdmin()) {
+            Presence presence = doodleService.changePresence(accountId, id, isAdmin());
+            log.info("Account {} changed presence (id:{}, value: {}) for doodle {} for account with id {}", requestingAccount, presence.getId(), presence.isPresent(), id, accountId);
+            return new ResponseEntity<>(DTOConversionHelper.convertPresence(presence, true), HttpStatus.OK);
+        } else {
+            log.error("Account {} with id is not entitled to change presence for accountId {}", requestingAccount, accountId);
+            throw new UnauthorizedAccessException("Cannot alter another accounts doodle");
+        }
     }
 }
