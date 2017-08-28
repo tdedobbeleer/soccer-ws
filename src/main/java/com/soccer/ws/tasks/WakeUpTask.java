@@ -14,7 +14,7 @@ public class WakeUpTask {
     @Value("${base.url}")
     private String baseUrl;
 
-    @Scheduled(cron = "0 */1 7-23 * * *", zone = "Europe/Brussels")
+    @Scheduled(cron = "0 */10 7-23 * * *", zone = "Europe/Brussels")
     public void notIdle() {
         log.info("Making sure application is not idle...");
         RestTemplate restTemplate = new RestTemplate();
