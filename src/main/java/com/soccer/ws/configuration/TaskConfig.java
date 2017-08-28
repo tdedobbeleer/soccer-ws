@@ -1,9 +1,6 @@
 package com.soccer.ws.configuration;
 
-import com.soccer.ws.tasks.CleanupTask;
-import com.soccer.ws.tasks.DoodleReminderTask;
-import com.soccer.ws.tasks.PollsTask;
-import com.soccer.ws.tasks.ResetCachesTask;
+import com.soccer.ws.tasks.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -27,6 +24,11 @@ public class TaskConfig {
     @Bean
     DoodleReminderTask doodleReminderTask() {
         return new DoodleReminderTask();
+    }
+
+    @Bean
+    WakeUpTask wakeUpTask() {
+        return new WakeUpTask();
     }
 
     @Bean
