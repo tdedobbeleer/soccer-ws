@@ -7,15 +7,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by u0090265 on 16/07/16.
  */
+@Component
 public class PollsTask implements Task {
     private static final Logger log = LoggerFactory.getLogger(CleanupTask.class);
 
+    final PollDao pollDao;
+
     @Autowired
-    PollDao pollDao;
+    public PollsTask(PollDao pollDao) {
+        this.pollDao = pollDao;
+    }
 
     @Scheduled(fixedDelay = 900000, zone = "Europe/Brussels")
     @Override
