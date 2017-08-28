@@ -13,14 +13,14 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class WakeUpTask implements Task {
     private static final Logger log = LoggerFactory.getLogger(WakeUpTask.class);
-    @Value("${base.url}")
-    private String baseUrl;
+    @Value("${application.url}")
+    private String appUrl;
 
     @Override
     @Scheduled(cron = "0 */1 7-23 * * *", zone = "Europe/Brussels")
     public void execute() {
         log.info("Making sure application is not idle...");
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.getForObject(baseUrl + "/health", Object.class);
+        restTemplate.getForObject(appUrl + "/health", Object.class);
     }
 }
