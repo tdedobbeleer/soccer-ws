@@ -146,7 +146,6 @@
                 <constraints primaryKey="true" primaryKeyName="pk_identity_options"/>
             </column>
             <column name="opt" type="BIGINT"/>
-            <column name="poll_id" type="BIGINT"/>
             <column name="created" type="datetime(6)"/>
             <column name="modified" type="datetime(6)"/>
         </createTable>
@@ -455,11 +454,6 @@
             <column name="avatar_id"/>
         </createIndex>
     </changeSet>
-    <changeSet author="u0090265 (generated)" id="1497185125116-50">
-        <createIndex indexName="FK_6pqo7xodoj6ttinn3t9mqef92" tableName="identity_option">
-            <column name="poll_id"/>
-        </createIndex>
-    </changeSet>
     <changeSet author="u0090265 (generated)" id="1497185125116-51">
         <createIndex indexName="FK_gxoqecdnbsemfodrpcqm9lqlb" tableName="matches">
             <column name="motmpoll_id"/>
@@ -580,12 +574,6 @@
                                  constraintName="FK_5dy7xpvcoqasla18qs1uqfsov" deferrable="false"
                                  initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
                                  referencedColumnNames="id" referencedTableName="image"/>
-    </changeSet>
-    <changeSet author="u0090265 (generated)" id="1497185125116-73">
-        <addForeignKeyConstraint baseColumnNames="poll_id" baseTableName="identity_option"
-                                 constraintName="FK_6pqo7xodoj6ttinn3t9mqef92" deferrable="false"
-                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
-                                 referencedColumnNames="id" referencedTableName="polls"/>
     </changeSet>
     <changeSet author="u0090265 (generated)" id="1497185125116-74">
         <addForeignKeyConstraint baseColumnNames="doodle_id" baseTableName="matches"

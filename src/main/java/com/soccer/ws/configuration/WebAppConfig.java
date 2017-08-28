@@ -1,8 +1,11 @@
 package com.soccer.ws.configuration;
 
+import org.h2.server.web.WebServlet;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -28,6 +31,14 @@ public class WebAppConfig {
                         .allowedMethods("PUT", "DELETE", "POST", "GET");
             }
         };
+    }
+
+    @Bean
+    @Profile("default")
+    public ServletRegistrationBean h2servletRegistration() {
+        ServletRegistrationBean registration = new ServletRegistrationBean(new WebServlet());
+        registration.addUrlMappings("/console/*");
+        return registration;
     }
 
     @Bean
