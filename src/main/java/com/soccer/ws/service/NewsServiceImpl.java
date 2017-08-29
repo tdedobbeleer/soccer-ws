@@ -184,9 +184,11 @@ public class NewsServiceImpl implements NewsService {
         String title = messageSource.getMessage("email.news.title", new String[]{news.getHeader(), news.getPostedBy().getName()}, Locale.ENGLISH);
         String body = news.getContent();
         if (news.getId() != null) {
-            messageSource.getMessage("email.news.body", new String[]{baseUrl, news.getId().toString()},
+            body += messageSource.getMessage("email.news.body", new String[]{baseUrl, news.getId().toString()},
                     Locale.ENGLISH);
         }
+        body += messageSource.getMessage("email.news.privacy", new String[]{},
+                Locale.ENGLISH);
         return mailService.sendMail(emails, title, body);
     }
 
