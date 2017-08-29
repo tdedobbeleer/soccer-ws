@@ -109,15 +109,19 @@ public class DataPopulator {
         matchesService.update(matchDTO1);
 
         MatchDTO matchDTO2 = matchesService.createMatch(new MatchDTO(
-                null, GeneralUtils.convertToStringDate(DateTime.now().plusDays(3)), "20:00", teamDTO2, teamDTO3, null, null, seasonDTO1
+                null, GeneralUtils.convertToStringDate(DateTime.now().plusDays(3)), "20:00", teamDTO2, teamDTO3, null, null, seasonDTO3
         ));
 
         MatchDTO matchDTO3 = matchesService.createMatch(new MatchDTO(
-                null, GeneralUtils.convertToStringDate(DateTime.now().plusDays(7)), "20:00", teamDTO1, teamDTO3, null, null, seasonDTO1
+                null, GeneralUtils.convertToStringDate(DateTime.now().plusDays(7)), "20:00", teamDTO1, teamDTO3, null, null, seasonDTO3
         ));
 
         MatchDTO matchDTO4 = matchesService.createMatch(new MatchDTO(
-                null, GeneralUtils.convertToStringDate(DateTime.now().plusDays(14)), "20:00", teamDTO3, teamDTO2, null, null, seasonDTO1
+                null, GeneralUtils.convertToStringDate(DateTime.now().plusDays(14)), "20:00", teamDTO3, teamDTO2, null, null, seasonDTO3
+        ));
+
+        MatchDTO matchDTO5 = matchesService.createMatch(new MatchDTO(
+                null, GeneralUtils.convertToStringDate(DateTime.now().plusDays(14)), "20:00", teamDTO3, teamDTO1, null, null, seasonDTO3
         ));
 
 

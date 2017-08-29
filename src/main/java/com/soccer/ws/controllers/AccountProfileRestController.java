@@ -73,8 +73,7 @@ public class AccountProfileRestController extends AbstractRestController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
-
-    @PreAuthorize("isAuthenticated()")
+    
     @RequestMapping(value = "/profiles", method = RequestMethod.GET)
     @ResponseBody
     @ApiOperation(value = "Get all Account profiles", nickname = "getAllProfiles")
