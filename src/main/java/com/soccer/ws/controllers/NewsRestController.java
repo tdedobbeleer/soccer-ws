@@ -71,6 +71,7 @@ public class NewsRestController extends AbstractRestController {
                 case POST_AND_SEND:
                     newsService.create(newsDTO);
                     newsService.sendNewsEmail(newsDTO);
+                    break;
                 case POST:
                     newsService.create(newsDTO);
                     break;
