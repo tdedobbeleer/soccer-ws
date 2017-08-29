@@ -24,10 +24,10 @@ public interface NewsService {
     //void updateNews(NewsForm form, Account account);
 
     @Transactional(readOnly = false)
-    News create(NewsDTO news);
+    NewsDTO create(NewsDTO news);
 
     @Transactional(readOnly = false)
-    News update(NewsDTO news, Account account);
+    void update(NewsDTO news, Account account);
 
     Comment addNewsComment(long newsId, String content, Account account);
 

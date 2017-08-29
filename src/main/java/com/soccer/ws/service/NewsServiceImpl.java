@@ -61,23 +61,24 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional(readOnly = false)
-    public News create(NewsDTO news) {
+    public NewsDTO create(NewsDTO news) {
         Account account = accountDao.findOne(news.getPostedBy().getId());
         if (account == null)
             throw new UsernameNotFoundException("Cannopt post news, user not found");
-        News n = new News(news.getHeader(), news.getContent(), account);
-        return newsDao.save(n);
+        News n = newsDao.save(new News(news.getHeader(), news.getContent(), account));
+        news.setId(n.getId());
+        return news;
     }
 
     @Override
     @Transactional(readOnly = false)
-    public News update(NewsDTO news, Account account) {
+    public void update(NewsDTO news, Account account) {
         News n = newsDao.findOne(news.getId());
         if (n == null)
             throw new ObjectNotFoundException(String.format("Object news with id %s not found", news.getId()));
         n.setContent(news.getContent());
         n.setHeader(news.getHeader());
-        return newsDao.save(n);
+        newsDao.save(n);
     }
 
 
@@ -181,8 +182,11 @@ public class NewsServiceImpl implements NewsService {
             }
         }
         String title = messageSource.getMessage("email.news.title", new String[]{news.getHeader(), news.getPostedBy().getName()}, Locale.ENGLISH);
-        String body = messageSource.getMessage("email.news.body", new String[]{news.getContent(), baseUrl, news.getId().toString()},
-                Locale.ENGLISH);
+        String body = news.getContent();
+        if (news.getId() != null) {
+            messageSource.getMessage("email.news.body", new String[]{baseUrl, news.getId().toString()},
+                    Locale.ENGLISH);
+        }
         return mailService.sendMail(emails, title, body);
     }
 
