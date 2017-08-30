@@ -50,11 +50,6 @@ public class RegistrationDTO {
 
     @Override
     public String toString() {
-        return "RegistrationDTO{" +
-                "email='" + email + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", password=******'" + '\'' +
-                '}';
+        return firstName + " " + lastName + "(" + email + ")";
     }
 }
