@@ -54,6 +54,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public AccountDTO register(RegistrationDTO registration) {
         Account toBeCreated = new Account.Builder()
                 .firstName(registration.getFirstName())
