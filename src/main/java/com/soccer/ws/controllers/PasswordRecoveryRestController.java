@@ -21,7 +21,6 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.util.Locale;
 
 /**
@@ -58,7 +57,10 @@ public class PasswordRecoveryRestController extends AbstractRestController {
             @ApiResponse(code = 404, message = "No account with this email address found"),
             @ApiResponse(code = 400, message = "Email could not be sent for some reason"),
     })
-    public ResponseEntity postForgotPassword(@RequestBody PasswordRecoveryDTO passwordRecoveryDTO, BindingResult result, Locale locale) throws CustomMethodArgumentNotValidException {
+    public ResponseEntity postForgotPassword(@RequestBody PasswordRecoveryDTO passwordRecoveryDTO, @RequestParam String captchaResponse, BindingResult result, Locale locale, HttpServletRequest request) throws CustomMethodArgumentNotValidException {
+        if (Strings.isNullOrEmpty(captchaResponse) || !reCaptchaService.isResponseValid(request, captchaResponse)) {
+            throw new AccessDeniedException("You are a bot, access denied! In yo Face!");
+        }
         validate(requestPwdRecoveryValidator, passwordRecoveryDTO, result);
         pwdRecoveryService.setRecoveryCodeAndEmail(passwordRecoveryDTO.getEmail(), locale);
         return ResponseEntity.noContent().build();
@@ -68,7 +70,7 @@ public class PasswordRecoveryRestController extends AbstractRestController {
     @ApiOperation(value = "Set a new password using recovery code", nickname = "useRecoveryCode")
     public ResponseEntity putRecovery(@RequestBody PasswordRecoveryDTO passwordRecoveryDTO, BindingResult result) throws CustomMethodArgumentNotValidException {
         validate(pwdRecoveryValidator, passwordRecoveryDTO, result);
-        pwdRecoveryService.checkPwdRecoverCodeAndEmail(passwordRecoveryDTO.getCode(), passwordRecoveryDTO.getPassword(), passwordRecoveryDTO.getCode());
+        pwdRecoveryService.checkPwdRecoverCodeAndEmail(passwordRecoveryDTO.getPassword(), passwordRecoveryDTO.getEmail(), passwordRecoveryDTO.getCode());
         return ResponseEntity.noContent().build();
     }
 }

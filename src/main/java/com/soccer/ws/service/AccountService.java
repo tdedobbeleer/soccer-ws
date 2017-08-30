@@ -14,6 +14,9 @@ public interface AccountService {
 
     //Account updateAccount(Account account, AccountProfileForm form);
 
+    @Transactional(readOnly = false)
+    boolean firstTimeActivation(long id, boolean sendMail);
+
     void changeActivation(long id, boolean status);
 
     @Transactional(readOnly = false)

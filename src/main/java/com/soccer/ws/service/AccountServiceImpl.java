@@ -69,6 +69,24 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional(readOnly = false)
+    public boolean firstTimeActivation(final long id, final boolean sendMail) {
+        Account account = accountDao.findOne(id);
+        if (account == null) throw new ObjectNotFoundException(String.format("Object with id %s not found", id));
+        account.setActive(true);
+        accountDao.save(account);
+        if (sendMail) {
+            if (!mailService.sendMail(account.getUsername(),
+                    messageSource.getMessage("email.activation.subject", null, Locale.ENGLISH),
+                    messageSource.getMessage("email.activation.body", new String[]{account.getFirstName()}, Locale.ENGLISH))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    @Override
+    @Transactional(readOnly = false)
     public void changeActivation(long id, boolean status) {
         Account account = accountDao.findOne(id);
         if (account == null)
@@ -207,19 +225,6 @@ public class AccountServiceImpl implements AccountService {
     public List<Account> getAccountsWithActivationCode() {
         return accountDao.findByActivationCodeNotNull();
     }
-
-    /**
-     * private Account getUpdatedAccount(Account account, AccountProfileForm form) {
-     * Account newAccount = accountDao.findOne(account.getId());
-     * newAccount.setFirstName(form.getFirstName());
-     * newAccount.setLastName(form.getLastName());
-     * newAccount.setUsername(form.getUsername());
-     * setAccountProfile(account, newAccount, form);
-     * newAccount.getAccountSettings().setSendDoodleNotifications(form.isDoodleNotificationMails());
-     * newAccount.getAccountSettings().setSendNewsNotifications(form.isNewsNotificationMails());
-     * return newAccount;
-     * }
-     **/
 
     private String getCurrentEncodedPasswordFor(Account account) {
         return jdbcTemplate.queryForObject(GET_PASSWORD, String.class, account.getId());

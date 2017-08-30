@@ -45,11 +45,30 @@ public class AccountRestController extends AbstractRestController {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/accounts/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value = "Get Account", nickname = "getAccount")
+    public ResponseEntity<AccountDTO> getAccount(@PathVariable long id) {
+        return new ResponseEntity<>(dtoConversionHelper.convertAccount(accountService.getAccount(id), isLoggedIn()), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/accounts/{id}/activation", method = RequestMethod.PUT)
     @ResponseBody
     @ApiOperation(value = "Change activation status", nickname = "changeActivation")
     public ResponseEntity changeActivation(@PathVariable long id, @RequestParam boolean status) {
         accountService.changeActivation(id, status);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/accounts/{id}/activation/first", method = RequestMethod.PUT)
+    @ResponseBody
+    @ApiOperation(value = "Activate account for the first time", nickname = "firstTimeActivation")
+    public ResponseEntity firstTimeActivation(@PathVariable long id, @RequestParam boolean sendMail) {
+        if (!accountService.firstTimeActivation(id, sendMail)) {
+            return new ResponseEntity(HttpStatus.PRECONDITION_FAILED);
+        }
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 

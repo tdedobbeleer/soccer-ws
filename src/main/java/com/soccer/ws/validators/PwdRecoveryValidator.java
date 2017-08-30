@@ -38,7 +38,7 @@ public class PwdRecoveryValidator implements Validator {
             errors.rejectValue("email", "validation.email.not.exists");
         } else {
             //Check code for this account
-            if (pwdRecoveryService.isValidRecoveryCode(form.getEmail(), form.getCode())) {
+            if (!pwdRecoveryService.isValidRecoveryCode(form.getEmail(), form.getCode())) {
                 errors.rejectValue("code", "validation.pwd.recovery.code");
             }
         }
