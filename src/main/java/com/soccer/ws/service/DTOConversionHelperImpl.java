@@ -3,6 +3,7 @@ package com.soccer.ws.service;
 import com.google.common.collect.Lists;
 import com.soccer.ws.dto.*;
 import com.soccer.ws.model.*;
+import com.soccer.ws.utils.GeneralUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -160,7 +161,8 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
             accountDTO.setUsername(isLoggedIn ? account.getUsername() : "");
             accountDTO.setFirstName(account.getFirstName());
             accountDTO.setLastName(isLoggedIn ? account.getLastName() : null);
-            accountDTO.setName(isLoggedIn ? account.toString() : account.getFullName());
+            accountDTO.setName(isLoggedIn ? account.toString() :
+                    GeneralUtils.abbreviateName(account.getFirstName(), account.getLastName()));
             accountDTO.setId(account.getId());
             accountDTO.setActivated(isLoggedIn && account.isActive());
             accountDTO.setRole(isLoggedIn ? account.getRole().name() : "UNKNOWN");

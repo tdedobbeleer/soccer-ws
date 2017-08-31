@@ -9,7 +9,6 @@ import com.soccer.ws.model.Presence;
 import com.soccer.ws.persistence.AccountDao;
 import com.soccer.ws.persistence.DoodleDao;
 import com.soccer.ws.persistence.MatchesDao;
-import com.soccer.ws.utils.HtmlHelper;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -42,7 +41,7 @@ public class DoodleServiceImpl implements DoodleService {
     private String baseUrl;
 
     @Autowired
-    public DoodleServiceImpl(DoodleDao doodleDao, AccountDao accountDao, HtmlHelper htmlHelper, MatchesDao
+    public DoodleServiceImpl(DoodleDao doodleDao, AccountDao accountDao, MatchesDao
             matchesDao, MessageSource messageSource, MailService mailService) {
         this.doodleDao = doodleDao;
         this.accountDao = accountDao;

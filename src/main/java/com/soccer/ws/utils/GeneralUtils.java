@@ -1,5 +1,6 @@
 package com.soccer.ws.utils;
 
+import com.google.common.base.Strings;
 import com.soccer.ws.exceptions.ObjectNotFoundException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.joda.time.DateTime;
@@ -65,5 +66,22 @@ public class GeneralUtils {
 
     public static void throwObjectNotFoundException(Object o, Long id, Class expectedClass) {
         if (o == null) throw new ObjectNotFoundException(String.format("%s %s not found", expectedClass.getName(), id));
+    }
+
+    public static String abbreviateLastName(String name) {
+        if (Strings.isNullOrEmpty(name)) return "";
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String p : name.split(" ")) {
+            stringBuilder.append(p.substring(0, 1));
+        }
+        return stringBuilder.toString();
+    }
+
+    public static String abbreviateName(String firstName, String lastName) {
+        StringBuilder b = new StringBuilder(firstName)
+                .append(" ")
+                .append(abbreviateLastName(lastName));
+        return b.toString();
+
     }
 }
