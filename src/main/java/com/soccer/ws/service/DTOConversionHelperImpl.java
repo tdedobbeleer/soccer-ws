@@ -209,15 +209,21 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
         if (doodle != null) {
             //Run though all active accounts, check if they are present and convert
             List<PresenceDTO> presenceDTOs = Lists.newArrayList();
+            List<PresenceDTO> reserveDTOs = Lists.newArrayList();
             for (Account a : cacheAdapter.getActiveAccounts()) {
                 Presence p = doodle.getPresenceFor(a);
-                presenceDTOs.add(new PresenceDTO(convertAccount(a, account != null), doodle.isPresent(a),
+                PresenceDTO dto = new PresenceDTO(convertAccount(a, account != null), doodle.getPresenceType(a),
                         getModifiedDateIfNeeded(p),
-                        isAdmin || (account != null && match.isActive() && a.equals(account))));
+                        isAdmin || (account != null && match.isActive() && a.equals(account)));
+                if (dto.getType().equals(Presence.PresenceType.RESERVE)) {
+                    reserveDTOs.add(dto);
+                } else {
+                    presenceDTOs.add(dto);
+                }
             }
             return new DoodleDTO(doodle.getId(),
-                    presenceDTOs,
-                    account == null ? null : new PresenceDTO(convertAccount(account, true), doodle.isPresent(account)
+                    presenceDTOs, reserveDTOs,
+                    account == null ? null : new PresenceDTO(convertAccount(account, true), doodle.getPresenceType(account)
                             , null
                             , match.isActive()),
                     doodle.countPresences());

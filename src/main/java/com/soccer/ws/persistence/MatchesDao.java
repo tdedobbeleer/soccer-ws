@@ -1,5 +1,6 @@
 package com.soccer.ws.persistence;
 
+import com.soccer.ws.model.Doodle;
 import com.soccer.ws.model.Match;
 import com.soccer.ws.model.Season;
 import com.soccer.ws.model.Team;
@@ -34,6 +35,8 @@ public interface MatchesDao extends PagingAndSortingRepository<Match, Long>, Jpa
     Page<Match> findByMotmPollNotNull(Pageable pageable);
 
     Optional<Match> findByMotmPollId(long pollId);
+
+    Optional<Match> findByMatchDoodle(Doodle doodle);
 
     Match findFirstByDateBeforeAndMotmPollIsNotNullOrderByDateDesc(DateTime date);
 }
