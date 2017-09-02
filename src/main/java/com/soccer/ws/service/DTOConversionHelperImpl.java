@@ -199,6 +199,7 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
         return new MatchDoodleDTO(match.getId(),
                 convertDoodle(match, account, isAdmin),
                 match.getStringDate(),
+                match.getStringHour(),
                 match.getDescription());
     }
 

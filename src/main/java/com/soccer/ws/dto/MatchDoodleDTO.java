@@ -6,15 +6,17 @@ package com.soccer.ws.dto;
 public class MatchDoodleDTO extends BaseClassDTO {
     private DoodleDTO doodle;
     private String date;
+    private String hour;
     private String description;
 
     public MatchDoodleDTO() {}
 
-    public MatchDoodleDTO(long id, DoodleDTO doodle, String date, String description) {
+    public MatchDoodleDTO(long id, DoodleDTO doodle, String date, String hour, String description) {
         super(id);
         this.doodle = doodle;
         this.date = date;
         this.description = description;
+        this.hour = hour;
     }
 
     public DoodleDTO getDoodle() {
@@ -39,5 +41,13 @@ public class MatchDoodleDTO extends BaseClassDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getHour() {
+        return hour;
+    }
+
+    public void setHour(String hour) {
+        this.hour = hour;
     }
 }
