@@ -21,6 +21,7 @@ public class DoodleDTO extends BaseClass {
         this.total = total;
         this.currentPresence = currentPresence;
         setPresences(presences);
+        setReserves(reserves);
     }
 
     public List<PresenceDTO> getPresences() {
@@ -55,6 +56,9 @@ public class DoodleDTO extends BaseClass {
     }
 
     public void setReserves(List<PresenceDTO> reserves) {
+        if (reserves != null) {
+            Collections.sort(reserves);
+        }
         this.reserves = reserves;
     }
 }

@@ -22,6 +22,7 @@ import java.util.Set;
 @Profile("!default")
 @Service
 public class MailGunMailServiceImpl implements MailService {
+
     @Value("${mail.admin.fromTo}")
     private String defaultAdminFromTo;
 

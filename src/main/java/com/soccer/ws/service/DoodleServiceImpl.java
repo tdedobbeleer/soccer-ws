@@ -36,8 +36,8 @@ public class DoodleServiceImpl implements DoodleService {
     private final MailService mailService;
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Value("${doodle.maximum}")
-    private int doodleMax;
+    @Value("${doodle.limit}")
+    private int doodleLimit;
 
     @Value("${base.url}")
     private String baseUrl;
@@ -128,7 +128,7 @@ public class DoodleServiceImpl implements DoodleService {
     }
 
     private void determinePresenceType(final Doodle doodle, final Presence presence, boolean present) {
-        if (doodle.countPresences() >= doodleMax) {
+        if (doodle.countPresences() >= doodleLimit) {
             if (present) {
                 presence.setReserve(true);
             } else if (!presence.isReserve()) {

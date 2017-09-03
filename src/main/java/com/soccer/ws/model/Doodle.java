@@ -54,7 +54,7 @@ public class Doodle {
     public int countPresences() {
         int i = 0;
         for (Presence p : getPresences()) {
-            if (p.isPresent()) {
+            if (p.isPresent() && !p.isReserve()) {
                 i++;
             }
         }
