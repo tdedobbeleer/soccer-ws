@@ -72,7 +72,29 @@ public class DoodleServiceImpl implements DoodleService {
                 break;
             }
         }
-        presence = changePresence(d, presence, accountInUse);
+        presence = changePresence(d, presence, accountInUse, false);
+        doodleDao.save(d);
+        return presence;
+    }
+
+    @Override
+    public Presence forceChangePresence(final long accountId, final long matchId) {
+        Account accountInUse = accountDao.findOne(accountId);
+        if (accountInUse == null)
+            throw new ObjectNotFoundException(String.format("Account with id %s not found.", accountId));
+
+        Match match = matchesDao.findOne(matchId);
+        if (match == null) throw new ObjectNotFoundException(String.format("Match with id %s not found.", matchId));
+        Doodle d = match.getMatchDoodle();
+
+        Presence presence = null;
+        for (Presence p : d.getPresences()) {
+            if (p.getAccount().equals(accountInUse)) {
+                presence = p;
+                break;
+            }
+        }
+        presence = changePresence(d, presence, accountInUse, true);
         doodleDao.save(d);
         return presence;
     }
@@ -111,7 +133,7 @@ public class DoodleServiceImpl implements DoodleService {
         return true;
     }
 
-    private Presence changePresence(Doodle doodle, Presence p, Account account) {
+    private Presence changePresence(Doodle doodle, Presence p, Account account, boolean force) {
         //If not created, create and set present
         if (p == null) {
             p = new Presence();
@@ -119,16 +141,16 @@ public class DoodleServiceImpl implements DoodleService {
             doodle.getPresences().add(p);
             log.info(String.format("New presence created for account %s and doodle id %s", account.getUsername(),
                     doodle.getId()));
-            determinePresenceType(doodle, p, true);
+            determinePresenceType(doodle, p, true, force);
         } else {
             //Otherwise, set the opposite
-            determinePresenceType(doodle, p, !p.isPresent());
+            determinePresenceType(doodle, p, !p.isPresent(), force);
         }
         return p;
     }
 
-    private void determinePresenceType(final Doodle doodle, final Presence presence, boolean present) {
-        if (doodle.countPresences() >= doodleLimit) {
+    private void determinePresenceType(final Doodle doodle, final Presence presence, boolean present, boolean force) {
+        if (!force && doodle.countPresences() >= doodleLimit) {
             if (present) {
                 presence.setReserve(true);
             } else if (!presence.isReserve()) {
@@ -137,6 +159,8 @@ public class DoodleServiceImpl implements DoodleService {
                 presence.setReserve(false);
             }
         }
+        //If the status is forced, remove reserve status
+        if (force) presence.setReserve(false);
         presence.setPresent(present);
     }
 

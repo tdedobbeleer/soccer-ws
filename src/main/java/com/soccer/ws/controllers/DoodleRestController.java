@@ -65,9 +65,19 @@ public class DoodleRestController extends AbstractRestController {
 
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/doodle/match/{id}/presence/{accountId}", method = RequestMethod.PUT)
-    @ApiOperation(value = "Get matchdoodles", nickname = "changePresence")
-    public ResponseEntity<PresenceDTO> changePresence(@PathVariable Long id, @PathVariable Long accountId) {
+    @ApiOperation(value = "Change presence", nickname = "changePresence")
+    public ResponseEntity<PresenceDTO> changePresence(@PathVariable Long id, @PathVariable Long accountId, @RequestParam(required = false) Boolean force) {
         final Account requestingAccount = getAccountFromSecurity();
+        if (force != null && force) {
+            if (isAdmin()) {
+                Presence presence = doodleService.forceChangePresence(accountId, id);
+                log.info("Account {} forced change presence (id:{}, value: {}) for doodle {} for account with id {}", requestingAccount, presence.getId(), presence.isPresent(), id, accountId);
+                return new ResponseEntity<>(DTOConversionHelper.convertPresence(presence, true), HttpStatus.OK);
+
+            } else {
+                throw new UnauthorizedAccessException("Account is not an admin and cannot force the action");
+            }
+        }
         if (requestingAccount.getId().equals(accountId) || isAdmin()) {
             Presence presence = doodleService.changePresence(accountId, id, isAdmin());
             log.info("Account {} changed presence (id:{}, value: {}) for doodle {} for account with id {}", requestingAccount, presence.getId(), presence.isPresent(), id, accountId);

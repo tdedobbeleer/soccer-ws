@@ -12,5 +12,7 @@ import java.util.Set;
 public interface DoodleService {
     Presence changePresence(long accountId, long matchId, boolean isAdmin);
 
+    Presence forceChangePresence(long accountId, long matchId);
+
     boolean sendDoodleNotificationsFor(Match match, Set<Account> accounts);
 }
