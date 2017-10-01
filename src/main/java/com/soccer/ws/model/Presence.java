@@ -10,6 +10,7 @@ import javax.persistence.*;
 public class Presence extends BaseClass {
     private Account account;
     private boolean present;
+    private boolean reserve;
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "account_id")
@@ -30,7 +31,16 @@ public class Presence extends BaseClass {
         this.present = present;
     }
 
+    @Column(name = "reserve")
+    public boolean isReserve() {
+        return reserve;
+    }
+
+    public void setReserve(boolean reserve) {
+        this.reserve = reserve;
+    }
+
     public enum PresenceType {
-        NOT_PRESENT, PRESENT, NOT_FILLED_IN, ANONYMOUS
+        NOT_PRESENT, PRESENT, NOT_FILLED_IN, ANONYMOUS, RESERVE
     }
 }

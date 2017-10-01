@@ -95,7 +95,7 @@ public class StatisticsServiceImpl implements StatisticsService {
         for (Match match : matches) {
             //Only gather info on played match
             if (match.getStatus().equals(MatchStatusEnum.PLAYED)) {
-                if (match.getMatchDoodle().isPresent(account).equals(Presence.PresenceType.PRESENT)) presences++;
+                if (match.getMatchDoodle().getPresenceType(account).equals(Presence.PresenceType.PRESENT)) presences++;
                 for (Goal goal : match.getGoals()) {
                     if (goal.getScorer() != null && goal.getScorer().equals(account)) {
                         goals++;

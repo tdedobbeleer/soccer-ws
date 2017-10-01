@@ -1,7 +1,6 @@
 package com.soccer.ws.dto;
 
 import com.soccer.ws.model.BaseClass;
-import com.soccer.ws.model.Doodle;
 
 import java.util.Collections;
 import java.util.List;
@@ -11,16 +10,18 @@ import java.util.List;
  */
 public class DoodleDTO extends BaseClass {
     private List<PresenceDTO> presences;
+    private List<PresenceDTO> reserves;
     private PresenceDTO currentPresence;
     private int total;
 
     public DoodleDTO() {}
 
-    public DoodleDTO(long id, List<PresenceDTO> presences, PresenceDTO currentPresence, int total) {
+    public DoodleDTO(long id, List<PresenceDTO> presences, List<PresenceDTO> reserves, PresenceDTO currentPresence, int total) {
         this.id = id;
         this.total = total;
         this.currentPresence = currentPresence;
         setPresences(presences);
+        setReserves(reserves);
     }
 
     public List<PresenceDTO> getPresences() {
@@ -48,5 +49,16 @@ public class DoodleDTO extends BaseClass {
 
     public void setCurrentPresence(PresenceDTO currentPresence) {
         this.currentPresence = currentPresence;
+    }
+
+    public List<PresenceDTO> getReserves() {
+        return reserves;
+    }
+
+    public void setReserves(List<PresenceDTO> reserves) {
+        if (reserves != null) {
+            Collections.sort(reserves);
+        }
+        this.reserves = reserves;
     }
 }

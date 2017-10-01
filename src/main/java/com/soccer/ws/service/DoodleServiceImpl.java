@@ -2,10 +2,7 @@ package com.soccer.ws.service;
 
 import com.soccer.ws.data.MatchStatusEnum;
 import com.soccer.ws.exceptions.ObjectNotFoundException;
-import com.soccer.ws.model.Account;
-import com.soccer.ws.model.Doodle;
-import com.soccer.ws.model.Match;
-import com.soccer.ws.model.Presence;
+import com.soccer.ws.model.*;
 import com.soccer.ws.persistence.AccountDao;
 import com.soccer.ws.persistence.DoodleDao;
 import com.soccer.ws.persistence.MatchesDao;
@@ -20,7 +17,9 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -36,6 +35,9 @@ public class DoodleServiceImpl implements DoodleService {
     private final MessageSource messageSource;
     private final MailService mailService;
     private final Logger log = LoggerFactory.getLogger(this.getClass());
+
+    @Value("${doodle.limit}")
+    private int doodleLimit;
 
     @Value("${base.url}")
     private String baseUrl;
@@ -90,7 +92,7 @@ public class DoodleServiceImpl implements DoodleService {
                 //Make sure they enabled the notifications
                 if (account.getAccountSettings().isSendDoodleNotifications()) {
                     //If they didn't fill in the doodle, send mail
-                    if (match.getMatchDoodle().isPresent(account).equals(Presence.PresenceType.NOT_FILLED_IN)) {
+                    if (match.getMatchDoodle().getPresenceType(account).equals(Presence.PresenceType.NOT_FILLED_IN)) {
                         String subject = messageSource.getMessage("email.doodle.subject", new String[]{match
                                 .getDescription(), matchDate}, Locale.ENGLISH);
                         String body = messageSource.getMessage("email.doodle.body", new String[]{account.getFirstName
@@ -114,14 +116,47 @@ public class DoodleServiceImpl implements DoodleService {
         if (p == null) {
             p = new Presence();
             p.setAccount(account);
-            p.setPresent(true);
             doodle.getPresences().add(p);
             log.info(String.format("New presence created for account %s and doodle id %s", account.getUsername(),
                     doodle.getId()));
+            determinePresenceType(doodle, p, true);
         } else {
             //Otherwise, set the opposite
-            p.setPresent(!p.isPresent());
+            determinePresenceType(doodle, p, !p.isPresent());
         }
         return p;
+    }
+
+    private void determinePresenceType(final Doodle doodle, final Presence presence, boolean present) {
+        if (doodle.countPresences() >= doodleLimit) {
+            if (present) {
+                presence.setReserve(true);
+            } else if (!presence.isReserve()) {
+                notifyFirstReserve(doodle);
+            } else {
+                presence.setReserve(false);
+            }
+        }
+        presence.setPresent(present);
+    }
+
+    private void notifyFirstReserve(Doodle doodle) {
+        doodle.getPresences()
+                .stream()
+                .filter(Presence::isReserve)
+                .sorted(Comparator.comparing(BaseClass::getModified))
+                .findFirst()
+                .ifPresent(p -> {
+                    Optional<Match> m = matchesDao.findByMatchDoodle(doodle);
+                    final Account account = p.getAccount();
+                    //Set present
+                    p.setPresent(true);
+                    p.setReserve(false);
+                    assert m.isPresent() : "A doodle without a match cannot exist";
+                    log.info(String.format("Account %s is now set as present", account.getUsername()));
+                    final String subject = messageSource.getMessage("email.doodle.reserve.subject", new Object[]{m.get().getDescription(), m.get().getStringDate() + " " + m.get().getStringHour()}, Locale.ENGLISH);
+                    final String body = messageSource.getMessage("email.doodle.reserve.body", new Object[]{account.getFirstName()}, Locale.ENGLISH);
+                    mailService.sendMail(account.getUsername(), account.toString(), subject, body);
+                });
     }
 }

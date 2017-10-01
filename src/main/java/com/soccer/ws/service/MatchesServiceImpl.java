@@ -44,7 +44,7 @@ public class MatchesServiceImpl implements MatchesService {
     private final MatchesDao matchesDao;
     private final AccountDao accountDao;
     private final CacheAdapter cacheAdapter;
-    @Value("${max.seasons}")
+    @Value("${seasons.display.max}")
     private int maxSeasons;
 
     @Autowired
