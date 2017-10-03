@@ -61,6 +61,17 @@ public class Doodle {
         return i;
     }
 
+    @Transient
+    public int countPresencesWithoutReserves() {
+        int i = 0;
+        for (Presence p : getPresences()) {
+            if (p.isPresent() && !p.isReserve()) {
+                i++;
+            }
+        }
+        return i;
+    }
+
     public Presence getPresenceFor(Account account) {
         if (presences == null) return null;
         for (Presence p : getPresences()) {
