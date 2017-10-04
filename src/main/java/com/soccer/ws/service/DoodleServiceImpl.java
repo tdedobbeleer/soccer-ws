@@ -150,7 +150,7 @@ public class DoodleServiceImpl implements DoodleService {
     }
 
     private void determinePresenceType(final Doodle doodle, final Presence presence, boolean present, boolean force) {
-        if (!force && doodle.countPresencesWithoutReserves()>= doodleLimit) {
+        if (!force && doodle.countPresences() >= doodleLimit) {
             if (present) {
                 presence.setReserve(true);
             } else if (!presence.isReserve()) {

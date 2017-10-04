@@ -226,7 +226,7 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
                     account == null ? null : new PresenceDTO(convertAccount(account, true), doodle.getPresenceType(account)
                             , null
                             , match.isActive()),
-                    doodle.countPresences());
+                    doodle.countPresences() + reserveDTOs.size());
         }
         return null;
     }
