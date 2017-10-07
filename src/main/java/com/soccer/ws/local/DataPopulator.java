@@ -83,8 +83,8 @@ public class DataPopulator {
         SeasonDTO seasonDTO2 = dtoConversionHelper.convertSeasons(Lists.newArrayList(season2)).get(0);
         SeasonDTO seasonDTO3 = dtoConversionHelper.convertSeasons(Lists.newArrayList(season3)).get(0);
 
-        TeamDTO teamDTO1 = teamService.create(new TeamDTO(null, "SVK", new AddressDTO(null, 3000, "Test straat 1", "Leuven", "https://maps.google.be/maps?q=Korbeekdamstraat 42, +3050+Oud-Heverlee&output=embed")));
-        TeamDTO teamDTO2 = teamService.create(new TeamDTO(null, "De Kanaries", new AddressDTO(null, 3000, "Test straat 1", "Leuven", null)));
+        TeamDTO teamDTO1 = teamService.create(new TeamDTO(null, "SVK", new AddressDTO(null, 3000, "Test straat 1", "Leuven", "https://maps.google.be/maps?q=Ladeuzeplein 1, +3000+Leuven&output=embed")));
+        TeamDTO teamDTO2 = teamService.create(new TeamDTO(null, "De Kanaries", new AddressDTO(null, 3000, "Test straat 1", "Leuven", "https://maps.google.be/maps?q=Hooverplein 1, +3000+Leuven&output=embed")));
         TeamDTO teamDTO3 = teamService.create(new TeamDTO(null, "KU Leuven", new AddressDTO(null, 3000, "Test straat 1", "Leuven", null)));
 
         MatchDTO matchDTO1 = matchesService.createMatch(new MatchDTO(

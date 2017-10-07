@@ -119,6 +119,7 @@ public class DoodleServiceImpl implements DoodleService {
                                 .getDescription(), matchDate}, Locale.ENGLISH);
                         String body = messageSource.getMessage("email.doodle.body", new String[]{account.getFirstName
                                 (), baseUrl}, Locale.ENGLISH);
+                        log.info("Account {} has not filled in doodle. Mail will be sent.", account.getUsername());
                         mailService.sendMail(account.getUsername(), account.toString(), subject, body);
                     } else {
                         log.info("Account {} has filled in doodle", account.getUsername());
