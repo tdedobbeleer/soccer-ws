@@ -1,10 +1,13 @@
 package com.soccer.ws.service;
 
+import com.google.common.collect.ImmutableMap;
+import com.soccer.ws.data.MailTypeEnum;
 import com.soccer.ws.exceptions.EmailNotSentException;
 import com.soccer.ws.exceptions.InvalidRecoveryCodeException;
 import com.soccer.ws.exceptions.ObjectNotFoundException;
 import com.soccer.ws.model.Account;
 import com.soccer.ws.persistence.AccountDao;
+import com.soccer.ws.utils.Constants;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -76,13 +79,14 @@ public class PwdRecoveryServiceImpl implements PwdRecoveryService {
 
         accountDao.save(account);
 
-        Object[] args = new Object[]{account.getFirstName(), recoveryHex, account.getUsername(), baseUrl};
-
         if (!mailService.sendMail(
                 account.getUsername(),
                 account.toString(),
                 messageSource.getMessage("email.pwd.recovery.subject", null, locale),
-                messageSource.getMessage("email.pwd.recovery.body", args, locale))) {
+                MailTypeEnum.PASSWORD_RECOVERY,
+                ImmutableMap.of(Constants.EMAIL_ACCOUNT_VARIABLE, account,
+                        "code", recoveryHex,
+                        Constants.EMAIL_BASE_URL_VARIABLE, baseUrl))) {
             throw new EmailNotSentException("Email could not be sent");
         }
     }

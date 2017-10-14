@@ -1,8 +1,10 @@
 package com.soccer.ws.service;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.soccer.ws.data.MailTypeEnum;
 import com.soccer.ws.dto.NewsDTO;
 import com.soccer.ws.exceptions.ObjectNotFoundException;
 import com.soccer.ws.model.Account;
@@ -12,6 +14,7 @@ import com.soccer.ws.model.NewsComment;
 import com.soccer.ws.persistence.AccountDao;
 import com.soccer.ws.persistence.CommentDao;
 import com.soccer.ws.persistence.NewsDao;
+import com.soccer.ws.utils.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -182,14 +185,8 @@ public class NewsServiceImpl implements NewsService {
             }
         }
         String title = messageSource.getMessage("email.news.title", new String[]{news.getHeader(), news.getPostedBy().getName()}, Locale.ENGLISH);
-        String body = news.getContent();
-        if (news.getId() != null) {
-            body += messageSource.getMessage("email.news.body", new String[]{baseUrl, news.getId().toString()},
-                    Locale.ENGLISH);
-        }
-        body += messageSource.getMessage("email.news.privacy", new String[]{},
-                Locale.ENGLISH);
-        return mailService.sendMail(emails, title, body);
+        return mailService.sendMail(emails, title, MailTypeEnum.MESSAGE, ImmutableMap.of("message", news,
+                Constants.EMAIL_BASE_URL_VARIABLE, baseUrl));
     }
 
     /**

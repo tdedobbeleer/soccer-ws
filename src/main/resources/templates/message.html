@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout.html}">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<section layout:fragment="custom-content">
+    <div th:utext="${message.content}"></div>
+    <p th:if="${message.id}"><a th:href="@{{url}/messages/{id}(id=${message.id}, url=${baseUrl})}">Lees dit bericht na
+        of
+        reageer
+        op de SVK
+        website.</a></p>
+
+    <p><i>Je kan deze waarschuwingen uitzetten door je profielopties te wijzigen.</i></p>
+    <p><i>You can disable these notifications by changing your profile settings.</i></p>
+</section>
+</body>
+</html>

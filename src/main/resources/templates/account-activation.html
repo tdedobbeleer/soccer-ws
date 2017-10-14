@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout.html}">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<section layout:fragment="custom-content">
+    <p>Beste <span th:text="${account.firstName}"></span>,</p>
+    <p>Uw account werd successvol geactiveerd.</p>
+    <p>Mvg,</p>
+    SVK
+    <hr>
+    <p>Dear <span th:text="${account.firstName}"></span>,</p>
+    <p>Your account was succesfully activated.</p>
+    <p>Kind regards,</p>
+    SVK
+</section>
+
+</body>
+</html>

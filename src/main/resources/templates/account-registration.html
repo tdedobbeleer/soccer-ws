@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<section layout:fragment="custom-content">
+    <p>Beste beheerder,</p>
+
+    <p><span th:text="${account.firstName + ' ' + account.lastName + ' (' + account.username + ')'}"></span> heeft zich
+        geregistreerd op de website.</p>
+
+    <p>Klik <a th:href="@{{url}/accounts/{id}/activate(id=${account.id}, url=${baseUrl})}"
+               th:text="hier"></a> om om de account te activeren.</p>
+    <p>Mvg,</p>
+    SVK
+    <hr>
+    <p>Dear admin,</p>
+    <p><span th:text="${account.firstName + ' ' + account.lastName + ' (' + account.username + ')'}"></span> has
+        registered on the SVK website.</p>
+    <p>Click <a th:href="@{{url}/accounts/{id}/activate(id=${account.id}, url=${baseUrl})}"
+                th:text="here"></a> to activate the account.</p>
+
+    <p>Kind regards,</p>
+    SVK
+</section>
+</body>
+</html>

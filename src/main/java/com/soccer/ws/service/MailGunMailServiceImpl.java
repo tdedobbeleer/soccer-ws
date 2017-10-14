@@ -2,11 +2,13 @@ package com.soccer.ws.service;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import com.soccer.ws.data.MailTypeEnum;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -23,22 +25,23 @@ import java.util.Set;
 @Service
 public class MailGunMailServiceImpl implements MailService {
 
+    private final TemplateParser templateParser;
     @Value("${mail.admin.fromTo}")
     private String defaultAdminFromTo;
-
     @Value("${mail.admin.name}")
     private String defaultAdminName;
-
     @Value("${mail.admin.subject}")
     private String defaultAdminSubject;
-
     @Value("${mailgun.api.key}")
     private String apiKey;
-
     @Value("${mailgun.api.url}")
     private String apiUrl;
-
     private WebResource defaultMessageWebResource;
+
+    @Autowired
+    public MailGunMailServiceImpl(TemplateParser templateParser) {
+        this.templateParser = templateParser;
+    }
 
     @PostConstruct
     private void create() {
@@ -50,11 +53,11 @@ public class MailGunMailServiceImpl implements MailService {
                         "/messages");
     }
 
-    private boolean sendMessage(Map<String, String> to, String subject, String body) {
+    private boolean sendMessage(Map<String, String> to, String subject, MailTypeEnum type, Map<String, Object> propertyMap) {
         MultivaluedMapImpl formData = new MultivaluedMapImpl();
         formData.add("from", String.format("%s <%s>", defaultAdminName, defaultAdminFromTo));
         formData.add("subject", subject);
-        formData.add("html", body);
+        formData.add("html", templateParser.parse(type, propertyMap));
 
         for (Map.Entry<String, String> entry : to.entrySet()) {
 
@@ -68,33 +71,32 @@ public class MailGunMailServiceImpl implements MailService {
     }
 
     @Override
-    public boolean sendMail(String to, String name, String from, String subject, String body) {
-        return sendMessage(ImmutableMap.of(to, name), subject, body);
+    public boolean sendMail(String to, String name, String from, String subject, String body, MailTypeEnum type, Map<String,
+            Object> propertyMap) {
+        return sendMessage(ImmutableMap.of(to, name), subject, type, propertyMap);
     }
 
     @Override
-    public boolean sendMail(String to, String subject, String body) {
-        return sendMessage(ImmutableMap.of(to, ""), subject, body);
+    public boolean sendMail(String to, String subject, MailTypeEnum type, Map<String, Object> propertyMap) {
+        return sendMessage(ImmutableMap.of(to, ""), subject, type, propertyMap);
     }
 
     @Override
-    public boolean sendMail(String to, String name, String subject, String body) {
-        return sendMessage(ImmutableMap.of(to, name), subject, body);
+    public boolean sendMail(String to, String name, String subject, MailTypeEnum type, Map<String, Object> propertyMap) {
+        return sendMessage(ImmutableMap.of(to, name), subject, type, propertyMap);
     }
 
     @Override
-    public boolean sendMail(Set<String> to, String subject, String body) {
+    public boolean sendMail(Set<String> to, String subject, MailTypeEnum type, Map<String, Object> propertyMap) {
         Map<String, String> m = Maps.newHashMap();
         for (String t : to) {
             m.put(t, "");
         }
-        return sendMessage(m, subject, body);
+        return sendMessage(m, subject, type, propertyMap);
     }
 
     @Override
-    public boolean sendPreConfiguredMail(String message) {
-        return sendMessage(ImmutableMap.of(defaultAdminFromTo, defaultAdminName), defaultAdminSubject, message);
+    public boolean sendPreConfiguredMail(MailTypeEnum type, Map<String, Object> propertyMap) {
+        return sendMessage(ImmutableMap.of(defaultAdminFromTo, defaultAdminName), defaultAdminSubject, type, propertyMap);
     }
-
-
 }

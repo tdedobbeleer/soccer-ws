@@ -1,11 +1,14 @@
 package com.soccer.ws.service;
 
+import com.google.common.collect.ImmutableMap;
+import com.soccer.ws.data.MailTypeEnum;
 import com.soccer.ws.data.MatchStatusEnum;
 import com.soccer.ws.exceptions.ObjectNotFoundException;
 import com.soccer.ws.model.*;
 import com.soccer.ws.persistence.AccountDao;
 import com.soccer.ws.persistence.DoodleDao;
 import com.soccer.ws.persistence.MatchesDao;
+import com.soccer.ws.utils.Constants;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -21,6 +24,9 @@ import java.util.Comparator;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
+
+import static com.soccer.ws.utils.Constants.EMAIL_ACCOUNT_VARIABLE;
+import static com.soccer.ws.utils.Constants.EMAIL_BASE_URL_VARIABLE;
 
 /**
  * Created by u0090265 on 10/1/14.
@@ -117,10 +123,10 @@ public class DoodleServiceImpl implements DoodleService {
                     if (match.getMatchDoodle().getPresenceType(account).equals(Presence.PresenceType.NOT_FILLED_IN)) {
                         String subject = messageSource.getMessage("email.doodle.subject", new String[]{match
                                 .getDescription(), matchDate}, Locale.ENGLISH);
-                        String body = messageSource.getMessage("email.doodle.body", new String[]{account.getFirstName
-                                (), baseUrl}, Locale.ENGLISH);
                         log.info("Account {} has not filled in doodle. Mail will be sent.", account.getUsername());
-                        mailService.sendMail(account.getUsername(), account.toString(), subject, body);
+                        mailService.sendMail(account.getUsername(), account.toString(), subject, MailTypeEnum
+                                .DOODLE_REMINDER, ImmutableMap.of(EMAIL_ACCOUNT_VARIABLE, account,
+                                EMAIL_BASE_URL_VARIABLE, baseUrl));
                     } else {
                         log.info("Account {} has filled in doodle", account.getUsername());
                     }
@@ -180,8 +186,8 @@ public class DoodleServiceImpl implements DoodleService {
                     assert m.isPresent() : "A doodle without a match cannot exist";
                     log.info(String.format("Account %s is now set as present", account.getUsername()));
                     final String subject = messageSource.getMessage("email.doodle.reserve.subject", new Object[]{m.get().getDescription(), m.get().getStringDate() + " " + m.get().getStringHour()}, Locale.ENGLISH);
-                    final String body = messageSource.getMessage("email.doodle.reserve.body", new Object[]{account.getFirstName()}, Locale.ENGLISH);
-                    mailService.sendMail(account.getUsername(), account.toString(), subject, body);
+                    mailService.sendMail(account.getUsername(), account.toString(), subject, MailTypeEnum
+                            .DOODLE_RESERVE, ImmutableMap.of(Constants.EMAIL_ACCOUNT_VARIABLE, account));
                 });
     }
 }

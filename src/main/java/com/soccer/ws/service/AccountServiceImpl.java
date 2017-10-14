@@ -1,6 +1,8 @@
 package com.soccer.ws.service;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import com.soccer.ws.data.MailTypeEnum;
 import com.soccer.ws.dto.AccountDTO;
 import com.soccer.ws.dto.AddressDTO;
 import com.soccer.ws.dto.ProfileDTO;
@@ -8,6 +10,7 @@ import com.soccer.ws.dto.RegistrationDTO;
 import com.soccer.ws.exceptions.ObjectNotFoundException;
 import com.soccer.ws.model.*;
 import com.soccer.ws.persistence.AccountDao;
+import com.soccer.ws.utils.Constants;
 import com.soccer.ws.utils.GeneralUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,8 +65,8 @@ public class AccountServiceImpl implements AccountService {
                 .username(registration.getEmail())
                 .build();
         Account result = createAccountWithPassword(toBeCreated, registration.getPassword());
-        mailService.sendPreConfiguredMail(messageSource.getMessage("mail.user.registered", new Object[]{baseUrl,
-                result.getId(), registration.toString()}, Locale.ENGLISH));
+        mailService.sendPreConfiguredMail(MailTypeEnum.REGISTRATION, ImmutableMap.of(Constants
+                .EMAIL_ACCOUNT_VARIABLE, result, Constants.EMAIL_BASE_URL_VARIABLE, baseUrl));
         return new AccountDTO(result.getId(), result.getUsername(), result.getFirstName(), result.getLastName(), result.getRole().name(), result.isActive());
     }
 
@@ -77,7 +80,7 @@ public class AccountServiceImpl implements AccountService {
         if (sendMail) {
             if (!mailService.sendMail(account.getUsername(),
                     messageSource.getMessage("email.activation.subject", null, Locale.ENGLISH),
-                    messageSource.getMessage("email.activation.body", new String[]{account.getFirstName()}, Locale.ENGLISH))) {
+                    MailTypeEnum.ACTIVATION, ImmutableMap.of(Constants.EMAIL_ACCOUNT_VARIABLE, account))) {
                 return false;
             }
         }

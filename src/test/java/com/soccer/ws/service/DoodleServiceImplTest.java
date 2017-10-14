@@ -3,6 +3,7 @@ package com.soccer.ws.service;
 import com.google.common.collect.Sets;
 import com.soccer.common.DataFactory;
 import com.soccer.common.JUnitTest;
+import com.soccer.ws.data.MailTypeEnum;
 import com.soccer.ws.data.MatchStatusEnum;
 import com.soccer.ws.model.Account;
 import com.soccer.ws.model.Doodle;
@@ -146,7 +147,9 @@ public class DoodleServiceImplTest extends JUnitTest {
         //Expect the messageSource to be called
         expect(messageSource.getMessage(eq("email.doodle.subject"), anyObject(String[].class), eq(Locale.ENGLISH))).andReturn("Test");
         expect(messageSource.getMessage(eq("email.doodle.body"), anyObject(String[].class), eq(Locale.ENGLISH))).andReturn("Test");
-        expect(mailService.sendMail(eq(a.getUsername()), eq(a.toString()), anyString(), anyString())).andReturn(true);
+        expect(mailService.sendMail(eq(a.getUsername()), eq(a.toString()), eq(MailTypeEnum.DOODLE_RESERVE), anyObject()))
+                .andReturn
+                        (true);
 
         replayAll();
 
