@@ -37,7 +37,8 @@ public class DoodleServiceImplTest extends JUnitTest {
 
     @Before
     public void setUp() throws Exception {
-        doodleService = new DoodleServiceImpl(doodleDao, accountDao, matchesDao, messageSource, mailService);
+        doodleService = new DoodleServiceImpl(doodleDao, accountDao, matchesDao, messageSource, mailService, 13, 1,
+                "http://test.com");
         resetAll();
     }
 
@@ -146,8 +147,9 @@ public class DoodleServiceImplTest extends JUnitTest {
 
         //Expect the messageSource to be called
         expect(messageSource.getMessage(eq("email.doodle.subject"), anyObject(String[].class), eq(Locale.ENGLISH))).andReturn("Test");
-        expect(messageSource.getMessage(eq("email.doodle.body"), anyObject(String[].class), eq(Locale.ENGLISH))).andReturn("Test");
-        expect(mailService.sendMail(eq(a.getUsername()), eq(a.toString()), eq(MailTypeEnum.DOODLE_RESERVE), anyObject()))
+        expect(mailService.sendMail(eq(a.getUsername()), eq(a.toString()), anyObject(String.class), eq(MailTypeEnum
+                        .DOODLE_REMINDER),
+                anyObject()))
                 .andReturn
                         (true);
 

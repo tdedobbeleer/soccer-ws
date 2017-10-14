@@ -42,20 +42,23 @@ public class DoodleServiceImpl implements DoodleService {
     private final MailService mailService;
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Value("${doodle.limit}")
-    private int doodleLimit;
-
-    @Value("${base.url}")
-    private String baseUrl;
+    private final int doodleNotificationLimit;
+    private final int doodleLimit;
+    private final String baseUrl;
 
     @Autowired
     public DoodleServiceImpl(DoodleDao doodleDao, AccountDao accountDao, MatchesDao
-            matchesDao, MessageSource messageSource, MailService mailService) {
+            matchesDao, MessageSource messageSource, MailService mailService, @Value("${doodle.notification.limit}")
+                                     int doodleNotificationLimit, @Value("${doodle.limit}") int
+                                     doodleLimit, @Value("${base.url}") String baseUrl) {
         this.doodleDao = doodleDao;
         this.accountDao = accountDao;
         this.matchesDao = matchesDao;
         this.mailService = mailService;
         this.messageSource = messageSource;
+        this.doodleNotificationLimit = doodleNotificationLimit;
+        this.baseUrl = baseUrl;
+        this.doodleLimit = doodleLimit;
     }
 
     @Override
@@ -113,7 +116,7 @@ public class DoodleServiceImpl implements DoodleService {
         String matchDate = dtf.print(match.getDate());
 
         //Make sure the next match is this week and there are less than 13 players
-        if (match.getMatchDoodle().countPresences() < 13 && match.getDate().weekOfWeekyear().equals(DateTime.now()
+        if (match.getMatchDoodle().countPresences() < doodleNotificationLimit && match.getDate().weekOfWeekyear().equals(DateTime.now()
                 .weekOfWeekyear())) {
             //Loop all active accounts
             for (Account account : accounts) {

@@ -1,20 +1,24 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
 </head>
 <body>
-<p>Hey <span th:text="${account.firstName}"></span>,</p>
-<p>Iemand heeft zich afgemeld op de doodle voor de bovenstaande match! Daardoor is er een plaatsje vrij voor jou.</p>
-<p>Groetjes!</p>
-<p>De 12e man van SVK</p>
-<hr>
-<p>Dear <span th:text="${account.firstName}"></span>,</p>
-<p>Someone has signed off for the match above. That means you've got a spot on the team!</p>
-<p>Greetings,</p>
-<p>The 12th SVK player</p>
+<section layout:fragment="custom-content">
+    <p>Hey <span th:text="${account.firstName}"></span>,</p>
+    <p>Iemand heeft zich afgemeld op de doodle voor de bovenstaande match! Daardoor is er een plaatsje vrij voor
+        jou.</p>
+    <p>Groetjes!</p>
+    <p>De 12e man van SVK</p>
+    <hr>
+    <p>Dear <span th:text="${account.firstName}"></span>,</p>
+    <p>Someone has signed off for the match above. That means you've got a spot on the team!</p>
+    <p>Greetings,</p>
+    <p>The 12th SVK player</p>
 
-<p><i>Je kan deze waarschuwingen uitzetten door je profielopties te wijzigen.</i></p>
-<p><i>You can disable these notifications by changing your profile settings.</i></p>
+    <p><i>Je kan deze waarschuwingen uitzetten door je profielopties te wijzigen.</i></p>
+    <p><i>You can disable these notifications by changing your profile settings.</i></p>
+</section>
 </body>
 </html>
