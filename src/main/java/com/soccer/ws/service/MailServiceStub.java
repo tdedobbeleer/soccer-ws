@@ -25,7 +25,8 @@ public class MailServiceStub implements MailService {
     }
 
     private void log(List<String> to, String subject, MailTypeEnum type, Map<String, Object> propertyMap) {
-        log.info(String.format("Sending email to %s with subject %s:\n\n%s", to, subject, templateParser.parse(type, propertyMap
+        log.debug(String.format("Sending email to %s with subject %s:\n\n%s", to, subject, templateParser.parse(type,
+                propertyMap
         )));
     }
 
