@@ -107,7 +107,8 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
         for (Match m : matches.getContent()) {
             matchPollDTOMap.add(convertMatchPoll(m, isLoggedIn));
         }
-        return new PageDTO<>(matchPollDTOMap, matches.getTotalPages(), matches.hasNext(), matches.hasPrevious());
+        return new PageDTO<>(matchPollDTOMap, matches.getTotalPages(), matches.hasNext(), matches.hasPrevious(),
+                matches.getNumber());
 
     }
 
@@ -191,7 +192,7 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
         for (Match m : match.getContent()) {
             matchDoodleDTOList.add(convertMatchDoodle(m, account, isAdmin));
         }
-        return new PageDTO<>(matchDoodleDTOList, match.getTotalPages(), match.hasNext(), match.hasPrevious());
+        return new PageDTO<>(matchDoodleDTOList, match.getTotalPages(), match.hasNext(), match.hasPrevious(), match.getNumber());
     }
 
     @Override
@@ -265,7 +266,7 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
         for (News n : page.getContent()) {
             newsDTOList.add(convertNews(account, n, isAdmin));
         }
-        return new PageDTO<>(newsDTOList, page.getTotalPages(), page.hasNext(), page.hasPrevious());
+        return new PageDTO<>(newsDTOList, page.getTotalPages(), page.hasNext(), page.hasPrevious(), page.getNumber());
     }
 
     @Override
