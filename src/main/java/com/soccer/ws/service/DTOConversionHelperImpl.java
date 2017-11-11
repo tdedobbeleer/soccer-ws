@@ -201,7 +201,8 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
                 convertDoodle(match, account, isAdmin),
                 match.getStringDate(),
                 match.getStringHour(),
-                match.getDescription());
+                match.getDescription(),
+                match.getStatus());
     }
 
     @Override
