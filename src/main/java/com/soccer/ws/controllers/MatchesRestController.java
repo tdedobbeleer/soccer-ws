@@ -71,7 +71,7 @@ public class MatchesRestController extends AbstractRestController {
     @RequestMapping(value = "/matches", method = RequestMethod.DELETE)
     public
     @ResponseBody
-    @ApiOperation(value = "Update match", nickname = "deleteMatch")
+    @ApiOperation(value = "Delete match", nickname = "deleteMatch")
     ResponseEntity deleteMatch(@RequestBody MatchDTO matchDTO) {
         matchesService.delete(matchDTO.getId());
         return new ResponseEntity(HttpStatus.NO_CONTENT);
