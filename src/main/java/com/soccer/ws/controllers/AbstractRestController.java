@@ -4,7 +4,10 @@ import com.soccer.ws.dto.ErrorDetailDTO;
 import com.soccer.ws.dto.LocalizedMessageDTO;
 import com.soccer.ws.dto.ValidationErrorDTO;
 import com.soccer.ws.dto.ValidationErrorDetailDTO;
-import com.soccer.ws.exceptions.*;
+import com.soccer.ws.exceptions.CustomMethodArgumentNotValidException;
+import com.soccer.ws.exceptions.InvalidRecoveryCodeException;
+import com.soccer.ws.exceptions.ObjectNotFoundException;
+import com.soccer.ws.exceptions.UnauthorizedAccessException;
 import com.soccer.ws.utils.SecurityUtils;
 import com.soccer.ws.validators.SanitizeUtils;
 import org.slf4j.Logger;
@@ -13,6 +16,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.Validator;
@@ -97,6 +101,18 @@ public abstract class AbstractRestController extends AbstractSecurityController 
                 request,
                 e);
         log.warn("handleUnAuth - Unauthorized error: {}, returning http status {}", e.getMessage(), HttpStatus.UNAUTHORIZED.name());
+        return new ResponseEntity<>(errorDetail, null, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<?> handleBadCredentials(BadCredentialsException e, HttpServletRequest request) {
+        ErrorDetailDTO errorDetail = createErrorDetail(new ErrorDetailDTO(),
+                HttpStatus.UNAUTHORIZED.value(),
+                request,
+                e);
+        log.warn("handleBadCredentials - Bad credentials error: {}, returning http status {}", e.getMessage(), HttpStatus
+                .UNAUTHORIZED.name());
         return new ResponseEntity<>(errorDetail, null, HttpStatus.UNAUTHORIZED);
     }
 
