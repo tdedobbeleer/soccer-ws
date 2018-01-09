@@ -46,7 +46,7 @@ public class DataPopulator {
 
     @PostConstruct
     @Transactional
-    private void populateDB() {
+    public void populateDB() {
         logger.info("Default profile detected, populating DB");
         //Create account1
         AccountDTO accountDTO1 = accountService.register(new RegistrationDTO("test1@test.com", "John", "Doe", "test1"));
