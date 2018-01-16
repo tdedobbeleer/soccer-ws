@@ -87,7 +87,7 @@ public class AccountProfileRestController extends AbstractRestController {
     @RequestMapping(value = "/profiles/{id}/image", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value = "Post image", nickname = "postProfileImage")
-    public ResponseEntity postImage(@RequestBody MultipartFile image) {
+    public ResponseEntity postImage(@PathVariable long id, @RequestBody MultipartFile image) {
         return ResponseEntity.noContent().build();
     }
 

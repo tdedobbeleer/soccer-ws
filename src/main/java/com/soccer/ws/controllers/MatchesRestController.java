@@ -95,7 +95,7 @@ public class MatchesRestController extends AbstractRestController {
     }
 
     @RequestMapping(value = "/matches/next", method = RequestMethod.GET)
-    @ApiOperation(value = "Get poll for next match", nickname = "nextMatchPoll")
+    @ApiOperation(value = "Get next match", nickname = "nextMatchPoll")
     public
     @ResponseBody
     MatchDTO getNextMatch() {

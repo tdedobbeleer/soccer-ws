@@ -10,13 +10,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by u0090265 on 5/3/14.
  */
 public interface MatchesService {
-    Map<Integer, List<Match>> getMatchesForLastSeasons();
 
     List<Match> getMatchesListForSeason(Season season);
 

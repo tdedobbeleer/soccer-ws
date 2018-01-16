@@ -25,10 +25,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by u0090265 on 5/3/14.
@@ -44,8 +43,8 @@ public class MatchesServiceImpl implements MatchesService {
     private final MatchesDao matchesDao;
     private final AccountDao accountDao;
     private final CacheAdapter cacheAdapter;
-    @Value("${seasons.display.max}")
-    private int maxSeasons;
+    @Value("${matches.next.offset}")
+    private String nextMatchOffset;
 
     @Autowired
     public MatchesServiceImpl(PollService pollService, SeasonDao seasonDao, TeamDao teamDao, MatchesDao matchesDao, AccountDao accountDao, CacheAdapter cacheAdapter) {
@@ -55,17 +54,6 @@ public class MatchesServiceImpl implements MatchesService {
         this.matchesDao = matchesDao;
         this.accountDao = accountDao;
         this.cacheAdapter = cacheAdapter;
-    }
-
-    @Override
-    public Map<Integer, List<Match>> getMatchesForLastSeasons() {
-        int count = 1;
-        Map<Integer, List<Match>> resultMap = new HashMap<>();
-        for (Season season : seasonDao.findAll(new PageRequest(0, maxSeasons, Sort.Direction.DESC, "description"))) {
-            resultMap.put(count, matchesDao.getMatchesForSeason(season));
-            count++;
-        }
-        return resultMap;
     }
 
     @Override
@@ -113,7 +101,7 @@ public class MatchesServiceImpl implements MatchesService {
 
     @Override
     public Match getLatestMatch() {
-        List<Match> matches = matchesDao.findByDate(DateTime.now());
+        List<Match> matches = matchesDao.findByDate(generateNextMatchOffsetDate());
         return matches.isEmpty() ? null : matches.get(0);
     }
 
@@ -209,5 +197,10 @@ public class MatchesServiceImpl implements MatchesService {
         }
         return result;
      }
+
+    private DateTime generateNextMatchOffsetDate() {
+        Duration duration = Duration.parse(nextMatchOffset);
+        return DateTime.now().minusSeconds(Math.toIntExact(duration.getSeconds()));
+    }
 
 }
