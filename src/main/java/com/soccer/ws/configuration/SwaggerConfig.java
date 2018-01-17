@@ -6,14 +6,18 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RequestMethod;
 import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.builders.ResponseMessageBuilder;
 import springfox.documentation.schema.ModelRef;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Contact;
+import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+import java.util.Collections;
+import java.util.List;
 
 import static springfox.documentation.builders.PathSelectors.regex;
 
@@ -33,6 +37,8 @@ public class SwaggerConfig {
                 .build()
                 .pathMapping("/")
                 .apiInfo(metadata())
+                .securityContexts(securityContexts())
+                .securitySchemes(securitySchemes())
                 .useDefaultResponseMessages(false)
                 .globalResponseMessage(RequestMethod.GET,
                         Lists.newArrayList(new ResponseMessageBuilder()
@@ -67,5 +73,18 @@ public class SwaggerConfig {
                 .contact(new Contact("Administrator", "", "voetbalsvk@gmail.com"))
                 .build();
     }
+
+    private List<? extends SecurityScheme> securitySchemes() {
+        return Collections.<SecurityScheme>singletonList(new ApiKey("token", "X-Auth-Token", "header"));
+    }
+
+    private List<SecurityContext> securityContexts() {
+        return Collections.singletonList(SecurityContext.builder().forPaths(PathSelectors.any()).securityReferences(securityReferences()).build());
+    }
+
+    private List<SecurityReference> securityReferences() {
+        return Collections.singletonList(SecurityReference.builder().reference("token").scopes(new AuthorizationScope[0]).build());
+    }
+
 
 }
