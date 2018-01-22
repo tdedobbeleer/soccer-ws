@@ -112,9 +112,8 @@ public class NewsServiceImpl implements NewsService {
     public Comment addNewsComment(long newsId, String content, Account account) {
         News news = newsDao.findOne(newsId);
         NewsComment comment = new NewsComment(content, news, account);
-        news.getComments().add(comment);
+        commentDao.save(comment);
         log.info(String.format("Newscomment %s added by %s", comment, account));
-        newsDao.save(news);
         return comment;
     }
 
