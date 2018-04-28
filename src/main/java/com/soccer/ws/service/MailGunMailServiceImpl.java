@@ -8,6 +8,8 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.ws.rs.core.MediaType;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,6 +27,8 @@ import java.util.Set;
 @Profile("!default")
 @Service
 public class MailGunMailServiceImpl implements MailService {
+
+    private static final Logger logger = LoggerFactory.getLogger(MailGunMailServiceImpl.class);
 
     private final TemplateParser templateParser;
     @Value("${mail.admin.fromTo}")
@@ -59,6 +64,10 @@ public class MailGunMailServiceImpl implements MailService {
         formData.add("subject", subject);
         formData.add("html", templateParser.parse(type, propertyMap));
 
+        logger.debug(String.format("Trying to send email to %s with subject %s", Arrays.toString(to.entrySet()
+                .toArray()), subject
+        ));
+
         for (Map.Entry<String, String> entry : to.entrySet()) {
 
             formData.add("to", String.format("%s <%s>", entry.getValue(), entry.getKey().isEmpty() ? entry.getValue()
@@ -67,6 +76,9 @@ public class MailGunMailServiceImpl implements MailService {
 
         ClientResponse c = defaultMessageWebResource.type(MediaType.APPLICATION_FORM_URLENCODED).
                 post(ClientResponse.class, formData);
+        logger.info(String.format("Result of sending email to %s with subject %s: %s", Arrays.toString(to.entrySet()
+                .toArray()), subject, c
+        ));
         return c.getStatus() == 200;
     }
 
