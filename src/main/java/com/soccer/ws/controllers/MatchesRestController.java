@@ -68,12 +68,12 @@ public class MatchesRestController extends AbstractRestController {
 
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @RequestMapping(value = "/matches", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/matches/{id}", method = RequestMethod.DELETE)
     public
     @ResponseBody
     @ApiOperation(value = "Delete match", nickname = "deleteMatch")
-    ResponseEntity deleteMatch(@RequestBody MatchDTO matchDTO) {
-        matchesService.delete(matchDTO.getId());
+    ResponseEntity deleteMatch(@PathVariable long id) {
+        matchesService.delete(id);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
