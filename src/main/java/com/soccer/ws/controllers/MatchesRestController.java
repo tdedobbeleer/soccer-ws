@@ -1,10 +1,13 @@
 package com.soccer.ws.controllers;
 
+import com.google.common.collect.Lists;
+import com.soccer.ws.dto.ByteResponseDTO;
 import com.soccer.ws.dto.MatchDTO;
 import com.soccer.ws.dto.MatchPollDTO;
 import com.soccer.ws.exceptions.CustomMethodArgumentNotValidException;
 import com.soccer.ws.exceptions.ObjectNotFoundException;
 import com.soccer.ws.model.Match;
+import com.soccer.ws.service.CSVService;
 import com.soccer.ws.service.DTOConversionHelper;
 import com.soccer.ws.service.MatchesService;
 import com.soccer.ws.utils.SecurityUtils;
@@ -21,7 +24,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
@@ -37,13 +42,15 @@ public class MatchesRestController extends AbstractRestController {
     private final DTOConversionHelper DTOConversionHelper;
     private final UpdateMatchValidator updateMatchValidator;
     private final CreateMatchValidator createMatchValidator;
+    private final CSVService csvService;
 
-    public MatchesRestController(SecurityUtils securityUtils, MessageSource messageSource, MatchesService matchesService, DTOConversionHelper dtoConversionHelper, UpdateMatchValidator updateMatchValidator, CreateMatchValidator createMatchValidator) {
+    public MatchesRestController(SecurityUtils securityUtils, MessageSource messageSource, MatchesService matchesService, DTOConversionHelper dtoConversionHelper, UpdateMatchValidator updateMatchValidator, CreateMatchValidator createMatchValidator, CSVService csvService) {
         super(securityUtils, messageSource);
         this.matchesService = matchesService;
         DTOConversionHelper = dtoConversionHelper;
         this.updateMatchValidator = updateMatchValidator;
         this.createMatchValidator = createMatchValidator;
+        this.csvService = csvService;
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -101,6 +108,18 @@ public class MatchesRestController extends AbstractRestController {
     MatchDTO getNextMatch() {
         Match m = matchesService.getLatestMatch();
         return DTOConversionHelper.convertMatch(m, isLoggedIn());
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @RequestMapping(value = "/matches/season/{id}/export")
+    @ApiOperation(value = "Export matches for season", nickname = "exportMatches")
+    public ByteResponseDTO getExportMatches(@PathVariable Long id, HttpServletResponse response) throws IOException {
+        List<List<String>> csvData = Lists.<List<String>>newArrayList(Lists.newArrayList("Date", "Home team", "Away team", "Home team goals", "Away team goals"));
+        matchesService.getMatchesForSeason(id, isLoggedIn()).forEach(m -> {
+            csvData.add(Lists.newArrayList(m.getDate(), m.getHomeTeam().getName(), m.getAwayTeam().getName(), m.getHtGoals().toString(), m.getAtGoals().toString()));
+        });
+
+        return new ByteResponseDTO(csvService.write(csvData).getBytes());
     }
 
     @RequestMapping(value = "/match/{id}/poll", method = RequestMethod.GET)

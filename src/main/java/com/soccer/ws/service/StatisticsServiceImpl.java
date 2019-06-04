@@ -3,11 +3,9 @@ package com.soccer.ws.service;
 import com.google.common.collect.Lists;
 import com.soccer.ws.data.MatchStatisticsObject;
 import com.soccer.ws.data.MatchStatusEnum;
+import com.soccer.ws.data.PollStatusEnum;
 import com.soccer.ws.dto.AccountStatisticDTO;
-import com.soccer.ws.model.Account;
-import com.soccer.ws.model.Goal;
-import com.soccer.ws.model.Match;
-import com.soccer.ws.model.Presence;
+import com.soccer.ws.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by u0090265 on 6/27/15.
@@ -92,6 +91,7 @@ public class StatisticsServiceImpl implements StatisticsService {
         int goals = 0;
         int assists = 0;
         int presences = 0;
+        int motm = 0;
         for (Match match : matches) {
             //Only gather info on played match
             if (match.getStatus().equals(MatchStatusEnum.PLAYED)) {
@@ -104,10 +104,19 @@ public class StatisticsServiceImpl implements StatisticsService {
                         assists++;
                     }
                 }
+
+                if (match.getMotmPoll() != null && match.getMotmPoll().getStatus().equals(PollStatusEnum.CLOSED)) {
+                    Optional<Ranking<Long>> rl = match.getMotmPoll().getResult().getHighestRanked();
+                    if (rl.isPresent() && rl.get().getOption().equals(account.getId())) {
+                        motm++;
+                    }
+
+                }
             }
         }
         accountStatisticDTO.setGoals(goals);
         accountStatisticDTO.setAssists(assists);
         accountStatisticDTO.setPlayed(presences);
+        accountStatisticDTO.setMotm(motm);
     }
 }

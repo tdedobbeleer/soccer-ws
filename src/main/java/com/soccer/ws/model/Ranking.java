@@ -7,6 +7,14 @@ public class Ranking<T> implements Comparable<Ranking<T>> {
     private int points;
     private T option;
 
+    public Ranking(int points, T option) {
+        this.points = points;
+        this.option = option;
+    }
+
+    public Ranking() {
+    }
+
     public T getOption() {
         return option;
     }
@@ -26,5 +34,13 @@ public class Ranking<T> implements Comparable<Ranking<T>> {
     @Override
     public int compareTo(Ranking<T> ranking) {
         return points > ranking.points ? 1 : points < ranking.points ? -1 : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "Ranking{" +
+                "points=" + points +
+                ", option=" + option +
+                '}';
     }
 }

@@ -23,7 +23,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <org.springsocial-version>1.1.4.RELEASE</org.springsocial-version>
-        <io.springfox.version>2.7.0</io.springfox.version>
+        <io.springfox.version>2.9.2</io.springfox.version>
         <mainClass>com.soccer.WsApplication</mainClass>
     </properties>
 

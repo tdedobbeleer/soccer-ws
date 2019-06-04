@@ -2,6 +2,11 @@ package com.soccer.ws.model;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.TreeMap;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Created by u0090265 on 11/06/16.
@@ -18,6 +23,18 @@ public class RankingList<T> {
     public List<Ranking<T>> getRankings() {
         Collections.sort(rankings, Collections.reverseOrder());
         return rankings;
+    }
+
+    public Optional<Ranking<T>> getHighestRanked() {
+        if (rankings != null) {
+             List<Ranking<T>> r = rankings.stream().collect(groupingBy(Ranking::getPonts, TreeMap::new, toList()))
+                    .lastEntry()
+                    .getValue();
+             if (r.size() == 1) {
+                return r.stream().findFirst();
+             }
+        }
+        return Optional.empty();
     }
 
     public void setRankings(List<Ranking<T>> rankings) {

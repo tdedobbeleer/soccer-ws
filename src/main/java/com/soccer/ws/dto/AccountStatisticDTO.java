@@ -8,14 +8,16 @@ public class AccountStatisticDTO {
     private int goals;
     private int assists;
     private int played;
+    private int motm;
 
     public AccountStatisticDTO() {}
 
-    public AccountStatisticDTO(AccountDTO account, int goals, int assists, int played) {
+    public AccountStatisticDTO(AccountDTO account, int goals, int assists, int played, int motm) {
         this.account = account;
         this.goals = goals;
         this.assists = assists;
         this.played = played;
+        this.motm = motm;
     }
 
     public AccountStatisticDTO(AccountDTO account) {
@@ -54,6 +56,14 @@ public class AccountStatisticDTO {
         this.played = played;
     }
 
+    public int getMotm() {
+        return motm;
+    }
+
+    public void setMotm(int motm) {
+        this.motm = motm;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -64,8 +74,8 @@ public class AccountStatisticDTO {
         if (goals != that.goals) return false;
         if (assists != that.assists) return false;
         if (played != that.played) return false;
-        return !(account != null ? !account.equals(that.account) : that.account != null);
-
+        if (motm != that.motm) return false;
+        return account != null ? account.equals(that.account) : that.account == null;
     }
 
     @Override
@@ -74,16 +84,18 @@ public class AccountStatisticDTO {
         result = 31 * result + goals;
         result = 31 * result + assists;
         result = 31 * result + played;
+        result = 31 * result + motm;
         return result;
     }
 
     @Override
     public String toString() {
-        return "AccountStatistic{" +
+        return "AccountStatisticDTO{" +
                 "account=" + account +
                 ", goals=" + goals +
                 ", assists=" + assists +
                 ", played=" + played +
+                ", motm=" + motm +
                 '}';
     }
 }
