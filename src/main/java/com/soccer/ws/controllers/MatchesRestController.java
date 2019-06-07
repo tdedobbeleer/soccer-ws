@@ -10,11 +10,15 @@ import com.soccer.ws.model.Match;
 import com.soccer.ws.service.CSVService;
 import com.soccer.ws.service.DTOConversionHelper;
 import com.soccer.ws.service.MatchesService;
+import com.soccer.ws.service.VCalendarService;
 import com.soccer.ws.utils.SecurityUtils;
 import com.soccer.ws.validators.CreateMatchValidator;
 import com.soccer.ws.validators.UpdateMatchValidator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import net.fortuna.ical4j.data.CalendarOutputter;
+import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -24,9 +28,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.Locale;
 
@@ -43,14 +47,16 @@ public class MatchesRestController extends AbstractRestController {
     private final UpdateMatchValidator updateMatchValidator;
     private final CreateMatchValidator createMatchValidator;
     private final CSVService csvService;
+    private final VCalendarService vCalendarService;
 
-    public MatchesRestController(SecurityUtils securityUtils, MessageSource messageSource, MatchesService matchesService, DTOConversionHelper dtoConversionHelper, UpdateMatchValidator updateMatchValidator, CreateMatchValidator createMatchValidator, CSVService csvService) {
+    public MatchesRestController(SecurityUtils securityUtils, MessageSource messageSource, MatchesService matchesService, DTOConversionHelper dtoConversionHelper, UpdateMatchValidator updateMatchValidator, CreateMatchValidator createMatchValidator, CSVService csvService, VCalendarService vCalendarService) {
         super(securityUtils, messageSource);
         this.matchesService = matchesService;
         DTOConversionHelper = dtoConversionHelper;
         this.updateMatchValidator = updateMatchValidator;
         this.createMatchValidator = createMatchValidator;
         this.csvService = csvService;
+        this.vCalendarService = vCalendarService;
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -113,13 +119,24 @@ public class MatchesRestController extends AbstractRestController {
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/matches/season/{id}/export")
     @ApiOperation(value = "Export matches for season", nickname = "exportMatches")
-    public ByteResponseDTO getExportMatches(@PathVariable Long id, HttpServletResponse response) throws IOException {
+    public ByteResponseDTO getExportMatches(@PathVariable Long id) throws IOException {
         List<List<String>> csvData = Lists.<List<String>>newArrayList(Lists.newArrayList("Date", "Home team", "Away team", "Home team goals", "Away team goals"));
         matchesService.getMatchesForSeason(id, isLoggedIn()).forEach(m -> {
             csvData.add(Lists.newArrayList(m.getDate(), m.getHomeTeam().getName(), m.getAwayTeam().getName(), m.getHtGoals().toString(), m.getAtGoals().toString()));
         });
 
         return new ByteResponseDTO(csvService.write(csvData).getBytes());
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @RequestMapping(value = "/matches/season/{id}/calendar")
+    @ApiOperation(value = "Export matches calendar for season", nickname = "exportMatchesCalendar")
+    public ByteResponseDTO getExportMatchesCal(@PathVariable Long id) throws IOException, ValidationException {
+        final Calendar c = vCalendarService.getMatchesCalendar(id);
+        final CalendarOutputter o = new CalendarOutputter();
+        final StringWriter writer = new StringWriter();
+        o.output(c, writer);
+        return new ByteResponseDTO(writer.toString().getBytes());
     }
 
     @RequestMapping(value = "/match/{id}/poll", method = RequestMethod.GET)
