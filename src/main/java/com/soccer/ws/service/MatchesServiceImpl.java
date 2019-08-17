@@ -78,8 +78,7 @@ public class MatchesServiceImpl implements MatchesService {
 
     @Override
     public List<Match> getMatchesForSeason(long seasonId) {
-        Season s = seasonDao.findOne(seasonId);
-        if (s == null) throw new ObjectNotFoundException(String.format("Season with id %s not found", seasonId));
+        Season s = seasonDao.findById(seasonId).orElseThrow(() -> new ObjectNotFoundException(String.format("Season with id %s not found", seasonId)));
         return matchesDao.getMatchesForSeason(s);
     }
 
@@ -120,18 +119,18 @@ public class MatchesServiceImpl implements MatchesService {
     @Override
     @Transactional(readOnly = false)
     public Match get(long id) {
-        return matchesDao.findOne(id);
+        return matchesDao.findById(id).orElseThrow(() -> new ObjectNotFoundException(String.format("Match with id %s not found", id)));
     }
 
     @Override
     @Transactional(readOnly = false)
     public MatchDTO createMatch(MatchDTO matchDTO) {
         Match m = new Match();
-        m.setSeason(seasonDao.findOne(matchDTO.getSeason().getId()));
+        m.setSeason(seasonDao.findById(matchDTO.getSeason().getId()).orElseThrow(() -> new ObjectNotFoundException("Season not found")));
         DateTime dateTime = GeneralUtils.convertToDate(matchDTO.getDate(), matchDTO.getHour());
         m.setDate(dateTime);
-        m.setHomeTeam(teamDao.findOne(matchDTO.getHomeTeam().getId()));
-        m.setAwayTeam(teamDao.findOne(matchDTO.getAwayTeam().getId()));
+        m.setHomeTeam(teamDao.findById(matchDTO.getHomeTeam().getId()).orElseThrow(() -> new ObjectNotFoundException("Team not found")));
+        m.setAwayTeam(teamDao.findById(matchDTO.getAwayTeam().getId()).orElseThrow(() -> new ObjectNotFoundException("Team not found")));
         matchesDao.save(m);
         log.debug("Match {} created.", m);
         cacheAdapter.resetMatchesCache();
@@ -143,12 +142,12 @@ public class MatchesServiceImpl implements MatchesService {
     @Override
     @Transactional(readOnly = false)
     public MatchDTO update(MatchDTO matchDTO) {
-        Match m = matchesDao.findOne(matchDTO.getId());
-        m.setHomeTeam(teamDao.findOne(matchDTO.getHomeTeam().getId()));
-        m.setAwayTeam(teamDao.findOne(matchDTO.getAwayTeam().getId()));
+        Match m = matchesDao.findById(matchDTO.getId()).orElseThrow(() -> new ObjectNotFoundException("Match not found"));
+        m.setHomeTeam(teamDao.findById(matchDTO.getHomeTeam().getId()).orElseThrow(() -> new ObjectNotFoundException("Team not found")));
+        m.setAwayTeam(teamDao.findById(matchDTO.getAwayTeam().getId()).orElseThrow(() -> new ObjectNotFoundException("Team not found")));
         DateTime dateTime = GeneralUtils.convertToDate(matchDTO.getDate(), matchDTO.getHour());
         m.setDate(dateTime);
-        m.setSeason(seasonDao.findOne(matchDTO.getSeason().getId()));
+        m.setSeason(seasonDao.findById(matchDTO.getSeason().getId()).orElseThrow(() -> new ObjectNotFoundException("Season not found")));
         //Get original match status
         MatchStatusEnum originalMatchStatus = m.getStatus();
         //Set matchstatus
@@ -177,9 +176,9 @@ public class MatchesServiceImpl implements MatchesService {
     @Override
     @Transactional(readOnly = false)
     public void delete(long id) throws ObjectNotFoundException {
-        Match m = matchesDao.findOne(id);
+        Match m = matchesDao.findById(id).orElseThrow(() -> new ObjectNotFoundException("Match not found"));
         if (m == null) throw new ObjectNotFoundException(String.format("Match with id %s not found", id));
-        matchesDao.delete(id);
+        matchesDao.deleteById(id);
         cacheAdapter.resetMatchesCache();
     }
 
@@ -191,8 +190,10 @@ public class MatchesServiceImpl implements MatchesService {
             g.setMatch(match);
             g.setOrder(goalDTO.getOrder());
             //Goals and and assists can be null
-            if (goalDTO.getScorer() != null) g.setScorer(accountDao.findOne(goalDTO.getScorer().getId()));
-            if (goalDTO.getAssist() != null) g.setAssist(accountDao.findOne(goalDTO.getAssist().getId()));
+            if (goalDTO.getScorer() != null)
+                g.setScorer(accountDao.findById(goalDTO.getScorer().getId()).orElseThrow(() -> new ObjectNotFoundException("Scorer not found")));
+            if (goalDTO.getAssist() != null)
+                g.setAssist(accountDao.findById(goalDTO.getAssist().getId()).orElseThrow(() -> new ObjectNotFoundException("Assist not found")));
             result.add(g);
         }
         return result;

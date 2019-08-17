@@ -73,16 +73,13 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional(readOnly = false)
     public boolean firstTimeActivation(final long id, final boolean sendMail) {
-        Account account = accountDao.findOne(id);
-        if (account == null) throw new ObjectNotFoundException(String.format("Object with id %s not found", id));
+        Account account = getAccount(id);
         account.setActive(true);
         accountDao.save(account);
         if (sendMail) {
-            if (!mailService.sendMail(account.getUsername(),
+            return mailService.sendMail(account.getUsername(),
                     messageSource.getMessage("email.activation.subject", null, Locale.ENGLISH),
-                    MailTypeEnum.ACTIVATION, ImmutableMap.of(Constants.EMAIL_ACCOUNT_VARIABLE, account))) {
-                return false;
-            }
+                    MailTypeEnum.ACTIVATION, ImmutableMap.of(Constants.EMAIL_ACCOUNT_VARIABLE, account));
         }
         return true;
     }
@@ -91,9 +88,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional(readOnly = false)
     public void changeActivation(long id, boolean status) {
-        Account account = accountDao.findOne(id);
-        if (account == null)
-            throw new ObjectNotFoundException("Account not found");
+        Account account = getAccount(id);
         account.setActive(status);
         accountDao.save(account);
     }
@@ -101,9 +96,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional(readOnly = false)
     public void elevate(long id) {
-        Account account = accountDao.findOne(id);
-        if (account == null)
-            throw new ObjectNotFoundException("Account not found");
+        Account account = getAccount(id);
         account.setRole(Role.ADMIN);
         accountDao.save(account);
     }
@@ -111,9 +104,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional(readOnly = false)
     public void demote(long id) {
-        Account account = accountDao.findOne(id);
-        if (account == null)
-            throw new ObjectNotFoundException("Account not found");
+        Account account = getAccount(id);
         account.setRole(Role.USER);
         accountDao.save(account);
     }
@@ -121,15 +112,13 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional(readOnly = false)
     public void changeRole(AccountDTO accountDTO, Role role) {
-        Account account = accountDao.findOne(accountDTO.getId());
-        if (account == null)
-            throw new ObjectNotFoundException("Account not found");
+        Account account = getAccount(accountDTO.getId());
         account.setRole(role);
         accountDao.save(account);
     }
 
     @Transactional(readOnly = false)
-    private Account createAccountWithPassword(Account account, String password) {
+    public Account createAccountWithPassword(Account account, String password) {
         Account resultAccount = accountDao.save(account);
         //Update only if sign in provider is not specified
         if (account.getSignInProvider() == null) {
@@ -152,8 +141,6 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional(readOnly = false)
     public void setPasswordFor(long id, String password) {
-        final Account account = accountDao.findOne(id);
-        if (account == null) throw new ObjectNotFoundException("Account not found");
         String encPassword = passwordEncoder.encode(password);
         jdbcTemplate.update(UPDATE_PASSWORD_SQL, encPassword, id);
     }
@@ -161,8 +148,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional(readOnly = true)
     public boolean checkOldPassword(long id, String password) {
-        final Account account = accountDao.findOne(id);
-        if (account == null) throw new ObjectNotFoundException("Account cannot be found");
+        final Account account = getAccount(id);
         String encodedPassword = getCurrentEncodedPasswordFor(account);
         return !(encodedPassword == null || encodedPassword.isEmpty()) && passwordEncoder.matches(password,
                 encodedPassword);
@@ -178,9 +164,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional(readOnly = false)
     public Account update(ProfileDTO profileDTO) {
-        Account account = accountDao.findOne(profileDTO.getId());
-        if (account == null)
-            throw new ObjectNotFoundException("Account not found");
+        Account account = accountDao.findById(profileDTO.getId()).orElseThrow(() -> new ObjectNotFoundException(String.format("Account with id %s not found", profileDTO.getId())));
         setAccountProfile(account, profileDTO);
         return accountDao.save(account);
     }
@@ -201,12 +185,12 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account getAccount(String id) {
-        return accountDao.findOne(GeneralUtils.convertToLong(id));
+        return accountDao.findById(GeneralUtils.convertToLong(id)).orElseThrow(() -> new ObjectNotFoundException(String.format("Account with id %s not found", id)));
     }
 
     @Override
     public Account getAccount(Long id) {
-        return accountDao.findOne(id);
+        return accountDao.findById(id).orElseThrow(() -> new ObjectNotFoundException(String.format("Account with id %s not found", id)));
     }
 
     @Override

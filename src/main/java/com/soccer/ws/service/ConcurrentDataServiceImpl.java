@@ -47,7 +47,7 @@ public class ConcurrentDataServiceImpl implements ConcurrentDataService {
 
     @Override
     public List<AccountStatisticDTO> getAccountStatisticsForSeason(final long seasonId, final boolean isLoggedIn) {
-        Season season = seasonDao.findOne(seasonId);
+        Season season = seasonDao.findById(seasonId).orElseThrow(() -> new ObjectNotFoundException(String.format("Season with id %s not found", seasonId)));
         if (season == null) throw new ObjectNotFoundException(String.format("Season with id %s not found", seasonId));
         List<Match> matches = matchesDao.getMatchesForSeason(season);
 
@@ -59,7 +59,7 @@ public class ConcurrentDataServiceImpl implements ConcurrentDataService {
 
     @Override
     public List<MatchDTO> getMatchForSeason(final long seasonId, final boolean isLoggedIn) {
-        Season season = seasonDao.findOne(seasonId);
+        Season season = seasonDao.findById(seasonId).orElseThrow(() -> new ObjectNotFoundException(String.format("Season with id %s not found", seasonId)));
 
         return matchesDao.getMatchesForSeason(season).stream()
                 .map(m -> DTOConversionHelper.convertMatch(m, isLoggedIn))

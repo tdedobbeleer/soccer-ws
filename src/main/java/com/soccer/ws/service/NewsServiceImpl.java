@@ -65,7 +65,7 @@ public class NewsServiceImpl implements NewsService {
     @Override
     @Transactional(readOnly = false)
     public NewsDTO create(NewsDTO news) {
-        Account account = accountDao.findOne(news.getPostedBy().getId());
+        Account account = accountDao.findById(news.getPostedBy().getId()).orElseThrow(() -> new ObjectNotFoundException(String.format("Account with id %s not found", news.getPostedBy().getId())));
         if (account == null)
             throw new UsernameNotFoundException("Cannopt post news, user not found");
         News n = newsDao.save(new News(news.getHeader(), news.getContent(), account));
@@ -76,7 +76,7 @@ public class NewsServiceImpl implements NewsService {
     @Override
     @Transactional(readOnly = false)
     public void update(NewsDTO news, Account account) {
-        News n = newsDao.findOne(news.getId());
+        News n = newsDao.findById(news.getId()).orElseThrow(() -> new ObjectNotFoundException(String.format("News with id %s not found", news.getId())));
         if (n == null)
             throw new ObjectNotFoundException(String.format("Object news with id %s not found", news.getId()));
         n.setContent(news.getContent());
@@ -110,7 +110,7 @@ public class NewsServiceImpl implements NewsService {
     @Override
     @Transactional(readOnly = false)
     public Comment addNewsComment(long newsId, String content, Account account) {
-        News news = newsDao.findOne(newsId);
+        News news = newsDao.findById(newsId).orElseThrow(() -> new ObjectNotFoundException(String.format("News with id %s not found", newsId)));
         NewsComment comment = new NewsComment(content, news, account);
         commentDao.save(comment);
         log.info(String.format("Newscomment %s added by %s", comment, account));
@@ -120,21 +120,21 @@ public class NewsServiceImpl implements NewsService {
     @Override
     @Transactional(readOnly = false)
     public Comment changeNewsComment(long commentId, long newsId, String content, Account account) {
-        Comment comment = commentDao.findOne(commentId);
+        Comment comment = commentDao.findById(commentId).orElseThrow(() -> new ObjectNotFoundException(String.format("Comment with id %s not found", commentId)));
         authorizationService.isAuthorized(account, comment);
         comment.setContent(content);
         commentDao.save(comment);
         log.info(String.format("Newscomment %s changed by %s", comment, account));
-        newsDao.findOne(newsId);
+        newsDao.findById(newsId).orElseThrow(() -> new ObjectNotFoundException(String.format("News with id %s not found", newsId)));
         return comment;
     }
 
     @Override
     @Transactional(readOnly = false)
     public void deleteNewsComment(long commentId, long newsId, Account account) {
-        NewsComment comment = (NewsComment) commentDao.findOne(commentId);
+        NewsComment comment = (NewsComment) commentDao.findById(commentId).orElseThrow(() -> new ObjectNotFoundException(String.format("Comment with id %s not found", commentId)));
         authorizationService.isAuthorized(account, comment);
-        News news = newsDao.findOne(newsId);
+        News news = newsDao.findById(newsId).orElseThrow(() -> new ObjectNotFoundException(String.format("News with id %s not found", newsId)));
         news.getComments().remove(comment);
         log.info(String.format("Newscomment %s deleted by by %s", comment, account));
         newsDao.save(news);
@@ -142,8 +142,7 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public News getNewsItem(long id) {
-        News news = newsDao.findOne(id);
-        if (news == null) throw new ObjectNotFoundException(String.format("News item with id %s not found", id));
+        News news = newsDao.findById(id).orElseThrow(() -> new ObjectNotFoundException(String.format("News with id %s not found", id)));
         return news;
     }
 
@@ -169,10 +168,10 @@ public class NewsServiceImpl implements NewsService {
     @Override
     @Transactional(readOnly = false)
     public void deleteNews(long id, Account account) {
-        News news = newsDao.findOne(id);
+        News news = newsDao.findById(id).orElseThrow(() -> new ObjectNotFoundException(String.format("News with id %s not found", id)));
         authorizationService.isAuthorized(account, news);
         log.info(String.format("Newsitem %s deleted by %s", news, account));
-        newsDao.delete(id);
+        newsDao.deleteById(id);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.soccer.ws.service;
 
 import com.google.common.collect.Lists;
+import com.soccer.ws.exceptions.ObjectNotFoundException;
 import com.soccer.ws.model.Address;
 import com.soccer.ws.persistence.AddressDao;
 import com.soccer.ws.utils.GeneralUtils;
@@ -30,6 +31,6 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public Address getAddressById(String id) {
-        return addressDao.findOne(GeneralUtils.convertToLong(id));
+        return addressDao.findById(GeneralUtils.convertToLong(id)).orElseThrow(() -> new ObjectNotFoundException(String.format("Address with id %s not found", id)));
     }
 }

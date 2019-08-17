@@ -14,6 +14,7 @@ public class Doodle {
 
     private long id;
     private Set<Presence> presences;
+    private Set<Selection> selections;
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
@@ -31,6 +32,17 @@ public class Doodle {
     public Set<Presence> getPresences() {
         if (presences == null) presences = Sets.newHashSet();
         return presences;
+    }
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "doodle_id")
+    public Set<Selection> getSelections() {
+        if (selections == null) selections = Sets.newHashSet();
+        return selections;
+    }
+
+    public void setSelections(Set<Selection> selections) {
+        this.selections = selections;
     }
 
     public void setPresences(Set<Presence> presences) {

@@ -3,6 +3,7 @@ package com.soccer.ws.service;
 import com.google.common.collect.Sets;
 import com.soccer.ws.data.MatchStatusEnum;
 import com.soccer.ws.data.PollStatusEnum;
+import com.soccer.ws.exceptions.ObjectNotFoundException;
 import com.soccer.ws.model.*;
 import com.soccer.ws.persistence.MatchesDao;
 import com.soccer.ws.persistence.PollDao;
@@ -47,14 +48,14 @@ public class PollServiceImpl implements PollService {
 
     @Override
     public Poll get(Long pollId) {
-        Poll poll = pollDao.findOne(pollId);
+        Poll poll = pollDao.findById(pollId).orElseThrow(() -> new ObjectNotFoundException(String.format("Poll with id %s not found", pollId)));
         GeneralUtils.throwObjectNotFoundException(poll, pollId, Poll.class);
         return poll;
     }
 
     @Override
     public Set<IdentityOption> refreshPlayerOptions(Long matchId) {
-        Match match = matchesDao.findOne(matchId);
+        Match match = matchesDao.findById(matchId).orElseThrow(() -> new ObjectNotFoundException(String.format("Match with id %s not found", matchId)));
         GeneralUtils.throwObjectNotFoundException(match, matchId, Match.class);
         Set<IdentityOption> options = getPlayerOptionsFor(match);
         match.getMotmPoll().setOptions(options);
@@ -64,7 +65,7 @@ public class PollServiceImpl implements PollService {
 
     @Override
     public Poll reset(Long id) {
-        Poll poll = pollDao.findOne(id);
+        Poll poll = pollDao.findById(id).orElseThrow(() -> new ObjectNotFoundException(String.format("Poll with id %s not found", id)));
         GeneralUtils.throwObjectNotFoundException(poll, id, Poll.class);
         poll.getVotes().clear();
         return pollDao.save(poll);
@@ -74,7 +75,7 @@ public class PollServiceImpl implements PollService {
     @Transactional
     public Poll vote(Long pollId, Vote vote) {
         //Get poll
-        Poll poll = pollDao.findOne(pollId);
+        Poll poll = pollDao.findById(pollId).orElseThrow(() -> new ObjectNotFoundException(String.format("Poll with id %s not found", pollId)));
         GeneralUtils.throwObjectNotFoundException(poll, pollId, Poll.class);
         //Only vote if poll is open
         if (poll.getStatus().equals(PollStatusEnum.OPEN)) {

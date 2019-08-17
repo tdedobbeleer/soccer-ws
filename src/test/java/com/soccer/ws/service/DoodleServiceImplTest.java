@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.springframework.context.MessageSource;
 
 import java.util.Locale;
+import java.util.Optional;
 
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
@@ -46,8 +47,8 @@ public class DoodleServiceImplTest extends JUnitTest {
     public void testChangePresenceNormalUser() throws Exception {
         Match m = createTestMatch();
         Account a = DataFactory.createAccount();
-        expect(accountDao.findOne(a.getId())).andReturn(a);
-        expect(matchesDao.findOne(m.getId())).andReturn(m);
+        expect(accountDao.findById(a.getId())).andReturn(Optional.of(a));
+        expect(matchesDao.findById(m.getId())).andReturn(Optional.of(m));
         expect(doodleDao.save(anyObject(Doodle.class))).andReturn(new Doodle());
 
         replayAll();
@@ -65,8 +66,8 @@ public class DoodleServiceImplTest extends JUnitTest {
         Match m = createTestMatch();
         m.setStatus(MatchStatusEnum.PLAYED);
         Account a = DataFactory.createAccount();
-        expect(accountDao.findOne(a.getId())).andReturn(a);
-        expect(matchesDao.findOne(m.getId())).andReturn(m);
+        expect(accountDao.findById(a.getId())).andReturn(Optional.of(a));
+        expect(matchesDao.findById(m.getId())).andReturn(Optional.of(m));
         expect(doodleDao.save(anyObject(Doodle.class))).andReturn(new Doodle());
 
         replayAll();
@@ -84,8 +85,8 @@ public class DoodleServiceImplTest extends JUnitTest {
         Match m = createTestMatch();
         m.setStatus(MatchStatusEnum.CANCELLED);
         Account a = DataFactory.createAccount();
-        expect(matchesDao.findOne(m.getId())).andReturn(m);
-        expect(accountDao.findOne(a.getId())).andReturn(a);
+        expect(accountDao.findById(a.getId())).andReturn(Optional.of(a));
+        expect(matchesDao.findById(m.getId())).andReturn(Optional.of(m));
         expect(doodleDao.save(anyObject(Doodle.class))).andReturn(new Doodle());
 
         replayAll();
@@ -107,8 +108,8 @@ public class DoodleServiceImplTest extends JUnitTest {
         p.setAccount(a);
         m.getMatchDoodle().setPresences(Sets.newHashSet(p));
 
-        expect(accountDao.findOne(a.getId())).andReturn(a);
-        expect(matchesDao.findOne(m.getId())).andReturn(m);
+        expect(accountDao.findById(a.getId())).andReturn(Optional.of(a));
+        expect(matchesDao.findById(m.getId())).andReturn(Optional.of(m));
         expect(doodleDao.save(anyObject(Doodle.class))).andReturn(new Doodle());
 
         replayAll();

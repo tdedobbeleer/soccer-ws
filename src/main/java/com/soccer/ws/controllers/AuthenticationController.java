@@ -10,7 +10,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -33,7 +34,7 @@ import java.util.stream.Collectors;
 @Api(value = "Authentication endpoint", description = "Endpoint for logging in")
 public class AuthenticationController extends AbstractRestController {
 
-  private final Logger logger = Logger.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
   private final AuthenticationManager authenticationManager;
   private final TokenUtils tokenUtils;
   private final UserDetailsService userDetailsService;
