@@ -34,7 +34,7 @@ public class AccountServiceImpl implements AccountService {
     private static final Logger logger = LoggerFactory.getLogger(AccountServiceImpl.class);
 
     private static final String UPDATE_PASSWORD_SQL = "update account set password = ? where id = ?";
-    private static final String GET_PASSWORD = "select password from account where id = ?";
+    private static final String GET_PASSWORD = "select password from account where 'id' = ?";
     private final MessageSource messageSource;
     private final AccountDao accountDao;
     private final MailService mailService;

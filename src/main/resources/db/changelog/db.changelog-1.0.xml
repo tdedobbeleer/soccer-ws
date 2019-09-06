@@ -137,7 +137,7 @@
     <changeSet author="u0090265 (generated)" id="1497185125116-9">
         <createTable tableName="hibernate_sequences">
             <column name="sequence_name" type="VARCHAR(255)"/>
-            <column name="sequence_next_hi_value" type="INT"/>
+            <column name="next_val" type="BIGINT"/>
         </createTable>
     </changeSet>
     <changeSet author="u0090265 (generated)" id="1497185125116-10">
