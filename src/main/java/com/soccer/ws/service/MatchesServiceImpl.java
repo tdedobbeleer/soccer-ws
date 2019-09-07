@@ -5,6 +5,7 @@ import com.soccer.ws.data.MatchStatusEnum;
 import com.soccer.ws.dto.GoalDTO;
 import com.soccer.ws.dto.MatchDTO;
 import com.soccer.ws.exceptions.ObjectNotFoundException;
+import com.soccer.ws.model.DoodleStatusEnum;
 import com.soccer.ws.model.Goal;
 import com.soccer.ws.model.Match;
 import com.soccer.ws.model.Season;
@@ -106,6 +107,22 @@ public class MatchesServiceImpl implements MatchesService {
     }
 
     @Override
+    public void openNextMatchDoodle() {
+        matchesDao.findByStatusAndDateAfterNowOrderByDateAsc(MatchStatusEnum.NOT_PLAYED).stream().findFirst().ifPresent(
+                m -> {
+                    if (m.getDate().isBefore(DateTime.now().plusDays(7).withHourOfDay(23).withMinuteOfHour(59))) {
+                        m.getMatchDoodle().setStatus(DoodleStatusEnum.OPEN);
+                        matchesDao.save(m);
+                        log.info("openNextMatchDoodle - Found match {}, opening doodle", m.getId());
+                    } else {
+                        log.info("openNextMatchDoodle - No matches found. No doodles to open.");
+                    }
+                }
+        );
+    }
+
+
+    @Override
     public Match getLatestMatchWithPoll() {
         return matchesDao.findFirstByDateBeforeAndMotmPollIsNotNullOrderByDateDesc(DateTime.now());
     }
@@ -165,6 +182,7 @@ public class MatchesServiceImpl implements MatchesService {
             m.getGoals().addAll(transFormGoals(matchDTO.getGoals(), m));
             m.setAtGoals(matchDTO.getAtGoals());
             m.setHtGoals(matchDTO.getHtGoals());
+            m.getMatchDoodle().setStatus(DoodleStatusEnum.CLOSED);
         } else {
             m.getGoals().clear();
         }

@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,6 +73,10 @@ public class DoodleServiceImpl implements DoodleService {
         if (!isAdmin && !match.getStatus().equals(MatchStatusEnum.NOT_PLAYED))
             throw new RuntimeException(String.format("Altering match with id %s not succeeded, match is " +
                     "finished/Cancelled.", matchId));
+        if (match.getMatchDoodle().getStatus().equals(DoodleStatusEnum.CLOSED)) {
+            throw new AccessDeniedException(String.format("Altering match with id %s not succeeded, doodle is " +
+                    "closed.", matchId));
+        }
         Doodle d = match.getMatchDoodle();
 
         Presence presence = null;
@@ -178,8 +183,7 @@ public class DoodleServiceImpl implements DoodleService {
         doodle.getPresences()
                 .stream()
                 .filter(Presence::isReserve)
-                .sorted(Comparator.comparing(BaseClass::getModified))
-                .findFirst()
+                .min(Comparator.comparing(BaseClass::getModified))
                 .ifPresent(p -> {
                     Optional<Match> m = matchesDao.findByMatchDoodle(doodle);
                     final Account account = p.getAccount();

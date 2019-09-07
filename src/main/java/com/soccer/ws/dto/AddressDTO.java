@@ -1,18 +1,23 @@
 package com.soccer.ws.dto;
 
 import com.google.common.base.Strings;
+import lombok.*;
 import org.springframework.data.annotation.Transient;
 
 /**
  * Created by u0090265 on 17.02.17.
  */
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
 public class AddressDTO extends BaseClassDTO {
     private Integer postalCode;
     private String address;
     private String city;
     private String googleLink;
-
-    public AddressDTO() {}
 
     public AddressDTO(Long id, Integer postalCode, String address, String city, String googleLink) {
         super(id);
@@ -22,53 +27,11 @@ public class AddressDTO extends BaseClassDTO {
         this.googleLink = googleLink;
     }
 
-    public Integer getPostalCode() {
-        return postalCode;
-    }
-
-    public void setPostalCode(Integer postalCode) {
-        this.postalCode = postalCode;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getGoogleLink() {
-        return googleLink;
-    }
-
-    public void setGoogleLink(String googleLink) {
-        this.googleLink = googleLink;
-    }
-
     @Transient
     public boolean isFullAddress() {
         //Only return true if all data is filled in
         return !Strings.isNullOrEmpty(this.address) &&
                 !Strings.isNullOrEmpty(this.city) &&
                 postalCode != null;
-    }
-
-    @Override
-    public String toString() {
-        return "AddressDTO{" +
-                "postalCode=" + postalCode +
-                ", address='" + address + '\'' +
-                ", city='" + city + '\'' +
-                ", googleLink='" + googleLink + '\'' +
-                '}';
     }
 }

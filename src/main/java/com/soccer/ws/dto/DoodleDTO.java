@@ -1,6 +1,8 @@
 package com.soccer.ws.dto;
 
 import com.soccer.ws.model.BaseClass;
+import com.soccer.ws.model.DoodleStatusEnum;
+import lombok.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -8,24 +10,26 @@ import java.util.List;
 /**
  * Created by u0090265 on 09/09/16.
  */
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
 public class DoodleDTO extends BaseClass {
+    @Setter(AccessLevel.NONE)
     private List<PresenceDTO> presences;
+    @Setter(AccessLevel.NONE)
     private List<PresenceDTO> reserves;
     private PresenceDTO currentPresence;
     private int total;
+    private DoodleStatusEnum status;
 
-    public DoodleDTO() {}
-
-    public DoodleDTO(long id, List<PresenceDTO> presences, List<PresenceDTO> reserves, PresenceDTO currentPresence, int total) {
+    public DoodleDTO(long id, List<PresenceDTO> presences, List<PresenceDTO> reserves, PresenceDTO currentPresence, int total, DoodleStatusEnum status) {
         this.id = id;
         this.total = total;
+        this.status = status;
         this.currentPresence = currentPresence;
         setPresences(presences);
         setReserves(reserves);
-    }
-
-    public List<PresenceDTO> getPresences() {
-        return presences;
     }
 
     public void setPresences(List<PresenceDTO> presences) {
@@ -33,26 +37,6 @@ public class DoodleDTO extends BaseClass {
             Collections.sort(presences);
         }
         this.presences = presences;
-    }
-
-    public int getTotal() {
-        return total;
-    }
-
-    public void setTotal(int total) {
-        this.total = total;
-    }
-
-    public PresenceDTO getCurrentPresence() {
-        return currentPresence;
-    }
-
-    public void setCurrentPresence(PresenceDTO currentPresence) {
-        this.currentPresence = currentPresence;
-    }
-
-    public List<PresenceDTO> getReserves() {
-        return reserves;
     }
 
     public void setReserves(List<PresenceDTO> reserves) {

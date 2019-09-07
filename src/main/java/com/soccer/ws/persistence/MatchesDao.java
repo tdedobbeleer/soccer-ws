@@ -1,5 +1,6 @@
 package com.soccer.ws.persistence;
 
+import com.soccer.ws.data.MatchStatusEnum;
 import com.soccer.ws.model.Doodle;
 import com.soccer.ws.model.Match;
 import com.soccer.ws.model.Season;
@@ -27,6 +28,8 @@ public interface MatchesDao extends PagingAndSortingRepository<Match, Long>, Jpa
 
     @Query("select m from Match m where m.date > ?1 order by date asc")
     List<Match> findByDate(DateTime date);
+
+    List<Match> findByStatusAndDateAfterNowOrderByDateAsc(MatchStatusEnum matchStatusEnum);
 
     Page<Match> findByDateAfter(DateTime date, Pageable pageable);
 

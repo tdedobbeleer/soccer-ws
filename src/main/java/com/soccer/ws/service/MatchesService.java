@@ -30,6 +30,8 @@ public interface MatchesService {
 
     Match getLatestMatch();
 
+    void openNextMatchDoodle();
+
     Match getLatestMatchWithPoll();
 
     Page<Match> getMatchesWithPolls(int page, int pageSize, Optional<Sort> sort, Optional<String> searchTerm);

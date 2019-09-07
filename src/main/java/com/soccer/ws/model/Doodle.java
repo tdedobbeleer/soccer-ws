@@ -3,6 +3,7 @@ package com.soccer.ws.model;
 import com.google.common.collect.Sets;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 /**
@@ -14,6 +15,7 @@ public class Doodle {
 
     private long id;
     private Set<Presence> presences;
+    private DoodleStatusEnum status = DoodleStatusEnum.CLOSED;
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
@@ -35,6 +37,17 @@ public class Doodle {
 
     public void setPresences(Set<Presence> presences) {
         this.presences = presences;
+    }
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 20)
+    @NotNull
+    public DoodleStatusEnum getStatus() {
+        return status;
+    }
+
+    public void setStatus(DoodleStatusEnum status) {
+        this.status = status;
     }
 
     @Transient
