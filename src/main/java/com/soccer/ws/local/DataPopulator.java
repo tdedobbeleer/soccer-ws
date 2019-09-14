@@ -91,6 +91,8 @@ public class DataPopulator {
                 null, "01/01/2017", "20:00", teamDTO1, teamDTO2, 1, 3, seasonDTO1
         ));
 
+        matchesService.openMatchDoodle(matchDTO1.getId());
+
         matchDTO1.setGoals(ImmutableList.<GoalDTO>builder()
                 .add(new GoalDTO(accountDTO1, accountDTO2, 0))
                 .add(new GoalDTO(accountDTO2, null, 1))

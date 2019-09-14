@@ -30,6 +30,8 @@ public interface MatchesService {
 
     Match getLatestMatch();
 
+    void openMatchDoodle(long matchId);
+
     void openNextMatchDoodle();
 
     Match getLatestMatchWithPoll();

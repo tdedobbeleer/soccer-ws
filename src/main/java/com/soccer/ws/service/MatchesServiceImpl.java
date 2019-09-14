@@ -107,12 +107,19 @@ public class MatchesServiceImpl implements MatchesService {
     }
 
     @Override
+    public void openMatchDoodle(long matchId) {
+        Match match = matchesDao.findOne(matchId);
+        if (match == null) throw new ObjectNotFoundException(String.format("Match %s does not exists", matchId));
+        match.getMatchDoodle().setStatus(DoodleStatusEnum.OPEN);
+        matchesDao.save(match);
+    }
+
+    @Override
     public void openNextMatchDoodle() {
-        matchesDao.findByStatusAndDateAfterNowOrderByDateAsc(MatchStatusEnum.NOT_PLAYED).stream().findFirst().ifPresent(
+        matchesDao.findByStatusAndDateAfterOrderByDateDesc(MatchStatusEnum.NOT_PLAYED, DateTime.now()).stream().findFirst().ifPresent(
                 m -> {
                     if (m.getDate().isBefore(DateTime.now().plusDays(7).withHourOfDay(23).withMinuteOfHour(59))) {
-                        m.getMatchDoodle().setStatus(DoodleStatusEnum.OPEN);
-                        matchesDao.save(m);
+                        openMatchDoodle(m.getId());
                         log.info("openNextMatchDoodle - Found match {}, opening doodle", m.getId());
                     } else {
                         log.info("openNextMatchDoodle - No matches found. No doodles to open.");
