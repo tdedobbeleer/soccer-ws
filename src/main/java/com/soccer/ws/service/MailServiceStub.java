@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by u0090265 on 17.06.17.
@@ -44,12 +43,6 @@ public class MailServiceStub implements MailService {
 
     @Override
     public boolean sendMail(String to, String name, String subject, MailTypeEnum type, Map<String, Object> propertyMap) {
-        log(Lists.newArrayList(to), subject, type, propertyMap);
-        return true;
-    }
-
-    @Override
-    public boolean sendMail(Set<String> to, String subject, MailTypeEnum type, Map<String, Object> propertyMap) {
         log(Lists.newArrayList(to), subject, type, propertyMap);
         return true;
     }

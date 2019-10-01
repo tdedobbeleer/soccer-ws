@@ -3,7 +3,6 @@ package com.soccer.ws.service;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.soccer.ws.data.MailTypeEnum;
 import com.soccer.ws.dto.NewsDTO;
 import com.soccer.ws.exceptions.ObjectNotFoundException;
@@ -29,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import static com.soccer.ws.validators.SanitizeUtils.sanitizeHtml;
 
@@ -177,15 +175,15 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public boolean sendNewsEmail(NewsDTO news) {
-        Set<String> emails = Sets.newHashSet();
-        for (Account a : accountDao.findAllByActive(true)) {
-            if (a.getAccountSettings().isSendNewsNotifications()) {
-                emails.add(a.getUsername());
-            }
-        }
         String title = messageSource.getMessage("email.news.title", new String[]{news.getHeader(), news.getPostedBy().getName()}, Locale.ENGLISH);
-        return mailService.sendMail(emails, title, MailTypeEnum.MESSAGE, ImmutableMap.of("message", news,
-                Constants.EMAIL_BASE_URL_VARIABLE, baseUrl));
+        accountDao.findAllByActive(true).parallelStream().forEach(a -> {
+            boolean result = mailService.sendMail(a.getUsername(), a.getFullName(), title, MailTypeEnum.MESSAGE, ImmutableMap.of("message", news,
+                    Constants.EMAIL_BASE_URL_VARIABLE, baseUrl));
+            if (!result) {
+                log.error("Could not send email to {}", a.getUsername());
+            }
+        });
+        return true;
     }
 
     /**
