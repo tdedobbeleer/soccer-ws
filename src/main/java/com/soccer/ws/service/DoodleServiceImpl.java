@@ -73,7 +73,7 @@ public class DoodleServiceImpl implements DoodleService {
         if (!isAdmin && !match.getStatus().equals(MatchStatusEnum.NOT_PLAYED))
             throw new RuntimeException(String.format("Altering match with id %s not succeeded, match is " +
                     "finished/Cancelled.", matchId));
-        if (!isAdmin && match.getMatchDoodle().getStatus().equals(DoodleStatusEnum.CLOSED)) {
+        if (match.getMatchDoodle().getStatus().equals(DoodleStatusEnum.CLOSED) && !isAdmin) {
             throw new UnauthorizedAccessException(String.format("Altering match with id %s not succeeded, doodle is " +
                     "closed.", matchId));
         }

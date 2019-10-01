@@ -5,10 +5,8 @@ import com.soccer.common.DataFactory;
 import com.soccer.common.JUnitTest;
 import com.soccer.ws.data.MailTypeEnum;
 import com.soccer.ws.data.MatchStatusEnum;
-import com.soccer.ws.model.Account;
-import com.soccer.ws.model.Doodle;
-import com.soccer.ws.model.Match;
-import com.soccer.ws.model.Presence;
+import com.soccer.ws.exceptions.UnauthorizedAccessException;
+import com.soccer.ws.model.*;
 import com.soccer.ws.persistence.AccountDao;
 import com.soccer.ws.persistence.DoodleDao;
 import com.soccer.ws.persistence.MatchesDao;
@@ -46,9 +44,12 @@ public class DoodleServiceImplTest extends JUnitTest {
     public void testChangePresenceNormalUser() throws Exception {
         Match m = createTestMatch();
         Account a = DataFactory.createAccount();
+        Doodle doodle = new Doodle();
+        doodle.setStatus(DoodleStatusEnum.OPEN);
+        m.setMatchDoodle(doodle);
         expect(accountDao.findOne(a.getId())).andReturn(a);
         expect(matchesDao.findOne(m.getId())).andReturn(m);
-        expect(doodleDao.save(anyObject(Doodle.class))).andReturn(new Doodle());
+        expect(doodleDao.save(anyObject(Doodle.class))).andReturn(doodle);
 
         replayAll();
 
@@ -56,6 +57,21 @@ public class DoodleServiceImplTest extends JUnitTest {
 
         assertEquals(a, presence.getAccount());
         assertTrue(presence.isPresent());
+
+        verifyAll();
+    }
+
+    @Test(expected = UnauthorizedAccessException.class)
+    public void testChangePresenceNormalUserClosedDoodle() throws Exception {
+        Match m = createTestMatch();
+        Account a = DataFactory.createAccount();
+        expect(accountDao.findOne(a.getId())).andReturn(a);
+        expect(matchesDao.findOne(m.getId())).andReturn(m);
+        expect(doodleDao.save(anyObject(Doodle.class))).andReturn(new Doodle());
+
+        replayAll();
+
+        Presence presence = doodleService.changePresence(a.getId(), m.getId(), false);
 
         verifyAll();
     }
@@ -102,6 +118,9 @@ public class DoodleServiceImplTest extends JUnitTest {
     public void testChangePresenceNormalUserAlreadyPresent() throws Exception {
         Match m = createTestMatch();
         Account a = DataFactory.createAccount();
+        Doodle doodle = new Doodle();
+        doodle.setStatus(DoodleStatusEnum.OPEN);
+        m.setMatchDoodle(doodle);
         Presence p = new Presence();
         p.setPresent(true);
         p.setAccount(a);
