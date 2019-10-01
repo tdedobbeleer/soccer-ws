@@ -46,6 +46,8 @@ public class MatchesServiceImpl implements MatchesService {
     private final CacheAdapter cacheAdapter;
     @Value("${matches.next.offset}")
     private String nextMatchOffset;
+    @Value("${matches.doodle.next.offset}")
+    private String nextMatchDoodleOffset;
 
     @Autowired
     public MatchesServiceImpl(PollService pollService, SeasonDao seasonDao, TeamDao teamDao, MatchesDao matchesDao, AccountDao accountDao, CacheAdapter cacheAdapter) {
@@ -118,7 +120,8 @@ public class MatchesServiceImpl implements MatchesService {
     public void openNextMatchDoodle() {
         matchesDao.findByStatusAndDateAfterOrderByDateDesc(MatchStatusEnum.NOT_PLAYED, DateTime.now()).stream().findFirst().ifPresent(
                 m -> {
-                    if (m.getDate().isBefore(DateTime.now().plusDays(7).withHourOfDay(23).withMinuteOfHour(59))) {
+                    Duration duration = Duration.parse(nextMatchDoodleOffset);
+                    if (m.getDate().isBefore(DateTime.now().plusSeconds(Math.toIntExact(duration.getSeconds())))) {
                         openMatchDoodle(m.getId());
                         log.info("openNextMatchDoodle - Found match {}, opening doodle", m.getId());
                     } else {

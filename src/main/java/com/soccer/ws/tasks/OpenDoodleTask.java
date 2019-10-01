@@ -2,7 +2,9 @@ package com.soccer.ws.tasks;
 
 import com.soccer.ws.service.MatchesService;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
+@Component
 public class OpenDoodleTask implements Task {
     private final MatchesService matchesService;
 
@@ -11,7 +13,7 @@ public class OpenDoodleTask implements Task {
     }
 
     @Override
-    @Scheduled(cron = "0 0 8 * * 6", zone = "Europe/Brussels")
+    @Scheduled(cron = "* * ${random.int[8,18]} * * *", zone = "Europe/Brussels")
     public void execute() {
         matchesService.openNextMatchDoodle();
     }

@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.soccer.ws.data.MailTypeEnum;
 import com.soccer.ws.data.MatchStatusEnum;
 import com.soccer.ws.exceptions.ObjectNotFoundException;
+import com.soccer.ws.exceptions.UnauthorizedAccessException;
 import com.soccer.ws.model.*;
 import com.soccer.ws.persistence.AccountDao;
 import com.soccer.ws.persistence.DoodleDao;
@@ -17,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -73,8 +73,8 @@ public class DoodleServiceImpl implements DoodleService {
         if (!isAdmin && !match.getStatus().equals(MatchStatusEnum.NOT_PLAYED))
             throw new RuntimeException(String.format("Altering match with id %s not succeeded, match is " +
                     "finished/Cancelled.", matchId));
-        if (match.getMatchDoodle().getStatus().equals(DoodleStatusEnum.CLOSED)) {
-            throw new AccessDeniedException(String.format("Altering match with id %s not succeeded, doodle is " +
+        if (!isAdmin && match.getMatchDoodle().getStatus().equals(DoodleStatusEnum.CLOSED)) {
+            throw new UnauthorizedAccessException(String.format("Altering match with id %s not succeeded, doodle is " +
                     "closed.", matchId));
         }
         Doodle d = match.getMatchDoodle();

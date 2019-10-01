@@ -216,7 +216,7 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
                 Presence p = doodle.getPresenceFor(a);
                 PresenceDTO dto = new PresenceDTO(convertAccount(a, account != null), doodle.getPresenceType(a),
                         getModifiedDateIfNeeded(p),
-                        isAdmin || (account != null && match.isActive() && a.equals(account)));
+                        isAdmin || (match.isActive() && a.equals(account)));
                 if (dto.getType().equals(Presence.PresenceType.RESERVE)) {
                     reserveDTOs.add(dto);
                 } else {
