@@ -126,15 +126,7 @@ public class DataPopulator {
                 null, GeneralUtils.convertToStringDate(DateTime.now().plusDays(14)), "20:00", teamDTO3, teamDTO1, null, null, seasonDTO3
         ));
 
-
-        Lists.newArrayList(seasonDTO1, seasonDTO2, seasonDTO3).forEach(s -> {
-            for (int i = 0; i < 5; i++) {
-                matchesService.createMatch(new MatchDTO(
-                        null, GeneralUtils.convertToStringDate(DateTime.now().plusDays(i)), "20:00", teamDTO3, teamDTO2, null, null, s));
-
-            }
-
-        });
+        matchesService.openMatchDoodle(matchDTO2.getId());
 
         logger.info("DB population succesful");
     }
