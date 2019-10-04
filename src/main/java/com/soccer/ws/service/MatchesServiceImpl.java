@@ -120,8 +120,7 @@ public class MatchesServiceImpl implements MatchesService {
     public void openNextMatchDoodle() {
         matchesDao.findByStatusAndDateAfterOrderByDateDesc(MatchStatusEnum.NOT_PLAYED, DateTime.now()).stream().findFirst().ifPresent(
                 m -> {
-                    Duration duration = Duration.parse(nextMatchDoodleOffset);
-                    if (m.getDate().isBefore(DateTime.now().plusSeconds(Math.toIntExact(duration.getSeconds())))) {
+                    if (m.getDate().isBefore(generateNextMatchDoodleOffsetDate())) {
                         openMatchDoodle(m.getId());
                         log.info("openNextMatchDoodle - Found match {}, opening doodle", m.getId());
                     } else {
@@ -229,6 +228,11 @@ public class MatchesServiceImpl implements MatchesService {
     private DateTime generateNextMatchOffsetDate() {
         Duration duration = Duration.parse(nextMatchOffset);
         return DateTime.now().minusSeconds(Math.toIntExact(duration.getSeconds()));
+    }
+
+    private DateTime generateNextMatchDoodleOffsetDate() {
+        Duration duration = Duration.parse(nextMatchDoodleOffset);
+        return DateTime.now().plusSeconds(Math.toIntExact(duration.getSeconds())).withHourOfDay(24).withMinuteOfHour(59).withSecondOfMinute(59);
     }
 
 }
