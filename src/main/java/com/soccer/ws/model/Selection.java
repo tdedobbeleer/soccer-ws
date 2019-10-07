@@ -35,7 +35,12 @@ public class Selection extends BaseClass {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "selection_data")
     @MapKeyColumn(name = "description")
-    @Column(name = "score")
+    @Column(name="VALUE")
+
+    @ElementCollection
+    @JoinTable(name="selection_data", joinColumns=@JoinColumn(name="id"))
+    @MapKeyColumn (name="selection_id")
+    @Column(name="VALUE")
     public Map<String, Short> getData() {
         return data;
     }
