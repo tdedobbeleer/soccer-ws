@@ -1,7 +1,6 @@
 package com.soccer.ws.service;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 import com.soccer.ws.data.MailTypeEnum;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -19,7 +18,6 @@ import javax.annotation.PostConstruct;
 import javax.ws.rs.core.MediaType;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by u0090265 on 12/08/16.
@@ -96,15 +94,6 @@ public class MailGunMailServiceImpl implements MailService {
     @Override
     public boolean sendMail(String to, String name, String subject, MailTypeEnum type, Map<String, Object> propertyMap) {
         return sendMessage(ImmutableMap.of(to, name), subject, type, propertyMap);
-    }
-
-    @Override
-    public boolean sendMail(Set<String> to, String subject, MailTypeEnum type, Map<String, Object> propertyMap) {
-        Map<String, String> m = Maps.newHashMap();
-        for (String t : to) {
-            m.put(t, "");
-        }
-        return sendMessage(m, subject, type, propertyMap);
     }
 
     @Override
