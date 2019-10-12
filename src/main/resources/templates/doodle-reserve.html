@@ -17,8 +17,12 @@
     <p>Greetings,</p>
     <p>The 12th SVK player</p>
 
-    <p><i>Je kan deze waarschuwingen uitzetten door je profielopties te wijzigen.</i></p>
-    <p><i>You can disable these notifications by changing your profile settings.</i></p>
+    <p><i>Je kan deze waarschuwingen uitzetten <a
+            th:href="@{{url}/accounts/profile/edit/{id}(url=${baseUrl}, id=${account.id})}">door je profielopties te
+        wijzigen</a>.</i></p>
+    <p><i>You can disable these notifications <a
+            th:href="@{{url}/accounts/profile/edit/{id}(url=${baseUrl}, id=${account.id})}">by changing your profile
+        settings</a>.</i></p>
 </section>
 </body>
 </html>

@@ -1,6 +1,5 @@
 package com.soccer.ws.service;
 
-import com.google.common.base.Optional;
 import com.soccer.ws.dto.MatchDTO;
 import com.soccer.ws.exceptions.ObjectNotFoundException;
 import com.soccer.ws.model.Match;
@@ -10,6 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by u0090265 on 5/3/14.
@@ -32,7 +32,7 @@ public interface MatchesService {
 
     void openMatchDoodle(long matchId);
 
-    void openNextMatchDoodle();
+    List<Match> openNextMatchDoodle();
 
     Match getLatestMatchWithPoll();
 

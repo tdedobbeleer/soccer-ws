@@ -1,6 +1,5 @@
 package com.soccer.ws.service;
 
-import com.google.common.base.Optional;
 import com.soccer.ws.data.MatchStatusEnum;
 import com.soccer.ws.dto.GoalDTO;
 import com.soccer.ws.dto.MatchDTO;
@@ -29,6 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by u0090265 on 5/3/14.
@@ -117,17 +118,13 @@ public class MatchesServiceImpl implements MatchesService {
     }
 
     @Override
-    public void openNextMatchDoodle() {
-        matchesDao.findByStatusAndDateAfterOrderByDateDesc(MatchStatusEnum.NOT_PLAYED, DateTime.now()).stream().findFirst().ifPresent(
-                m -> {
-                    if (m.getDate().isBefore(generateNextMatchDoodleOffsetDate())) {
-                        openMatchDoodle(m.getId());
-                        log.info("openNextMatchDoodle - Found match {}, opening doodle", m.getId());
-                    } else {
-                        log.info("openNextMatchDoodle - No matches found. No doodles to open.");
-                    }
-                }
-        );
+    public List<Match> openNextMatchDoodle() {
+        return matchesDao.findByStatusAndDateAfterOrderByDateDesc(MatchStatusEnum.NOT_PLAYED, DateTime.now())
+                .stream()
+                .filter(m -> m.getDate().isBefore(generateNextMatchDoodleOffsetDate()))
+                .peek(m -> openMatchDoodle(m.getId()))
+                .peek(m -> log.info("openNextMatchDoodle - Found match {}, opening doodle", m.getId()))
+                .collect(Collectors.toList());
     }
 
 

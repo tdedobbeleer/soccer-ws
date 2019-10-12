@@ -56,6 +56,11 @@ public class Match extends BaseClass {
         return GeneralUtils.convertToStringHour(this.date);
     }
 
+    @Transient
+    public String getStringDateTime() {
+        return GeneralUtils.convertToStringDateTimeWithTimeZone(this.date);
+    }
+
     @JsonIgnore
     @NotNull
     @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)

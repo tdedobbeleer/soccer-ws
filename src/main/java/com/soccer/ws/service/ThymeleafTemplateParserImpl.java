@@ -22,7 +22,7 @@ public class ThymeleafTemplateParserImpl implements TemplateParser {
     @Override
     public String parse(MailTypeEnum type, Map<String, Object> propertyMap) {
         final Context ctx = new Context(Locale.ENGLISH);
-        propertyMap.entrySet().forEach(stringObjectEntry -> ctx.setVariable(stringObjectEntry.getKey(), stringObjectEntry.getValue()));
+        propertyMap.forEach(ctx::setVariable);
         return this.templateEngine.process(type.getValue(), ctx);
     }
 }

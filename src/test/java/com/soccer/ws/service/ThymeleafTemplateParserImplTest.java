@@ -58,6 +58,12 @@ public class ThymeleafTemplateParserImplTest {
     }
 
     @Test
+    public void parseDoodleOpen() throws Exception {
+        parser.parse(MailTypeEnum.DOODLE_OPEN, ImmutableMap.of(EMAIL_ACCOUNT_VARIABLE, account,
+                EMAIL_BASE_URL_VARIABLE, baseUrl));
+    }
+
+    @Test
     public void parseRegistration() throws Exception {
         parser.parse(MailTypeEnum.REGISTRATION, ImmutableMap.of(Constants
                 .EMAIL_ACCOUNT_VARIABLE, account, Constants.EMAIL_BASE_URL_VARIABLE, baseUrl));

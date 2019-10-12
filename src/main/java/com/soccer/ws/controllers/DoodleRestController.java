@@ -1,6 +1,5 @@
 package com.soccer.ws.controllers;
 
-import com.google.common.base.Optional;
 import com.soccer.ws.dto.MatchDoodleDTO;
 import com.soccer.ws.dto.PageDTO;
 import com.soccer.ws.dto.PresenceDTO;
@@ -26,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Optional;
+
 /**
  * Created by u0090265 on 09/09/16.
  */
@@ -50,7 +51,7 @@ public class DoodleRestController extends AbstractRestController {
     @ApiOperation(value = "Get matchdoodles", nickname = "matchDoodlesPage")
     public ResponseEntity<PageDTO<MatchDoodleDTO>> getMatchDoodles(@RequestParam int page, @RequestParam(required =
             false) int size) {
-        Page<Match> matches = matchesService.getUpcomingMatchesPages(page, size, Optional.absent());
+        Page<Match> matches = matchesService.getUpcomingMatchesPages(page, size, Optional.empty());
         return new ResponseEntity<>(DTOConversionHelper.convertMatchDoodles(matches, getAccountFromSecurity(),
                 isAdmin()), HttpStatus.OK);
     }

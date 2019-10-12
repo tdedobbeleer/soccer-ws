@@ -1,6 +1,5 @@
 package com.soccer.ws.controllers;
 
-import com.google.common.base.Optional;
 import com.soccer.ws.dto.AccountDTO;
 import com.soccer.ws.dto.MatchPollDTO;
 import com.soccer.ws.dto.MultipleChoiceVoteDTO;
@@ -24,6 +23,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+
+import static java.util.Optional.empty;
 
 /**
  * Created by u0090265 on 10/2/15.
@@ -87,8 +89,7 @@ public class PollRestController extends AbstractRestController {
     @ApiOperation(value = "Get all match polls", nickname = "getMatchPolls")
     public ResponseEntity<PageDTO<MatchPollDTO>> getAllMatchPolls(@RequestParam int page, @RequestParam(required =
             false) int size, @RequestParam(required = false) String sort) {
-        Page<Match> playersPolls = matchesService.getMatchesWithPolls(page, size, Optional.absent(), Optional
-                .absent());
+        Page<Match> playersPolls = matchesService.getMatchesWithPolls(page, size, empty(), Optional.empty());
         return new ResponseEntity<>(DTOConversionHelper.convertMatchPolls(playersPolls, isLoggedIn()), HttpStatus.OK);
     }
 }

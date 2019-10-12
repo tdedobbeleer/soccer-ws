@@ -11,8 +11,6 @@ import com.soccer.ws.persistence.DoodleDao;
 import com.soccer.ws.persistence.MatchesDao;
 import com.soccer.ws.utils.Constants;
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,8 +115,6 @@ public class DoodleServiceImpl implements DoodleService {
     public boolean sendDoodleNotificationsFor(Match match, Set<Account> accounts) {
         //Do nothing if object are null or empty
         if (match == null || accounts == null || accounts.isEmpty()) return false;
-        DateTimeFormatter dtf = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
-        String matchDate = dtf.print(match.getDate());
 
         //Make sure the next match is this week and there are less than 13 players
         if (match.getMatchDoodle().countPresences() < doodleNotificationLimit && match.getDate().weekOfWeekyear().equals(DateTime.now()
@@ -130,7 +126,7 @@ public class DoodleServiceImpl implements DoodleService {
                     //If they didn't fill in the doodle, send mail
                     if (match.getMatchDoodle().getPresenceType(account).equals(Presence.PresenceType.NOT_FILLED_IN)) {
                         String subject = messageSource.getMessage("email.doodle.subject", new String[]{match
-                                .getDescription(), matchDate}, Locale.ENGLISH);
+                                .getDescription(), match.getStringDateTime()}, Locale.ENGLISH);
                         log.info("Account {} has not filled in doodle. Mail will be sent.", account.getUsername());
                         mailService.sendMail(account.getUsername(), account.toString(), subject, MailTypeEnum
                                 .DOODLE_REMINDER, ImmutableMap.of(EMAIL_ACCOUNT_VARIABLE, account,

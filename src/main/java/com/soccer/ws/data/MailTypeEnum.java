@@ -7,6 +7,7 @@ public enum MailTypeEnum {
     ACTIVATION("account-activation"),
     REGISTRATION("account-registration"),
     DOODLE_REMINDER("doodle-reminder"),
+    DOODLE_OPEN("doodle-open"),
     DOODLE_RESERVE("doodle-reserve"),
     MESSAGE("message"),
     PASSWORD_RECOVERY("password-recovery");
