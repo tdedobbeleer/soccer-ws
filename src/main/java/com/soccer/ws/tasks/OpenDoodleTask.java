@@ -36,7 +36,7 @@ public class OpenDoodleTask implements Task {
     }
 
     @Override
-    @Scheduled(cron = "0  ${random.int[0,59]} ${random.int[8,12]} * * *", zone = "Europe/Brussels")
+    @Scheduled(cron = "0 ${random.int[0,59]} ${random.int[8,12]} * * *", zone = "Europe/Brussels")
     public void execute() {
         matchesService.openNextMatchDoodle().forEach(m -> {
             String subject = messageSource.getMessage("email.doodle.open.subject", new String[]{m
