@@ -243,6 +243,9 @@ public class AccountServiceImpl implements AccountService {
         accountProfile.setAddress(createAddress(accountProfile.getAddress(), profileDTO.getAddress()));
         account.getAccountSettings().setSendDoodleNotifications(profileDTO.isDoodleNotifications());
         account.getAccountSettings().setSendNewsNotifications(profileDTO.isNewsNotifications());
+        account.setUsername(profileDTO.getAccount().getUsername());
+        account.setFirstName(profileDTO.getAccount().getFirstName());
+        account.setLastName(profileDTO.getAccount().getLastName());
         //Set image as a null value to remove, else set profile image with provided image.
         //updatedAccount.getAccountProfile().setAvatar(form.isRemoveAvatar() ?
         //null :
