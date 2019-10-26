@@ -36,7 +36,7 @@ public class OpenDoodleTask implements Task {
     }
 
     @Override
-    @Scheduled(cron = "0 30 15 ? * *", zone = "Europe/Brussels")
+    @Scheduled(cron = "0 ${random.int[0,59]} ${random.int[8,12]} * * *", zone = "Europe/Brussels")
     public void execute() {
         log.info("Execute OpenDoodleTask - start");
         matchesService.openNextMatchDoodle().forEach(m -> {
