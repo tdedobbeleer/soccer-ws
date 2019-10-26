@@ -229,7 +229,7 @@ public class MatchesServiceImpl implements MatchesService {
 
     private DateTime generateNextMatchDoodleOffsetDate() {
         Duration duration = Duration.parse(nextMatchDoodleOffset);
-        return DateTime.now().plusSeconds(Math.toIntExact(duration.getSeconds())).withHourOfDay(24).withMinuteOfHour(59).withSecondOfMinute(59);
+        return DateTime.now().plusSeconds(Math.toIntExact(duration.getSeconds())).withHourOfDay(23).withMinuteOfHour(59).withSecondOfMinute(59);
     }
 
 }

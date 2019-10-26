@@ -31,7 +31,7 @@ public class DoodleReminderTask implements Task {
     }
 
 
-    @Scheduled(cron = "0 0 14 ? * TUE,THU", zone = "Europe/Brussels")
+    @Scheduled(cron = "0 10 14 ? * TUE,THU", zone = "Europe/Brussels")
     @Override
     public void execute() {
         log.info("Execute DoodleReminderTask - start");
