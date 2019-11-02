@@ -122,6 +122,7 @@ public class MatchesServiceImpl implements MatchesService {
         return matchesDao.findByStatusAndDateAfterOrderByDateDesc(MatchStatusEnum.NOT_PLAYED, DateTime.now())
                 .stream()
                 .filter(m -> m.getDate().isBefore(generateNextMatchDoodleOffsetDate()))
+                .filter(m -> !m.getMatchDoodle().getStatus().equals(DoodleStatusEnum.OPEN))
                 .peek(m -> openMatchDoodle(m.getId()))
                 .peek(m -> log.info("openNextMatchDoodle - Found match {}, opening doodle", m.getId()))
                 .collect(Collectors.toList());
