@@ -40,6 +40,7 @@ public class OpenDoodleTask implements Task {
     public void execute() {
         log.info("Execute OpenDoodleTask - start");
         matchesService.openNextMatchDoodle().forEach(m -> {
+            log.debug("Match {} is opened, sending emails.", m.getDescription());
             String subject = messageSource.getMessage("email.doodle.open.subject", new String[]{m
                     .getDescription(), m.getStringDateTime()}, Locale.ENGLISH);
             accountService.getAllActivateAccounts().forEach(a -> {
