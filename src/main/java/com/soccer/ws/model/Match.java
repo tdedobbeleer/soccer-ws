@@ -58,7 +58,7 @@ public class Match extends BaseClass {
 
     @Transient
     public String getStringDateTime() {
-        return GeneralUtils.convertToStringDateTimeWithTimeZone(this.date);
+        return GeneralUtils.convertToStringDateTime(this.date);
     }
 
     @JsonIgnore
