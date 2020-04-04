@@ -234,6 +234,13 @@
             <version>1.19.1</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.sendinblue/sib-api-v3-sdk -->
+        <dependency>
+            <groupId>com.sendinblue</groupId>
+            <artifactId>sib-api-v3-sdk</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+
         <!-- reCaptcha -->
         <dependency>
             <groupId>com.google.code.maven-play-plugin.net.tanesha.recaptcha4j</groupId>

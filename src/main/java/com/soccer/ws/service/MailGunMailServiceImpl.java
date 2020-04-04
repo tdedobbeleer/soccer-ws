@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -22,28 +21,28 @@ import java.util.Map;
 /**
  * Created by u0090265 on 12/08/16.
  */
-@Profile("!default")
+//@Profile("!default")
 @Service
-public class MailGunMailServiceImpl implements MailService {
+public class MailGunMailServiceImpl extends AbstractMailService {
 
     private static final Logger logger = LoggerFactory.getLogger(MailGunMailServiceImpl.class);
 
     private final TemplateParser templateParser;
-    @Value("${mail.admin.fromTo}")
-    private String defaultAdminFromTo;
-    @Value("${mail.admin.name}")
-    private String defaultAdminName;
-    @Value("${mail.admin.subject}")
-    private String defaultAdminSubject;
-    @Value("${mailgun.api.key}")
-    private String apiKey;
-    @Value("${mailgun.api.url}")
-    private String apiUrl;
+    private final String apiKey;
+    private final String apiUrl;
     private WebResource defaultMessageWebResource;
 
     @Autowired
-    public MailGunMailServiceImpl(TemplateParser templateParser) {
+    public MailGunMailServiceImpl(TemplateParser templateParser,
+                                  @Value("${mail.admin.fromTo}") String defaultAdminFromTo,
+                                  @Value("${mail.admin.name}") String defaultAdminName,
+                                  @Value("${mail.admin.subject}") String defaultAdminSubject,
+                                  @Value("${mailgun.api.key}") String apiKey,
+                                  @Value("${mailgun.api.url}") String apiUrl) {
+        super(defaultAdminFromTo, defaultAdminName, defaultAdminSubject);
         this.templateParser = templateParser;
+        this.apiKey = apiKey;
+        this.apiUrl = apiUrl;
     }
 
     @PostConstruct
@@ -56,7 +55,7 @@ public class MailGunMailServiceImpl implements MailService {
                         "/messages");
     }
 
-    private boolean sendMessage(Map<String, String> to, String subject, MailTypeEnum type, Map<String, Object> propertyMap) {
+    protected boolean sendMessage(Map<String, String> to, String subject, MailTypeEnum type, Map<String, Object> propertyMap) {
         MultivaluedMapImpl formData = new MultivaluedMapImpl();
         formData.add("from", String.format("%s <%s>", defaultAdminName, defaultAdminFromTo));
         formData.add("subject", subject);
@@ -78,26 +77,5 @@ public class MailGunMailServiceImpl implements MailService {
                 .toArray()), subject, c
         ));
         return c.getStatus() == 200;
-    }
-
-    @Override
-    public boolean sendMail(String to, String name, String from, String subject, String body, MailTypeEnum type, Map<String,
-            Object> propertyMap) {
-        return sendMessage(ImmutableMap.of(to, name), subject, type, propertyMap);
-    }
-
-    @Override
-    public boolean sendMail(String to, String subject, MailTypeEnum type, Map<String, Object> propertyMap) {
-        return sendMessage(ImmutableMap.of(to, ""), subject, type, propertyMap);
-    }
-
-    @Override
-    public boolean sendMail(String to, String name, String subject, MailTypeEnum type, Map<String, Object> propertyMap) {
-        return sendMessage(ImmutableMap.of(to, name), subject, type, propertyMap);
-    }
-
-    @Override
-    public boolean sendPreConfiguredMail(MailTypeEnum type, Map<String, Object> propertyMap) {
-        return sendMessage(ImmutableMap.of(defaultAdminFromTo, defaultAdminName), defaultAdminSubject, type, propertyMap);
     }
 }

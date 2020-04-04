@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Created by u0090265 on 17.06.17.
  */
-@Profile("default")
+@Profile("!default")
 @Service
 public class MailServiceStub implements MailService {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
