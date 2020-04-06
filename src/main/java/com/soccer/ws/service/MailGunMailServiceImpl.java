@@ -1,6 +1,5 @@
 package com.soccer.ws.service;
 
-import com.google.common.collect.ImmutableMap;
 import com.soccer.ws.data.MailTypeEnum;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -11,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.ws.rs.core.MediaType;
@@ -22,7 +20,7 @@ import java.util.Map;
  * Created by u0090265 on 12/08/16.
  */
 //@Profile("!default")
-@Service
+//@Service
 public class MailGunMailServiceImpl extends AbstractMailService {
 
     private static final Logger logger = LoggerFactory.getLogger(MailGunMailServiceImpl.class);
