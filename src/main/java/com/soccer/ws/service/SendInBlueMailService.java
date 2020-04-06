@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-@Profile("default")
+@Profile("!default")
 public class SendInBlueMailService extends AbstractMailService {
     private static final Logger logger = LoggerFactory.getLogger(SendInBlueMailService.class);
     private final TemplateParser templateParser;
