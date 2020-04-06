@@ -56,11 +56,11 @@ public class BaseClass {
 
     @Transient
     public String getStringCreated() {
-        return GeneralUtils.convertToStringDateTimeWithTimeZone(this.created);
+        return GeneralUtils.convertToStringDateTime(this.created);
     }
 
     @Transient
     public String getStringModfied() {
-        return GeneralUtils.convertToStringDateTimeWithTimeZone(this.modified);
+        return GeneralUtils.convertToStringDateTime(this.modified);
     }
 }

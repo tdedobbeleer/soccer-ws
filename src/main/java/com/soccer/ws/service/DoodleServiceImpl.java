@@ -114,7 +114,7 @@ public class DoodleServiceImpl implements DoodleService {
     @Override
     public boolean sendDoodleNotificationsFor(Match match, Set<Account> accounts) {
         //Do nothing if object are null or empty
-        if (match == null || accounts == null || accounts.isEmpty()) return false;
+        if (match == null || !match.getStatus().equals(MatchStatusEnum.NOT_PLAYED) || accounts == null || accounts.isEmpty()) return false;
 
         //Make sure the next match is this week and there are less than 13 players
         if (match.getMatchDoodle().countPresences() < doodleNotificationLimit && match.getDate().weekOfWeekyear().equals(DateTime.now()
