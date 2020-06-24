@@ -18,7 +18,7 @@ public class Doodle {
     private DoodleStatusEnum status = DoodleStatusEnum.CLOSED;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     public long getId() {
         return id;

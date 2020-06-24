@@ -12,7 +12,7 @@ import org.springframework.data.annotation.Transient;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 public class AddressDTO extends BaseClassDTO {
     private Integer postalCode;
     private String address;

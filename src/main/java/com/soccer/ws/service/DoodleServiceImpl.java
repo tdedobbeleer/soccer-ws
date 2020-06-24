@@ -62,11 +62,11 @@ public class DoodleServiceImpl implements DoodleService {
 
     @Override
     public Presence changePresence(final long accountId, final long matchId, final boolean isAdmin) {
-        Account accountInUse = accountDao.findOne(accountId);
+        Account accountInUse = accountDao.findById(accountId).orElse(null);
         if (accountInUse == null)
             throw new ObjectNotFoundException(String.format("Account with id %s not found.", accountId));
 
-        Match match = matchesDao.findOne(matchId);
+        Match match = matchesDao.findById(matchId).orElse(null);
         if (match == null) throw new ObjectNotFoundException(String.format("Match with id %s not found.", matchId));
         if (!isAdmin && !match.getStatus().equals(MatchStatusEnum.NOT_PLAYED))
             throw new RuntimeException(String.format("Altering match with id %s not succeeded, match is " +
@@ -91,11 +91,11 @@ public class DoodleServiceImpl implements DoodleService {
 
     @Override
     public Presence forceChangePresence(final long accountId, final long matchId) {
-        Account accountInUse = accountDao.findOne(accountId);
+        Account accountInUse = accountDao.findById(accountId).orElse(null);
         if (accountInUse == null)
             throw new ObjectNotFoundException(String.format("Account with id %s not found.", accountId));
 
-        Match match = matchesDao.findOne(matchId);
+        Match match = matchesDao.findById(matchId).orElse(null);
         if (match == null) throw new ObjectNotFoundException(String.format("Match with id %s not found.", matchId));
         Doodle d = match.getMatchDoodle();
 

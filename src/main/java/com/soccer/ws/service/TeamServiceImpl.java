@@ -61,7 +61,7 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public Team get(long id) {
-        return teamDao.findOne(id);
+        return teamDao.findById(id).orElse(null);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public void update(TeamDTO teamDTO) {
-        Team team = teamDao.findOne(teamDTO.getId());
+        Team team = teamDao.findById(teamDTO.getId()).orElseThrow();
         updateFromDTO(teamDTO, team);
         teamDao.save(team);
     }
@@ -83,7 +83,7 @@ public class TeamServiceImpl implements TeamService {
     private void updateFromDTO(TeamDTO teamDTO, Team team) {
         //If an existing address is chose, get the address, otherwise create a new one.
         if (teamDTO.getAddress().getId() != null) {
-            Address address = addressDao.findOne(teamDTO.getAddress().getId());
+            Address address = addressDao.findById(teamDTO.getAddress().getId()).orElse(null);
             if (address == null)
                 throw new ObjectNotFoundException(String.format("Address with id %s not found", teamDTO.getAddress().getId()));
             team.setAddress(address);
@@ -110,7 +110,7 @@ public class TeamServiceImpl implements TeamService {
     @Override
     @Transactional(readOnly = false)
     public boolean delete(long id, Account a) {
-        Team team = teamDao.findOne(id);
+        Team team = teamDao.findById(id).orElse(null);
         if (team == null) return true;
         if (!matchesDao.getMatchesForTeam(team).isEmpty()) {
             return false;

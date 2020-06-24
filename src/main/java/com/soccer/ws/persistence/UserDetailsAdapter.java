@@ -1,13 +1,12 @@
 package com.soccer.ws.persistence;
 
-import com.google.common.collect.Sets;
 import com.soccer.ws.model.Account;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.social.security.SocialUser;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -19,22 +18,18 @@ import java.util.Set;
  * Time: 3:13 PM
  * Remarks: none
  */
-public class UserDetailsAdapter extends SocialUser {
+public class UserDetailsAdapter implements UserDetails {
     /**
      *
      */
     private static final long serialVersionUID = 1L;
     private static final Logger log = LoggerFactory.getLogger(UserDetailsAdapter.class);
-    private Account account;
+    private final Account account;
+    private final String password;
 
     public UserDetailsAdapter(Account account, String password) {
-        super(account.getUsername(), getPassword(password), Sets.newHashSet(new SimpleGrantedAuthority("ROLE_" + account
-                .getRole().name())));
         this.account = account;
-    }
-
-    private static String getPassword(String pw) {
-        return pw == null ? "SocialUser" : pw;
+        this.password = password;
     }
 
     public Account getAccount() {
@@ -91,5 +86,10 @@ public class UserDetailsAdapter extends SocialUser {
         Set<GrantedAuthority> authorities = new HashSet<>();
         authorities.add(new SimpleGrantedAuthority("ROLE_" + account.getRole().name()));
         return authorities;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
     }
 }

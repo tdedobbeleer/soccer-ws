@@ -1,9 +1,8 @@
 package com.soccer.ws.persistence;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
-import javax.inject.Inject;
 
 /**
  * User: Tom De Dobbeleer
@@ -14,8 +13,13 @@ import javax.inject.Inject;
 @Repository
 public class JdbcUserDetailsDao implements UserDetailsDao {
     private static final String FIND_PASSWORD_SQL = "select password from account where username = ?";
-    @Inject
-    private JdbcTemplate jdbcTemplate;
+
+    private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public JdbcUserDetailsDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @Override
     public String findPasswordByUsername(String username) {

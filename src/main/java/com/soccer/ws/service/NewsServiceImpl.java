@@ -63,7 +63,7 @@ public class NewsServiceImpl implements NewsService {
     @Override
     @Transactional(readOnly = false)
     public NewsDTO create(NewsDTO news) {
-        Account account = accountDao.findOne(news.getPostedBy().getId());
+        Account account = accountDao.findById(news.getPostedBy().getId()).orElse(null);
         if (account == null)
             throw new UsernameNotFoundException("Cannopt post news, user not found");
         News n = newsDao.save(new News(news.getHeader(), news.getContent(), account));
@@ -74,7 +74,7 @@ public class NewsServiceImpl implements NewsService {
     @Override
     @Transactional(readOnly = false)
     public void update(NewsDTO news, Account account) {
-        News n = newsDao.findOne(news.getId());
+        News n = newsDao.findById(news.getId()).orElseThrow();
         if (n == null)
             throw new ObjectNotFoundException(String.format("Object news with id %s not found", news.getId()));
         n.setContent(news.getContent());
@@ -95,7 +95,7 @@ public class NewsServiceImpl implements NewsService {
 //    @Override
 //    @Transactional(readOnly = false)
 //    public void updateNews(NewsForm form, Account account) {
-//        News n = newsDao.findOne(form.getId());
+//        News n = newsDao.findById(form.getId());
 //        if (n == null) throw new ObjectNotFoundException(String.format("News item with id %s not found", form.getId
 // ()));
 //        authorizationService.isAuthorized(account, n);
@@ -108,7 +108,7 @@ public class NewsServiceImpl implements NewsService {
     @Override
     @Transactional(readOnly = false)
     public Comment addNewsComment(long newsId, String content, Account account) {
-        News news = newsDao.findOne(newsId);
+        News news = newsDao.findById(newsId).orElseThrow();
         NewsComment comment = new NewsComment(content, news, account);
         commentDao.save(comment);
         log.info(String.format("Newscomment %s added by %s", comment, account));
@@ -118,21 +118,21 @@ public class NewsServiceImpl implements NewsService {
     @Override
     @Transactional(readOnly = false)
     public Comment changeNewsComment(long commentId, long newsId, String content, Account account) {
-        Comment comment = commentDao.findOne(commentId);
+        Comment comment = commentDao.findById(commentId).orElseThrow();
         authorizationService.isAuthorized(account, comment);
         comment.setContent(content);
         commentDao.save(comment);
         log.info(String.format("Newscomment %s changed by %s", comment, account));
-        newsDao.findOne(newsId);
+        newsDao.findById(newsId);
         return comment;
     }
 
     @Override
     @Transactional(readOnly = false)
     public void deleteNewsComment(long commentId, long newsId, Account account) {
-        NewsComment comment = (NewsComment) commentDao.findOne(commentId);
+        NewsComment comment = (NewsComment) commentDao.findById(commentId).orElseThrow();
         authorizationService.isAuthorized(account, comment);
-        News news = newsDao.findOne(newsId);
+        News news = newsDao.findById(newsId).orElseThrow();
         news.getComments().remove(comment);
         log.info(String.format("Newscomment %s deleted by by %s", comment, account));
         newsDao.save(news);
@@ -140,7 +140,7 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public News getNewsItem(long id) {
-        News news = newsDao.findOne(id);
+        News news = newsDao.findById(id).orElse(null);
         if (news == null) throw new ObjectNotFoundException(String.format("News item with id %s not found", id));
         return news;
     }
@@ -152,11 +152,11 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public Page<News> getPagedNews(Optional<String> term, int start, int pageSize, Optional<Sort> sort) {
-        Sort s = sort.isPresent() ? sort.get() : new Sort(Sort.Direction.DESC, "postDate");
+        Sort s = sort.isPresent() ? sort.get() : Sort.by(Sort.Direction.DESC, "postDate");
         if (term.isPresent()) {
-            return newsDao.getSearch("%" + sanitizeHtml(term.get()) + "%", new PageRequest(start, pageSize, s));
+            return newsDao.getSearch("%" + sanitizeHtml(term.get()) + "%", PageRequest.of(start, pageSize, s));
         }
-        return newsDao.findAll((new PageRequest(start, pageSize, s)));
+        return newsDao.findAll((PageRequest.of(start, pageSize, s)));
     }
 
     @Override
@@ -167,10 +167,10 @@ public class NewsServiceImpl implements NewsService {
     @Override
     @Transactional(readOnly = false)
     public void deleteNews(long id, Account account) {
-        News news = newsDao.findOne(id);
+        News news = newsDao.findById(id).orElseThrow();
         authorizationService.isAuthorized(account, news);
         log.info(String.format("Newsitem %s deleted by %s", news, account));
-        newsDao.delete(id);
+        newsDao.deleteById(id);
     }
 
     @Override

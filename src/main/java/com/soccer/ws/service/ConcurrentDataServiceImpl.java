@@ -25,12 +25,12 @@ import java.util.stream.Collectors;
 @Service
 public class ConcurrentDataServiceImpl implements ConcurrentDataService {
     AccountService accountService;
-    private Logger log = LoggerFactory.getLogger(getClass());
-    private MatchesDao matchesDao;
-    private TeamDao teamDao;
-    private SeasonDao seasonDao;
-    private StatisticsService statisticsService;
-    private DTOConversionHelper DTOConversionHelper;
+    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final MatchesDao matchesDao;
+    private final TeamDao teamDao;
+    private final SeasonDao seasonDao;
+    private final StatisticsService statisticsService;
+    private final DTOConversionHelper DTOConversionHelper;
 
 
     @Autowired
@@ -47,7 +47,7 @@ public class ConcurrentDataServiceImpl implements ConcurrentDataService {
 
     @Override
     public List<AccountStatisticDTO> getAccountStatisticsForSeason(final long seasonId, final boolean isLoggedIn) {
-        Season season = seasonDao.findOne(seasonId);
+        Season season = seasonDao.findById(seasonId).orElse(null);
         if (season == null) throw new ObjectNotFoundException(String.format("Season with id %s not found", seasonId));
         List<Match> matches = matchesDao.getMatchesForSeason(season);
 
@@ -59,7 +59,7 @@ public class ConcurrentDataServiceImpl implements ConcurrentDataService {
 
     @Override
     public List<MatchDTO> getMatchForSeason(final long seasonId, final boolean isLoggedIn) {
-        Season season = seasonDao.findOne(seasonId);
+        Season season = seasonDao.findById(seasonId).orElseThrow();
 
         return matchesDao.getMatchesForSeason(season).stream()
                 .map(m -> DTOConversionHelper.convertMatch(m, isLoggedIn))
