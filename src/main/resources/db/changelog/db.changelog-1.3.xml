@@ -3,10 +3,21 @@
                    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
+    <changeSet author="Tom" id="20200622">  
+
+    </changeSet>
     <changeSet author="Tom" id="20200622">
+        <pro:disableCheckConstraint  
+            constraintName="FK_8pmb6pjw5hhmjklgtvbsp9faf"  
+            tableName="matches"/>  
         <addAutoIncrement columnDataType="BIGINT"
                           columnName="id"
                           incrementBy="1"
                           tableName="doodle"/>
+        <pro:enableCheckConstraint  
+            constraintName="FK_8pmb6pjw5hhmjklgtvbsp9faf"  
+            tableName="matches"/>
+      <dropTable cascadeConstraints="true"  
+            tableName="hibernate_sequences"/>  
     </changeSet>
 </databaseChangeLog>
