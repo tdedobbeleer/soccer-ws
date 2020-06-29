@@ -23,7 +23,6 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collections;
@@ -67,7 +66,7 @@ public class AccountServiceImpl implements AccountService {
                 .lastName(registration.getLastName())
                 .username(registration.getEmail())
                 .build();
-        Account result = createAccountWithPassword(toBeCreated, registration.getPassword());
+        Account result = createAccount(toBeCreated);
         mailService.sendPreConfiguredMail(MailTypeEnum.REGISTRATION, ImmutableMap.of(Constants
                 .EMAIL_ACCOUNT_VARIABLE, result, Constants.EMAIL_BASE_URL_VARIABLE, baseUrl));
         return new AccountDTO(result.getId(), result.getUsername(), result.getFirstName(), result.getLastName(), result.getRole().name(), result.isActive());
@@ -132,16 +131,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Transactional(readOnly = false)
-    public Account createAccountWithPassword(Account account, String password) {
-        Account resultAccount = accountDao.save(account);
-        //Update only if sign in provider is not specified
-        if (account.getSignInProvider() == null) {
-            String encPassword = passwordEncoder.encode(password);
-            SqlParameterSource namedParameters = new MapSqlParameterSource().addValue("id", account.getId()).addValue("password", encPassword);
-            int r = jdbcTemplate.update(UPDATE_PASSWORD_SQL, namedParameters);
-            Assert.isTrue(r == 1, "No rows updated.");
-        }
-        return resultAccount;
+    public Account createAccount(Account account) {
+        return accountDao.save(account);
     }
 
     @Transactional(readOnly = true)
@@ -157,11 +148,10 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional(readOnly = false)
     public void setPasswordFor(long id, String password) {
-        final Account account = accountDao.findById(id).orElse(null);
-        if (account == null) throw new ObjectNotFoundException("Account not found");
         String encPassword = passwordEncoder.encode(password);
-        SqlParameterSource namedParameters = new MapSqlParameterSource().addValue("id", account.getId()).addValue("password", encPassword);
-        jdbcTemplate.update(UPDATE_PASSWORD_SQL, namedParameters);
+        SqlParameterSource namedParameters = new MapSqlParameterSource().addValue("id", id).addValue("password", encPassword);
+        int i = jdbcTemplate.update(UPDATE_PASSWORD_SQL, namedParameters);
+        if (i != 1) throw new ObjectNotFoundException("Account not found, password was not set.");
     }
 
     @Override

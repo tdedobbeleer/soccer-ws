@@ -49,9 +49,11 @@ public class DataPopulator {
     public void populateDB() {
         logger.info("Default profile detected, populating DB");
         //Create account1
-        AccountDTO accountDTO1 = accountService.register(new RegistrationDTO("test1@test.com", "John", "Doe", "test1"));
+        RegistrationDTO registrationDTO1 = new RegistrationDTO("test1@test.com", "John", "Doe", "test1");
+        AccountDTO accountDTO1 = accountService.register(registrationDTO1);
         accountService.changeActivation(accountDTO1.getId(), true);
         accountService.changeRole(accountDTO1, Role.ADMIN);
+        accountService.setPasswordFor(accountDTO1.getId(), registrationDTO1.getPassword());
 
         //Create account2
         AccountDTO accountDTO2 = accountService.register(new RegistrationDTO("test2@test.com", "James", "Doe", "test2"));
