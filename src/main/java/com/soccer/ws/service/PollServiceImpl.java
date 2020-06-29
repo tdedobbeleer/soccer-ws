@@ -30,7 +30,7 @@ public class PollServiceImpl implements PollService {
     }
 
     @Override
-    public boolean setMotmPoll(Match match) {
+    public void setMotmPoll(Match match) {
         if (match.getStatus().equals(MatchStatusEnum.PLAYED)) {
             PlayersPoll playersPoll = new PlayersPoll();
             playersPoll.setStartDate(DateTime.now());
@@ -40,9 +40,7 @@ public class PollServiceImpl implements PollService {
             match.setMotmPoll(playersPoll);
             //Set motm poll options
             playersPoll.setOptions(getPlayerOptionsFor(match));
-            return true;
         }
-        return false;
     }
 
     @Override

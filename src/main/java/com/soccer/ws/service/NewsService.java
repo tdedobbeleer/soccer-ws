@@ -23,17 +23,17 @@ public interface NewsService {
 
     //void updateNews(NewsForm form, Account account);
 
-    @Transactional(readOnly = false)
+    @Transactional
     NewsDTO create(NewsDTO news);
 
-    @Transactional(readOnly = false)
+    @Transactional
     void update(NewsDTO news, Account account);
 
     Comment addNewsComment(long newsId, String content, Account account);
 
     Comment changeNewsComment(long commentId, long newsId, String content, Account account);
 
-    @Transactional(readOnly = false)
+    @Transactional
     void deleteNewsComment(long commentId, long newsId, Account account);
 
     News getNewsItem(long id);
@@ -44,8 +44,8 @@ public interface NewsService {
 
     int getNewsCount();
 
-    @Transactional(readOnly = false)
+    @Transactional
     void deleteNews(long id, Account account);
 
-    boolean sendNewsEmail(NewsDTO news);
+    void sendNewsEmail(NewsDTO news);
 }

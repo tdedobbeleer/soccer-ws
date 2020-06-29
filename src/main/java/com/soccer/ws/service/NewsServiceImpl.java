@@ -61,7 +61,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public NewsDTO create(NewsDTO news) {
         Account account = accountDao.findById(news.getPostedBy().getId()).orElse(null);
         if (account == null)
@@ -72,7 +72,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public void update(NewsDTO news, Account account) {
         News n = newsDao.findById(news.getId()).orElseThrow();
         if (n == null)
@@ -84,7 +84,7 @@ public class NewsServiceImpl implements NewsService {
 
 
 //    @Override
-//    @Transactional(readOnly = false)
+//    @Transactional
 //    public News createNews(NewsForm form, Account account) {
 //        News n = updateNews(new News(), form, account, true);
 //        newsDao.save(n);
@@ -93,7 +93,7 @@ public class NewsServiceImpl implements NewsService {
 //    }
 //
 //    @Override
-//    @Transactional(readOnly = false)
+//    @Transactional
 //    public void updateNews(NewsForm form, Account account) {
 //        News n = newsDao.findById(form.getId());
 //        if (n == null) throw new ObjectNotFoundException(String.format("News item with id %s not found", form.getId
@@ -106,7 +106,7 @@ public class NewsServiceImpl implements NewsService {
 //    }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public Comment addNewsComment(long newsId, String content, Account account) {
         News news = newsDao.findById(newsId).orElseThrow();
         NewsComment comment = new NewsComment(content, news, account);
@@ -116,7 +116,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public Comment changeNewsComment(long commentId, long newsId, String content, Account account) {
         Comment comment = commentDao.findById(commentId).orElseThrow();
         authorizationService.isAuthorized(account, comment);
@@ -128,7 +128,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public void deleteNewsComment(long commentId, long newsId, Account account) {
         NewsComment comment = (NewsComment) commentDao.findById(commentId).orElseThrow();
         authorizationService.isAuthorized(account, comment);
@@ -165,7 +165,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public void deleteNews(long id, Account account) {
         News news = newsDao.findById(id).orElseThrow();
         authorizationService.isAuthorized(account, news);
@@ -174,7 +174,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    public boolean sendNewsEmail(NewsDTO news) {
+    public void sendNewsEmail(NewsDTO news) {
         String title = messageSource.getMessage("email.news.title", new String[]{news.getHeader(), news.getPostedBy().getName()}, Locale.ENGLISH);
         accountDao.findAllByActive(true).parallelStream().forEach(a -> {
             boolean result = mailService.sendMail(a.getUsername(), a.getFullName(), title, MailTypeEnum.MESSAGE, ImmutableMap.of("message", news,
@@ -183,7 +183,6 @@ public class NewsServiceImpl implements NewsService {
                 log.error("Could not send email to {}", a.getUsername());
             }
         });
-        return true;
     }
 
     /**

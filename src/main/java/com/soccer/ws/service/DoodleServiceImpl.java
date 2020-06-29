@@ -112,9 +112,10 @@ public class DoodleServiceImpl implements DoodleService {
     }
 
     @Override
-    public boolean sendDoodleNotificationsFor(Match match, Set<Account> accounts) {
+    public void sendDoodleNotificationsFor(Match match, Set<Account> accounts) {
         //Do nothing if object are null or empty
-        if (match == null || !match.getStatus().equals(MatchStatusEnum.NOT_PLAYED) || accounts == null || accounts.isEmpty()) return false;
+        if (match == null || !match.getStatus().equals(MatchStatusEnum.NOT_PLAYED) || accounts == null || accounts.isEmpty())
+            return;
 
         //Make sure the next match is this week and there are less than 13 players
         if (match.getMatchDoodle().countPresences() < doodleNotificationLimit && match.getDate().weekOfWeekyear().equals(DateTime.now()
@@ -141,7 +142,6 @@ public class DoodleServiceImpl implements DoodleService {
         } else {
             log.info("Match id {} not starting this week or has enough presences, aborting", match.getId());
         }
-        return true;
     }
 
     private Presence changePresence(Doodle doodle, Presence p, Account account, boolean force) {

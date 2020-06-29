@@ -35,7 +35,7 @@ public abstract class AbstractMailService implements MailService {
     }
 
     @Override
-    public boolean sendPreConfiguredMail(MailTypeEnum type, Map<String, Object> propertyMap) {
-        return sendMessage(ImmutableMap.of(defaultAdminFromTo, defaultAdminName), defaultAdminSubject, type, propertyMap);
+    public void sendPreConfiguredMail(MailTypeEnum type, Map<String, Object> propertyMap) {
+        sendMessage(ImmutableMap.of(defaultAdminFromTo, defaultAdminName), defaultAdminSubject, type, propertyMap);
     }
 }

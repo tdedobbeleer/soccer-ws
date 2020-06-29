@@ -59,7 +59,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public AccountDTO register(RegistrationDTO registration) {
         Account toBeCreated = new Account.Builder()
                 .firstName(registration.getFirstName())
@@ -73,7 +73,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public boolean firstTimeActivation(final long id, final boolean sendMail) {
         Account account = accountDao.findById(id).orElse(null);
         if (account == null) throw new ObjectNotFoundException(String.format("Object with id %s not found", id));
@@ -91,7 +91,7 @@ public class AccountServiceImpl implements AccountService {
 
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public void changeActivation(long id, boolean status) {
         Account account = accountDao.findById(id).orElse(null);
         if (account == null)
@@ -101,7 +101,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public void elevate(long id) {
         Account account = accountDao.findById(id).orElse(null);
         if (account == null)
@@ -111,7 +111,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public void demote(long id) {
         Account account = accountDao.findById(id).orElse(null);
         if (account == null)
@@ -121,7 +121,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public void changeRole(AccountDTO accountDTO, Role role) {
         Account account = accountDao.findById(accountDTO.getId()).orElse(null);
         if (account == null)
@@ -130,7 +130,7 @@ public class AccountServiceImpl implements AccountService {
         accountDao.save(account);
     }
 
-    @Transactional(readOnly = false)
+    @Transactional
     public Account createAccount(Account account) {
         return accountDao.save(account);
     }
@@ -146,7 +146,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public void setPasswordFor(long id, String password) {
         String encPassword = passwordEncoder.encode(password);
         SqlParameterSource namedParameters = new MapSqlParameterSource().addValue("id", id).addValue("password", encPassword);
@@ -172,7 +172,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public Account update(ProfileDTO profileDTO) {
         Account account = accountDao.findById(profileDTO.getId()).orElse(null);
         if (account == null)

@@ -48,8 +48,7 @@ public class MailServiceStub implements MailService {
     }
 
     @Override
-    public boolean sendPreConfiguredMail(MailTypeEnum type, Map<String, Object> propertyMap) {
+    public void sendPreConfiguredMail(MailTypeEnum type, Map<String, Object> propertyMap) {
         log(Lists.newArrayList("admin"), "admin", type, propertyMap);
-        return true;
     }
 }
