@@ -49,31 +49,23 @@ public class DataPopulator {
     public void populateDB() {
         logger.info("Default profile detected, populating DB");
         //Create account1
-        RegistrationDTO registrationDTO1 = new RegistrationDTO("test1@test.com", "John", "Doe", "test1");
-        AccountDTO accountDTO1 = accountService.register(registrationDTO1);
-        accountService.changeActivation(accountDTO1.getId(), true);
+        AccountDTO accountDTO1 = register(new RegistrationDTO("test1@test.com", "John", "Doe", "test1"));
         accountService.changeRole(accountDTO1, Role.ADMIN);
-        accountService.setPasswordFor(accountDTO1.getId(), registrationDTO1.getPassword());
 
         //Create account2
-        AccountDTO accountDTO2 = accountService.register(new RegistrationDTO("test2@test.com", "James", "Doe", "test2"));
-        accountService.changeActivation(accountDTO2.getId(), true);
+        AccountDTO accountDTO2 = register(new RegistrationDTO("test2@test.com", "James", "Doe", "test2"));
 
         //Create account3
-        AccountDTO accountDTO3 = accountService.register(new RegistrationDTO("test3@test.com", "Jules", "Doe", "test2"));
-        accountService.changeActivation(accountDTO3.getId(), true);
+        AccountDTO accountDTO3 = register(new RegistrationDTO("test3@test.com", "Jules", "Doe", "test2"));
 
         //Create account4
-        AccountDTO accountDTO4 = accountService.register(new RegistrationDTO("test4@test.com", "Jef", "Doe", "test2"));
-        accountService.changeActivation(accountDTO4.getId(), true);
+        AccountDTO accountDTO4 = register(new RegistrationDTO("test4@test.com", "Jef", "Doe", "test2"));
 
         //Create account5
-        AccountDTO accountDTO5 = accountService.register(new RegistrationDTO("test5@test.com", "Johnny", "Doe", "test2"));
-        accountService.changeActivation(accountDTO5.getId(), true);
+        AccountDTO accountDTO5 = register(new RegistrationDTO("test5@test.com", "Johnny", "Doe", "test2"));
 
         //Create account6
-        AccountDTO accountDTO6 = accountService.register(new RegistrationDTO("test6@test.com", "Javier", "Doe", "test2"));
-        accountService.changeActivation(accountDTO6.getId(), true);
+        AccountDTO accountDTO6 = register(new RegistrationDTO("test6@test.com", "Javier", "Doe", "test2"));
 
         newsService.create(new NewsDTO(null, "test1", "testNews1", "01/01/2016", accountDTO1));
         newsService.create(new NewsDTO(null, "test2", "testNews2", "01/01/2016", accountDTO2));
@@ -131,5 +123,12 @@ public class DataPopulator {
         matchesService.openMatchDoodle(matchDTO2.getId());
 
         logger.info("DB population succesful");
+    }
+
+    private AccountDTO register(RegistrationDTO r) {
+        AccountDTO accountDTO = accountService.register(r);
+        accountService.changeActivation(accountDTO.getId(), true);
+        accountService.setPasswordFor(accountDTO.getId(), r.getPassword());
+        return accountDTO;
     }
 }
