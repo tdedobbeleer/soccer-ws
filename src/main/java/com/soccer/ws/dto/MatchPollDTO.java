@@ -1,11 +1,18 @@
 package com.soccer.ws.dto;
 
+import lombok.*;
+
 import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by u0090265 on 10/06/16.
  */
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode(callSuper = true)
 public class MatchPollDTO extends BaseClassDTO {
     private List<VotesDTO> votes;
     private List<AccountDTO> options;
@@ -14,8 +21,6 @@ public class MatchPollDTO extends BaseClassDTO {
     private String matchDescription;
     private String matchDate;
     private Long matchId;
-
-    public MatchPollDTO() {}
 
     public MatchPollDTO(Long id, Long matchId, List<VotesDTO> votes, List<AccountDTO> accounts, int totalVotes,
                         String status, String matchDescription, String matchDate) {
@@ -27,58 +32,6 @@ public class MatchPollDTO extends BaseClassDTO {
         this.matchDate = matchDate;
         this.matchDescription = matchDescription;
         this.matchId = matchId;
-    }
-
-    public Long getMatchId() {
-        return matchId;
-    }
-
-    public void setMatchId(Long matchId) {
-        this.matchId = matchId;
-    }
-
-    public String getMatchDescription() {
-        return matchDescription;
-    }
-
-    public void setMatchDescription(String matchDescription) {
-        this.matchDescription = matchDescription;
-    }
-
-    public String getMatchDate() {
-        return matchDate;
-    }
-
-    public void setMatchDate(String matchDate) {
-        this.matchDate = matchDate;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String open) {
-        status = open;
-    }
-
-    public List<VotesDTO> getVotes() {
-        return votes;
-    }
-
-    public void setVotes(List<VotesDTO> votes) {
-        this.votes = votes;
-    }
-
-    public int getTotalVotes() {
-        return totalVotes;
-    }
-
-    public void setTotalVotes(int totalVotes) {
-        this.totalVotes = totalVotes;
-    }
-
-    public List<AccountDTO> getOptions() {
-        return options;
     }
 
     public void setOptions(List<AccountDTO> options) {

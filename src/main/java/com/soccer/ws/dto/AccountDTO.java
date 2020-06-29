@@ -9,7 +9,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 public class AccountDTO extends BaseClassDTO implements Comparable<AccountDTO> {
     private String name;
     private String firstName;

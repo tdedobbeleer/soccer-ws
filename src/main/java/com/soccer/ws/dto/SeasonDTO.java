@@ -1,8 +1,17 @@
 package com.soccer.ws.dto;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 /**
  * Created by u0090265 on 08/07/16.
  */
+@NoArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode(callSuper = true)
 public class SeasonDTO extends BaseClassDTO {
     private String description;
 
@@ -13,16 +22,6 @@ public class SeasonDTO extends BaseClassDTO {
 
     public SeasonDTO(Long id, String description) {
         super(id);
-        this.description = description;
-    }
-
-    public SeasonDTO() {}
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
         this.description = description;
     }
 
