@@ -17,10 +17,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collections;
@@ -33,12 +36,12 @@ public class AccountServiceImpl implements AccountService {
 
     private static final Logger logger = LoggerFactory.getLogger(AccountServiceImpl.class);
 
-    private static final String UPDATE_PASSWORD_SQL = "update account set password = ? where id = ?";
-    private static final String GET_PASSWORD = "select password from account where id = ?";
+    private static final String UPDATE_PASSWORD_SQL = "UPDATE account SET password = :password WHERE ID = :id";
+    private static final String GET_PASSWORD = "SELECT password FROM account WHERE id = :id";
     private final MessageSource messageSource;
     private final AccountDao accountDao;
     private final MailService mailService;
-    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate jdbcTemplate;
     private final PasswordEncoder passwordEncoder;
     private final ImageService imageService;
     private final DTOConversionHelper dtoConversionHelper;
@@ -46,7 +49,7 @@ public class AccountServiceImpl implements AccountService {
     private String baseUrl;
 
     @Autowired
-    public AccountServiceImpl(MessageSource messageSource, AccountDao accountDao, MailService mailService, JdbcTemplate jdbcTemplate, PasswordEncoder passwordEncoder, ImageService imageService, DTOConversionHelper dtoConversionHelper) {
+    public AccountServiceImpl(MessageSource messageSource, AccountDao accountDao, MailService mailService, NamedParameterJdbcTemplate jdbcTemplate, PasswordEncoder passwordEncoder, ImageService imageService, DTOConversionHelper dtoConversionHelper) {
         this.messageSource = messageSource;
         this.accountDao = accountDao;
         this.mailService = mailService;
@@ -134,7 +137,9 @@ public class AccountServiceImpl implements AccountService {
         //Update only if sign in provider is not specified
         if (account.getSignInProvider() == null) {
             String encPassword = passwordEncoder.encode(password);
-            jdbcTemplate.update(UPDATE_PASSWORD_SQL, encPassword, account.getId());
+            SqlParameterSource namedParameters = new MapSqlParameterSource().addValue("id", account.getId()).addValue("password", encPassword);
+            int r = jdbcTemplate.update(UPDATE_PASSWORD_SQL, namedParameters);
+            Assert.isTrue(r == 1, "No rows updated.");
         }
         return resultAccount;
     }
@@ -155,7 +160,8 @@ public class AccountServiceImpl implements AccountService {
         final Account account = accountDao.findById(id).orElse(null);
         if (account == null) throw new ObjectNotFoundException("Account not found");
         String encPassword = passwordEncoder.encode(password);
-        jdbcTemplate.update(UPDATE_PASSWORD_SQL, encPassword, id);
+        SqlParameterSource namedParameters = new MapSqlParameterSource().addValue("id", account.getId()).addValue("password", encPassword);
+        jdbcTemplate.update(UPDATE_PASSWORD_SQL, namedParameters);
     }
 
     @Override
@@ -230,7 +236,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     private String getCurrentEncodedPasswordFor(Account account) {
-        return jdbcTemplate.queryForObject(GET_PASSWORD, String.class, account.getId());
+        SqlParameterSource namedParameters = new MapSqlParameterSource().addValue("id", account.getId());
+        return jdbcTemplate.queryForObject(GET_PASSWORD, namedParameters, String.class);
     }
 
     private void setAccountProfile(Account account, ProfileDTO profileDTO) {

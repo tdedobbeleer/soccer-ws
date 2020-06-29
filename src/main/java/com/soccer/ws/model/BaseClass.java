@@ -24,7 +24,7 @@ public class BaseClass {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     @Column(name = "id")
     public Long getId() {
         return id;
