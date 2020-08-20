@@ -1,6 +1,8 @@
 package com.soccer.ws.model;
 
 import com.soccer.ws.utils.GeneralUtils;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
@@ -24,7 +26,15 @@ public class BaseClass {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(generator = "sequence-generator")
+    @GenericGenerator(
+            name = "sequence-generator",
+            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+            parameters = {
+                    @Parameter(name = "sequence_name", value = "hibernate_sequences"),
+                    @Parameter(name = "prefer_sequence_per_entity", value = "true"),
+            }
+    )
     @Column(name = "id")
     public Long getId() {
         return id;
