@@ -48,7 +48,7 @@ public class SendInBlueMailService extends AbstractMailService {
         email.setTo(to.entrySet().stream().map(m -> {
             SendSmtpEmailTo sendSmtpEmailTo = new SendSmtpEmailTo();
             sendSmtpEmailTo.setEmail(m.getKey());
-            sendSmtpEmailTo.setName(m.getValue());
+            if (!m.getKey().isEmpty()) sendSmtpEmailTo.setName(m.getValue());
             return sendSmtpEmailTo;
         }).collect(Collectors.toList()));
 

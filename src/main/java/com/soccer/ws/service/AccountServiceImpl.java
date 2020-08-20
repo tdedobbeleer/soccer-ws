@@ -80,7 +80,7 @@ public class AccountServiceImpl implements AccountService {
         account.setActive(true);
         accountDao.save(account);
         if (sendMail) {
-            if (!mailService.sendMail(account.getUsername(),
+            if (!mailService.sendMail(account.getUsername(), account.getFullName(),
                     messageSource.getMessage("email.activation.subject", null, Locale.ENGLISH),
                     MailTypeEnum.ACTIVATION, ImmutableMap.of(Constants.EMAIL_ACCOUNT_VARIABLE, account))) {
                 return false;
