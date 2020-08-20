@@ -31,8 +31,7 @@ public class BaseClass {
             name = "sequence-generator",
             strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
             parameters = {
-                    @Parameter(name = "sequence_name", value = "hibernate_sequences"),
-                    @Parameter(name = "prefer_sequence_per_entity", value = "true"),
+                    @Parameter(name = "sequence_name", value = "hibernate_sequences")
             }
     )
     @Column(name = "id")
