@@ -62,11 +62,11 @@ public class DoodleServiceImpl implements DoodleService {
 
     @Override
     public Presence changePresence(final long accountId, final long matchId, final boolean isAdmin) {
-        Account accountInUse = accountDao.findOne(accountId);
+        Account accountInUse = accountDao.findById(accountId).orElse(null);
         if (accountInUse == null)
             throw new ObjectNotFoundException(String.format("Account with id %s not found.", accountId));
 
-        Match match = matchesDao.findOne(matchId);
+        Match match = matchesDao.findById(matchId).orElse(null);
         if (match == null) throw new ObjectNotFoundException(String.format("Match with id %s not found.", matchId));
         if (!isAdmin && !match.getStatus().equals(MatchStatusEnum.NOT_PLAYED))
             throw new RuntimeException(String.format("Altering match with id %s not succeeded, match is " +
@@ -91,11 +91,11 @@ public class DoodleServiceImpl implements DoodleService {
 
     @Override
     public Presence forceChangePresence(final long accountId, final long matchId) {
-        Account accountInUse = accountDao.findOne(accountId);
+        Account accountInUse = accountDao.findById(accountId).orElse(null);
         if (accountInUse == null)
             throw new ObjectNotFoundException(String.format("Account with id %s not found.", accountId));
 
-        Match match = matchesDao.findOne(matchId);
+        Match match = matchesDao.findById(matchId).orElse(null);
         if (match == null) throw new ObjectNotFoundException(String.format("Match with id %s not found.", matchId));
         Doodle d = match.getMatchDoodle();
 
@@ -112,9 +112,10 @@ public class DoodleServiceImpl implements DoodleService {
     }
 
     @Override
-    public boolean sendDoodleNotificationsFor(Match match, Set<Account> accounts) {
+    public void sendDoodleNotificationsFor(Match match, Set<Account> accounts) {
         //Do nothing if object are null or empty
-        if (match == null || !match.getStatus().equals(MatchStatusEnum.NOT_PLAYED) || accounts == null || accounts.isEmpty()) return false;
+        if (match == null || !match.getStatus().equals(MatchStatusEnum.NOT_PLAYED) || accounts == null || accounts.isEmpty())
+            return;
 
         //Make sure the next match is this week and there are less than 13 players
         if (match.getMatchDoodle().countPresences() < doodleNotificationLimit && match.getDate().weekOfWeekyear().equals(DateTime.now()
@@ -141,7 +142,6 @@ public class DoodleServiceImpl implements DoodleService {
         } else {
             log.info("Match id {} not starting this week or has enough presences, aborting", match.getId());
         }
-        return true;
     }
 
     private Presence changePresence(Doodle doodle, Presence p, Account account, boolean force) {

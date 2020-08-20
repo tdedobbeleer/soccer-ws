@@ -10,12 +10,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mobile.device.Device;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 @Api(value = "Authentication endpoint", description = "Endpoint for logging in")
 public class AuthenticationController extends AbstractRestController {
 
-  private final Logger logger = Logger.getLogger(this.getClass());
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
   private final AuthenticationManager authenticationManager;
   private final TokenUtils tokenUtils;
   private final UserDetailsService userDetailsService;
@@ -52,7 +52,7 @@ public class AuthenticationController extends AbstractRestController {
   @ApiOperation(value = "authenticate", nickname = "authenticate")
   @ApiResponses(value = {
           @ApiResponse(code = 401, message = "Access denied")})
-  public ResponseEntity<?> authenticationRequest(@RequestBody AuthenticationRequestDTO authenticationRequestDTO, Device device, HttpServletRequest request) throws AuthenticationException {
+  public ResponseEntity<?> authenticationRequest(@RequestBody AuthenticationRequestDTO authenticationRequestDTO, HttpServletRequest request) throws AuthenticationException {
     // Perform the authentication
     Authentication authentication = this.authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
@@ -64,7 +64,7 @@ public class AuthenticationController extends AbstractRestController {
 
     // Reload password post-authentication so we can generate token
     UserDetailsAdapter user = (UserDetailsAdapter) this.userDetailsService.loadUserByUsername(authenticationRequestDTO.getUsername());
-      String token = this.tokenUtils.generateToken(user, device, request.getHeader("User-Agent"), authenticationRequestDTO.isRememberMe());
+      String token = this.tokenUtils.generateToken(user, request.getHeader("User-Agent"), authenticationRequestDTO.isRememberMe());
 
     // Return the token
     return ResponseEntity.ok(new AuthenticationResponseDTO(token, user.getId(), user.getFirstName(), user.getLastName(), getAuthorities(user)));

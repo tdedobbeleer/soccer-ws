@@ -1,6 +1,7 @@
 package com.soccer.ws.controllers;
 
 import com.google.common.base.Strings;
+import com.soccer.ws.dto.AccountDTO;
 import com.soccer.ws.dto.RegistrationDTO;
 import com.soccer.ws.dto.ValidationErrorDetailDTO;
 import com.soccer.ws.exceptions.CustomMethodArgumentNotValidException;
@@ -58,7 +59,10 @@ public class RegistrationRestController extends AbstractRestController {
         if (Strings.isNullOrEmpty(captchaResponse) || !reCaptchaService.isResponseValid(request, captchaResponse)) {
             throw new AccessDeniedException("You are a bot, access denied! In yo Face!");
         }
-        accountService.register(registrationDTO);
+        //Create the account
+        AccountDTO createdAccount = accountService.register(registrationDTO);
+        //Set the pw
+        accountService.setPasswordFor(createdAccount.getId(), registrationDTO.getPassword());
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }

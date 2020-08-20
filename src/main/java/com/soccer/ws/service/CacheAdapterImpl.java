@@ -39,7 +39,7 @@ public class CacheAdapterImpl implements CacheAdapter {
                     .loader(new CacheLoader<Long, Account>() {
                         @Override
                         public Account load(Long l) throws Exception {
-                            return accountDao.findOne(l);
+                            return accountDao.findById(l).orElse(null);
                         }
                     })
                     .permitNullValues(false)

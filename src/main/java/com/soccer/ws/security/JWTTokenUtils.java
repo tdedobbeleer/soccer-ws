@@ -4,10 +4,8 @@ import com.soccer.ws.persistence.UserDetailsAdapter;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mobile.device.Device;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -17,13 +15,6 @@ import java.util.Map;
 
 @Component
 public class JWTTokenUtils implements TokenUtils {
-
-    private final Logger logger = Logger.getLogger(this.getClass());
-
-    private final String AUDIENCE_UNKNOWN = "unknown";
-    private final String AUDIENCE_WEB = "web";
-    private final String AUDIENCE_MOBILE = "mobile";
-    private final String AUDIENCE_TABLET = "tablet";
 
     @Value("${jwt.token.secret}")
     private String secret;
@@ -48,11 +39,10 @@ public class JWTTokenUtils implements TokenUtils {
     }
 
     @Override
-    public String generateToken(UserDetails userDetails, Device device, String fingerPrint, boolean rememberMe) {
+    public String generateToken(UserDetails userDetails, String fingerPrint, boolean rememberMe) {
         Map<String, Object> claims = new HashMap<String, Object>();
         DateTime now = DateTime.now();
         claims.put("sub", userDetails.getUsername());
-        claims.put("audience", this.generateAudience(device));
         claims.put("created", now.toDate());
         return Jwts.builder()
                 .setClaims(claims)
@@ -137,17 +127,5 @@ public class JWTTokenUtils implements TokenUtils {
 
     private Boolean isCreatedBeforeLastPasswordReset(DateTime created, DateTime lastPasswordReset) {
         return (lastPasswordReset != null && created.isBefore(lastPasswordReset));
-    }
-
-    private String generateAudience(Device device) {
-        String audience = this.AUDIENCE_UNKNOWN;
-        if (device.isNormal()) {
-            audience = this.AUDIENCE_WEB;
-        } else if (device.isTablet()) {
-            audience = AUDIENCE_TABLET;
-        } else if (device.isMobile()) {
-            audience = AUDIENCE_MOBILE;
-        }
-        return audience;
     }
 }

@@ -1,30 +1,23 @@
 package com.soccer.ws.dto;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 /**
  * Created by u0090265 on 10/06/16.
  */
+@NoArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode
 public class VotesDTO implements Comparable<VotesDTO> {
     private AccountDTO account;
     private int votes;
 
     public VotesDTO(AccountDTO accountDTO, int votes) {
         this.account = accountDTO;
-        this.votes = votes;
-    }
-
-    public AccountDTO getAccount() {
-        return account;
-    }
-
-    public void setAccount(AccountDTO account) {
-        this.account = account;
-    }
-
-    public int getVotes() {
-        return votes;
-    }
-
-    public void setVotes(int votes) {
         this.votes = votes;
     }
 

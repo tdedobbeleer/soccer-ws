@@ -14,5 +14,5 @@ public interface DoodleService {
 
     Presence forceChangePresence(long accountId, long matchId);
 
-    boolean sendDoodleNotificationsFor(Match match, Set<Account> accounts);
+    void sendDoodleNotificationsFor(Match match, Set<Account> accounts);
 }

@@ -1,16 +1,16 @@
 package com.soccer.ws.dto;
 
+import lombok.*;
+
 import java.util.Arrays;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@ToString
 public class ByteResponseDTO {
     private byte[] bytes;
-
-    public ByteResponseDTO(byte[] bytes) {
-        this.bytes = bytes;
-    }
-
-    public ByteResponseDTO() {
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -25,13 +25,5 @@ public class ByteResponseDTO {
     @Override
     public int hashCode() {
         return Arrays.hashCode(bytes);
-    }
-
-    public byte[] getBytes() {
-        return bytes;
-    }
-
-    public void setBytes(byte[] bytes) {
-        this.bytes = bytes;
     }
 }

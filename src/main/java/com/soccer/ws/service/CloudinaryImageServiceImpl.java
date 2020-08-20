@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
-import java.util.Map;
 
 /**
  * Created by u0090265 on 11/28/15.
@@ -43,9 +42,9 @@ public class CloudinaryImageServiceImpl implements ImageService {
 
     @Override
     public Image uploadProfileImage(MultipartFile file) throws Exception {
-        Map options = ObjectUtils.asMap("folder", "profile/");
+        var options = ObjectUtils.asMap("folder", "profile/");
         Image image = new Image();
-        Map result = cloudinary.uploader().uploadLarge(file.getInputStream(), options);
+        var result = cloudinary.uploader().uploadLarge(file.getInputStream(), options);
         image.setImageId((String) result.get("public_id"));
         image.setImageUrl((String) result.get("secure_url"));
         return image;

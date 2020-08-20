@@ -1,6 +1,5 @@
 package com.soccer.ws.security;
 
-import org.springframework.mobile.device.Device;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
@@ -9,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 public interface TokenUtils {
     Boolean validateToken(String token, UserDetails userDetails, String fingerPrint);
 
-    String generateToken(UserDetails userDetails, Device device, String fingerPrint, boolean rememberMe);
+    String generateToken(UserDetails userDetails, String fingerPrint, boolean rememberMe);
 
     String getUsernameFromToken(String token);
 }

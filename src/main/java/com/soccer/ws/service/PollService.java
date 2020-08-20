@@ -11,7 +11,7 @@ import java.util.Set;
  * Created by u0090265 on 07/06/16.
  */
 public interface PollService {
-    boolean setMotmPoll(Match match);
+    void setMotmPoll(Match match);
 
     Poll get(Long pollId);
 

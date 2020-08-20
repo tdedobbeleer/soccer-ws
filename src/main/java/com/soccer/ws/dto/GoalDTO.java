@@ -1,42 +1,27 @@
 package com.soccer.ws.dto;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+import java.util.Objects;
+
 /**
  * Created by u0090265 on 15/07/16.
  */
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
 public class GoalDTO {
     private Integer order;
     private AccountDTO scorer;
     private AccountDTO assist;
 
-    public GoalDTO() {}
-
     public GoalDTO(AccountDTO scorer, AccountDTO assist, Integer order) {
         this.scorer = scorer;
         this.assist = assist;
-        this.order = order;
-    }
-
-    public AccountDTO getScorer() {
-        return scorer;
-    }
-
-    public void setScorer(AccountDTO scorer) {
-        this.scorer = scorer;
-    }
-
-    public AccountDTO getAssist() {
-        return assist;
-    }
-
-    public void setAssist(AccountDTO assist) {
-        this.assist = assist;
-    }
-
-    public Integer getOrder() {
-        return order;
-    }
-
-    public void setOrder(Integer order) {
         this.order = order;
     }
 
@@ -47,9 +32,9 @@ public class GoalDTO {
 
         GoalDTO goalDTO = (GoalDTO) o;
 
-        if (order != null ? !order.equals(goalDTO.order) : goalDTO.order != null) return false;
-        if (scorer != null ? !scorer.equals(goalDTO.scorer) : goalDTO.scorer != null) return false;
-        return assist != null ? assist.equals(goalDTO.assist) : goalDTO.assist == null;
+        if (!Objects.equals(order, goalDTO.order)) return false;
+        if (!Objects.equals(scorer, goalDTO.scorer)) return false;
+        return Objects.equals(assist, goalDTO.assist);
     }
 
     @Override

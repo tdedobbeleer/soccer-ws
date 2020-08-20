@@ -17,7 +17,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,12 +35,12 @@ public class AccountServiceImpl implements AccountService {
 
     private static final Logger logger = LoggerFactory.getLogger(AccountServiceImpl.class);
 
-    private static final String UPDATE_PASSWORD_SQL = "update account set password = ? where id = ?";
-    private static final String GET_PASSWORD = "select password from account where id = ?";
+    private static final String UPDATE_PASSWORD_SQL = "UPDATE account SET password = :password WHERE ID = :id";
+    private static final String GET_PASSWORD = "SELECT password FROM account WHERE id = :id";
     private final MessageSource messageSource;
     private final AccountDao accountDao;
     private final MailService mailService;
-    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate jdbcTemplate;
     private final PasswordEncoder passwordEncoder;
     private final ImageService imageService;
     private final DTOConversionHelper dtoConversionHelper;
@@ -46,7 +48,7 @@ public class AccountServiceImpl implements AccountService {
     private String baseUrl;
 
     @Autowired
-    public AccountServiceImpl(MessageSource messageSource, AccountDao accountDao, MailService mailService, JdbcTemplate jdbcTemplate, PasswordEncoder passwordEncoder, ImageService imageService, DTOConversionHelper dtoConversionHelper) {
+    public AccountServiceImpl(MessageSource messageSource, AccountDao accountDao, MailService mailService, NamedParameterJdbcTemplate jdbcTemplate, PasswordEncoder passwordEncoder, ImageService imageService, DTOConversionHelper dtoConversionHelper) {
         this.messageSource = messageSource;
         this.accountDao = accountDao;
         this.mailService = mailService;
@@ -57,23 +59,23 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public AccountDTO register(RegistrationDTO registration) {
         Account toBeCreated = new Account.Builder()
                 .firstName(registration.getFirstName())
                 .lastName(registration.getLastName())
                 .username(registration.getEmail())
                 .build();
-        Account result = createAccountWithPassword(toBeCreated, registration.getPassword());
+        Account result = createAccount(toBeCreated);
         mailService.sendPreConfiguredMail(MailTypeEnum.REGISTRATION, ImmutableMap.of(Constants
                 .EMAIL_ACCOUNT_VARIABLE, result, Constants.EMAIL_BASE_URL_VARIABLE, baseUrl));
         return new AccountDTO(result.getId(), result.getUsername(), result.getFirstName(), result.getLastName(), result.getRole().name(), result.isActive());
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public boolean firstTimeActivation(final long id, final boolean sendMail) {
-        Account account = accountDao.findOne(id);
+        Account account = accountDao.findById(id).orElse(null);
         if (account == null) throw new ObjectNotFoundException(String.format("Object with id %s not found", id));
         account.setActive(true);
         accountDao.save(account);
@@ -89,9 +91,9 @@ public class AccountServiceImpl implements AccountService {
 
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public void changeActivation(long id, boolean status) {
-        Account account = accountDao.findOne(id);
+        Account account = accountDao.findById(id).orElse(null);
         if (account == null)
             throw new ObjectNotFoundException("Account not found");
         account.setActive(status);
@@ -99,9 +101,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public void elevate(long id) {
-        Account account = accountDao.findOne(id);
+        Account account = accountDao.findById(id).orElse(null);
         if (account == null)
             throw new ObjectNotFoundException("Account not found");
         account.setRole(Role.ADMIN);
@@ -109,9 +111,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public void demote(long id) {
-        Account account = accountDao.findOne(id);
+        Account account = accountDao.findById(id).orElse(null);
         if (account == null)
             throw new ObjectNotFoundException("Account not found");
         account.setRole(Role.USER);
@@ -119,24 +121,18 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public void changeRole(AccountDTO accountDTO, Role role) {
-        Account account = accountDao.findOne(accountDTO.getId());
+        Account account = accountDao.findById(accountDTO.getId()).orElse(null);
         if (account == null)
             throw new ObjectNotFoundException("Account not found");
         account.setRole(role);
         accountDao.save(account);
     }
 
-    @Transactional(readOnly = false)
-    private Account createAccountWithPassword(Account account, String password) {
-        Account resultAccount = accountDao.save(account);
-        //Update only if sign in provider is not specified
-        if (account.getSignInProvider() == null) {
-            String encPassword = passwordEncoder.encode(password);
-            jdbcTemplate.update(UPDATE_PASSWORD_SQL, encPassword, account.getId());
-        }
-        return resultAccount;
+    @Transactional
+    public Account createAccount(Account account) {
+        return accountDao.save(account);
     }
 
     @Transactional(readOnly = true)
@@ -150,18 +146,18 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public void setPasswordFor(long id, String password) {
-        final Account account = accountDao.findOne(id);
-        if (account == null) throw new ObjectNotFoundException("Account not found");
         String encPassword = passwordEncoder.encode(password);
-        jdbcTemplate.update(UPDATE_PASSWORD_SQL, encPassword, id);
+        SqlParameterSource namedParameters = new MapSqlParameterSource().addValue("id", id).addValue("password", encPassword);
+        int i = jdbcTemplate.update(UPDATE_PASSWORD_SQL, namedParameters);
+        if (i != 1) throw new ObjectNotFoundException("Account not found, password was not set.");
     }
 
     @Override
     @Transactional(readOnly = true)
     public boolean checkOldPassword(long id, String password) {
-        final Account account = accountDao.findOne(id);
+        final Account account = accountDao.findById(id).orElse(null);
         if (account == null) throw new ObjectNotFoundException("Account cannot be found");
         String encodedPassword = getCurrentEncodedPasswordFor(account);
         return !(encodedPassword == null || encodedPassword.isEmpty()) && passwordEncoder.matches(password,
@@ -176,9 +172,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public Account update(ProfileDTO profileDTO) {
-        Account account = accountDao.findOne(profileDTO.getId());
+        Account account = accountDao.findById(profileDTO.getId()).orElse(null);
         if (account == null)
             throw new ObjectNotFoundException("Account not found");
         setAccountProfile(account, profileDTO);
@@ -201,12 +197,12 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account getAccount(String id) {
-        return accountDao.findOne(GeneralUtils.convertToLong(id));
+        return accountDao.findById(GeneralUtils.convertToLong(id)).orElse(null);
     }
 
     @Override
     public Account getAccount(Long id) {
-        return accountDao.findOne(id);
+        return accountDao.findById(id).orElse(null);
     }
 
     @Override
@@ -230,7 +226,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     private String getCurrentEncodedPasswordFor(Account account) {
-        return jdbcTemplate.queryForObject(GET_PASSWORD, String.class, account.getId());
+        SqlParameterSource namedParameters = new MapSqlParameterSource().addValue("id", account.getId());
+        return jdbcTemplate.queryForObject(GET_PASSWORD, namedParameters, String.class);
     }
 
     private void setAccountProfile(Account account, ProfileDTO profileDTO) {

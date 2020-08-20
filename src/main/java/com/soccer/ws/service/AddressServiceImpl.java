@@ -30,6 +30,6 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public Address getAddressById(String id) {
-        return addressDao.findOne(GeneralUtils.convertToLong(id));
+        return addressDao.findById(GeneralUtils.convertToLong(id)).orElse(null);
     }
 }
