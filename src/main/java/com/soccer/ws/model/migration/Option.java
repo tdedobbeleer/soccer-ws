@@ -1,0 +1,30 @@
+package com.soccer.ws.model.migration;
+
+import com.soccer.ws.model.BaseClass;
+
+import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
+
+/**
+ * Created by u0090265 on 31/05/16.
+ */
+@MappedSuperclass
+public abstract class Option<T> extends BaseClass {
+    private T option;
+
+    public Option() {
+    }
+
+    public Option(T option) {
+        this.option = option;
+    }
+
+    @Column(name = "opt")
+    public T getOption() {
+        return option;
+    }
+
+    public void setOption(T option) {
+        this.option = option;
+    }
+}
