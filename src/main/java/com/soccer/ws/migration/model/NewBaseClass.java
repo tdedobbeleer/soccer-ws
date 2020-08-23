@@ -1,22 +1,23 @@
-package com.soccer.ws.model;
+package com.soccer.ws.migration.model;
 
 import com.soccer.ws.utils.GeneralUtils;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * Created by u0090265 on 08/06/16.
  */
 @MappedSuperclass
-public class BaseClass implements Serializable {
+public class NewBaseClass implements Serializable {
     protected Long id;
+    protected UUID newId = UUID.randomUUID();
     private DateTime created;
     private DateTime modified;
-
 
     @PreUpdate
     @PrePersist
@@ -25,22 +26,17 @@ public class BaseClass implements Serializable {
         if (created == null) {
             created = new DateTime();
         }
+        if (newId == null) {
+            newId = UUID.randomUUID();
+        }
     }
 
-    @Id
-    @GeneratedValue(generator = "sequence-generator")
-    @GenericGenerator(
-            name = "sequence-generator",
-            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
-            parameters = {
-                    @Parameter(name = "sequence_name", value = "hibernate_sequences")
-            }
-    )
-    @Column(name = "id")
+    @Transient
     public Long getId() {
         return id;
     }
 
+    @Transient
     public void setId(Long id) {
         this.id = id;
     }
@@ -73,5 +69,21 @@ public class BaseClass implements Serializable {
     @Transient
     public String getStringModfied() {
         return GeneralUtils.convertToStringDateTime(this.modified);
+    }
+
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(name = "id")
+    @Type(type = "uuid-char")
+    public UUID getNewId() {
+        return newId;
+    }
+
+    public void setNewId(UUID newId) {
+        this.newId = newId;
     }
 }

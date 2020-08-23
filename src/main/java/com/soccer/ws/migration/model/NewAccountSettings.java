@@ -1,14 +1,13 @@
-package com.soccer.ws.model;
+package com.soccer.ws.migration.model;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import java.io.Serializable;
 
 /**
  * Created by u0090265 on 8/22/15.
  */
 @Embeddable
-public class AccountSettings implements Serializable {
+public class NewAccountSettings {
     //Set default value to true
     private boolean sendDoodleNotifications = true;
     private boolean sendNewsNotifications = true;
@@ -36,7 +35,7 @@ public class AccountSettings implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        AccountSettings that = (AccountSettings) o;
+        NewAccountSettings that = (NewAccountSettings) o;
 
         if (sendDoodleNotifications != that.sendDoodleNotifications) return false;
         return sendNewsNotifications == that.sendNewsNotifications;

@@ -4,6 +4,11 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
     <changeSet author="Tom" id="20200909">
+        <addColumn tableName="doodle">
+            <column name="created" type="datetime(6)"/>
+            <column name="modified" type="datetime(6)"/>
+        </addColumn>
+
         <addUniqueConstraint
                 columnNames="username"
                 constraintName="uniqueUsernameConstraint"
