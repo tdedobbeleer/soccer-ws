@@ -1,6 +1,7 @@
 package com.soccer.ws.migration.model;
 
 import com.google.common.collect.Sets;
+import com.soccer.ws.model.DoodleStatusEnum;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -14,7 +15,7 @@ import java.util.Set;
 public class NewDoodle extends NewBaseClass {
 
     private Set<NewPresence> newPresences;
-    private NewDoodleStatusEnum status = NewDoodleStatusEnum.CLOSED;
+    private DoodleStatusEnum status = DoodleStatusEnum.CLOSED;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "doodle_id")
@@ -30,11 +31,11 @@ public class NewDoodle extends NewBaseClass {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 20)
     @NotNull
-    public NewDoodleStatusEnum getStatus() {
+    public DoodleStatusEnum getStatus() {
         return status;
     }
 
-    public void setStatus(NewDoodleStatusEnum status) {
+    public void setStatus(DoodleStatusEnum status) {
         this.status = status;
     }
 

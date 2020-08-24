@@ -1,6 +1,7 @@
 package com.soccer.ws.model;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import javax.persistence.*;
 import java.util.List;
@@ -47,6 +48,7 @@ public class PlayersPoll extends Poll<Long> implements MultipleChoicePoll<Long> 
     @OrderColumn
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     public Set<IdentityOption> getOptions() {
+        if (options == null) options = Sets.newHashSet();
         return options;
     }
 
@@ -58,6 +60,7 @@ public class PlayersPoll extends Poll<Long> implements MultipleChoicePoll<Long> 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true,
             mappedBy = "poll", targetEntity = Vote.class)
     public Set<MultipleChoicePlayerVote> getVotes() {
+        if (votes == null) votes = Sets.newHashSet();
         return votes;
     }
 

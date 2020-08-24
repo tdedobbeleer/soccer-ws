@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 @Component
@@ -143,9 +144,14 @@ public class PrimaryKeyUpdater {
                 teams.stream().filter(a -> a.getName().equals(o.getHomeTeam().getName())).findFirst().ifPresent(o::setHomeTeam);
                 teams.stream().filter(a -> a.getName().equals(o.getAwayTeam().getName())).findFirst().ifPresent(o::setAwayTeam);
                 seasons.stream().filter(a -> a.getDescription().equals(o.getSeason().getDescription())).findFirst().ifPresent(o::setSeason);
-                o.getMatchDoodle().getPresences().parallelStream().forEach(c -> {
+
+                NewDoodle doodle = new NewDoodle();
+                mapper.map(e.getMatchDoodle(), doodle);
+                doodle.getPresences().parallelStream().forEach(c -> {
                     accounts.stream().filter(a -> a.getUsername().equals(c.getAccount().getUsername())).findFirst().ifPresent(c::setAccount);
                 });
+                doodle.setStatus(o.getMatchDoodle().getStatus());
+                o.setMatchDoodle(doodle);
 
                 Set<NewIdentityNewOption> identityOptions = e.getMotmPoll().getOptions().parallelStream().map(ob -> {
                     NewAccount a = oldAccounts.stream()
@@ -173,10 +179,26 @@ public class PrimaryKeyUpdater {
                     return v;
                 }).collect(Collectors.toSet());
 
+                Set<NewGoal> goals = e.getGoals().stream().map(g -> {
+                    NewGoal goal = new NewGoal();
+                    mapper.map(g, goal);
+                    g.setMatch(e);
+                    accounts.stream().filter(a -> a.getUsername().equals(g.getScorer().getUsername())).findFirst().ifPresent(goal::setScorer);
+                    accounts.stream().filter(a -> a.getUsername().equals(g.getAssist().getUsername())).findFirst().ifPresent(goal::setAssist);
+                    return goal;
+                }).collect(Collectors.toSet());
+
+                o.setGoals(new TreeSet<>());
+
                 o.getMotmPoll().setOptions(identityOptions);
                 o.getMotmPoll().setVotes(multipleChoicePlayerNewVotes);
 
-                new_New_matchesDao.save(o);
+                NewMatch m = new_New_matchesDao.save(o);
+
+                m.setGoals(new TreeSet<>(goals.stream().peek(g -> g.setMatch(m)).collect(Collectors.toSet())));
+
+                new_New_matchesDao.save(m);
+
             } catch (Exception ex) {
                 log.info("Could not copy match " + e);
                 ex.printStackTrace();
