@@ -2,7 +2,6 @@ package com.soccer.ws.migration.model;
 
 import com.soccer.ws.utils.GeneralUtils;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
@@ -78,7 +77,6 @@ public class NewBaseClass implements Serializable {
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     @Column(name = "id")
-    @Type(type = "uuid-char")
     public UUID getNewId() {
         return newId;
     }

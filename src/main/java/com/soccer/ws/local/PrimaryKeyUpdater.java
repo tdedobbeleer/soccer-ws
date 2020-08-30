@@ -1,12 +1,19 @@
 package com.soccer.ws.local;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.soccer.ws.migration.model.*;
 import com.soccer.ws.migration.persistence.*;
 import com.soccer.ws.model.Account;
+import com.soccer.ws.model.BaseClass;
+import com.soccer.ws.model.Match;
+import com.soccer.ws.model.Poll;
 import com.soccer.ws.persistence.*;
 import org.dozer.DozerBeanMapper;
-import org.dozer.Mapper;
+import org.dozer.DozerConverter;
+import org.dozer.loader.api.BeanMappingBuilder;
+import org.dozer.loader.api.TypeMappingOptions;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
@@ -15,6 +22,8 @@ import org.springframework.stereotype.Component;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+
+import static org.dozer.loader.api.FieldsMappingOptions.copyByReference;
 
 @Component
 @Profile("realdb")
@@ -63,7 +72,45 @@ public class PrimaryKeyUpdater {
         this.newJdbcNewUserDetailsDao = newJdbcNewUserDetailsDao;
         this.jdbcUserDetailsDao = jdbcUserDetailsDao;
 
-        Mapper mapper = new DozerBeanMapper();
+        BeanMappingBuilder builder = new BeanMappingBuilder() {
+            protected void configure() {
+                mapping(BaseClass.class, NewBaseClass.class,
+                        TypeMappingOptions.oneWay()
+                )
+                        .fields("created", "created",
+                                copyByReference()
+                        )
+                        .fields("modified", "modified",
+                                copyByReference()
+                        );
+                mapping(Account.class, NewAccount.class,
+                        TypeMappingOptions.oneWay()
+                )
+                        .fields("passwordLastSet", "passwordLastSet",
+                                copyByReference()
+                        );
+                mapping(Match.class, NewMatch.class,
+                        TypeMappingOptions.oneWay()
+                )
+                        .fields("date", "date",
+                                copyByReference()
+                        );
+                mapping(Poll.class, NewPoll.class,
+                        TypeMappingOptions.oneWay()
+                )
+                        .fields("startDate", "startDate",
+                                copyByReference()
+                        )
+                        .fields("endDate", "endDate",
+                                copyByReference()
+                        );
+            }
+        };
+
+        DozerBeanMapper mapper = new DozerBeanMapper();
+        mapper.addMapping(builder);
+
+        mapper.setCustomConverters(Lists.newArrayList(new DateTimeCustomConverter()));
 
         this.accountDao.findAll().forEach(e -> {
             try {
@@ -153,31 +200,37 @@ public class PrimaryKeyUpdater {
                 doodle.setStatus(o.getMatchDoodle().getStatus());
                 o.setMatchDoodle(doodle);
 
-                Set<NewIdentityNewOption> identityOptions = e.getMotmPoll().getOptions().parallelStream().map(ob -> {
-                    NewAccount a = oldAccounts.stream()
-                            .filter(acc -> acc.getId().equals(ob.getOption()))
-                            .flatMap(fa -> accounts.stream().filter(na -> na.getUsername().equals(fa.getUsername())))
-                            .findFirst().orElse(null);
+                Set<NewIdentityNewOption> identityOptions = Sets.newHashSet();
+                Set<NewMultipleChoicePlayerNewVote> multipleChoicePlayerNewVotes = Sets.newHashSet();
 
-                    NewIdentityNewOption option = new NewIdentityNewOption();
-                    mapper.map(ob, option);
-                    assert a != null;
-                    option.setOption(a.getNewId());
-                    return option;
-                }).collect(Collectors.toSet());
+                if (e.getMotmPoll() != null) {
+                    identityOptions = e.getMotmPoll().getOptions().parallelStream().map(ob -> {
+                        NewAccount a = oldAccounts.stream()
+                                .filter(acc -> acc.getId().equals(ob.getOption()))
+                                .flatMap(fa -> accounts.stream().filter(na -> na.getUsername().equals(fa.getUsername())))
+                                .findFirst().orElse(null);
 
-                Set<NewMultipleChoicePlayerNewVote> multipleChoicePlayerNewVotes = e.getMotmPoll().getVotes().stream().map(ob -> {
-                    NewMultipleChoicePlayerNewVote v = new NewMultipleChoicePlayerNewVote();
-                    v.setPoll(o.getMotmPoll());
-                    mapper.map(ob, v);
-                    accounts.stream().filter(a -> a.getUsername().equals(ob.getVoter().getUsername())).findFirst().ifPresent(v::setVoter);
-                    oldAccounts.stream()
-                            .filter(a -> ob.getAnswer().equals(a.getId()))
-                            .findFirst()
-                            .map(a -> accounts.parallelStream().filter(na -> na.getUsername().equals(a.getUsername())).findFirst())
-                            .ifPresent(a -> v.setNewId(a.get().getNewId()));
-                    return v;
-                }).collect(Collectors.toSet());
+                        NewIdentityNewOption option = new NewIdentityNewOption();
+                        mapper.map(ob, option);
+                        assert a != null;
+                        option.setOption(a.getNewId());
+                        return option;
+                    }).collect(Collectors.toSet());
+
+                    multipleChoicePlayerNewVotes = e.getMotmPoll().getVotes().stream().map(ob -> {
+                        NewMultipleChoicePlayerNewVote v = new NewMultipleChoicePlayerNewVote();
+                        v.setPoll(o.getMotmPoll());
+                        mapper.map(ob, v);
+                        accounts.stream().filter(a -> a.getUsername().equals(ob.getVoter().getUsername())).findFirst().ifPresent(v::setVoter);
+                        oldAccounts.stream()
+                                .filter(a -> ob.getAnswer().equals(a.getId()))
+                                .findFirst()
+                                .map(a -> accounts.parallelStream().filter(na -> na.getUsername().equals(a.getUsername())).findFirst())
+                                .ifPresent(a -> v.setAnswer(a.get().getNewId()));
+                        return v;
+                    }).collect(Collectors.toSet());
+                }
+
 
                 Set<NewGoal> goals = e.getGoals().stream().map(g -> {
                     NewGoal goal = new NewGoal();
@@ -190,8 +243,11 @@ public class PrimaryKeyUpdater {
 
                 o.setGoals(new TreeSet<>());
 
-                o.getMotmPoll().setOptions(identityOptions);
-                o.getMotmPoll().setVotes(multipleChoicePlayerNewVotes);
+
+                if (o.getMotmPoll() != null) {
+                    o.getMotmPoll().setOptions(identityOptions);
+                    o.getMotmPoll().setVotes(multipleChoicePlayerNewVotes);
+                }
 
                 NewMatch m = new_New_matchesDao.save(o);
 
@@ -205,6 +261,34 @@ public class PrimaryKeyUpdater {
             }
         });
 
+
+    }
+
+    public static class DateTimeCustomConverter extends DozerConverter<DateTime, DateTime> {
+
+        public DateTimeCustomConverter() {
+            super(DateTime.class, DateTime.class);
+        }
+
+        @Override
+        public DateTime convertTo(final DateTime source, final DateTime destination) {
+
+            if (source == null) {
+                return null;
+            }
+
+            return new DateTime(source);
+        }
+
+        @Override
+        public DateTime convertFrom(final DateTime source, final DateTime destination) {
+
+            if (source == null) {
+                return null;
+            }
+
+            return new DateTime(source);
+        }
 
     }
 }

@@ -173,9 +173,6 @@ public class Match extends BaseClass {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "motmpoll_id")
     public PlayersPoll getMotmPoll() {
-        if (motmPoll == null) {
-            motmPoll = new PlayersPoll();
-        }
         return motmPoll;
     }
 

@@ -31,6 +31,9 @@ public class Doodle extends BaseClass {
     @Column(name = "status", length = 20)
     @NotNull
     public DoodleStatusEnum getStatus() {
+        if (status == null) {
+            this.status = DoodleStatusEnum.CLOSED;
+        }
         return status;
     }
 
