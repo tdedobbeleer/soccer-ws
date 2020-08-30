@@ -5,7 +5,7 @@
 
     <changeSet author="Tom" id="20170903">
         <addColumn tableName="presences">
-            <column name="reserve" type="BIT(1)"/>
+            <column name="reserve" type="BOOLEAN"/>
         </addColumn>
     </changeSet>
 </databaseChangeLog>

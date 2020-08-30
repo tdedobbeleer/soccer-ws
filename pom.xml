@@ -228,6 +228,13 @@
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+
+
         <!-- https://mvnrepository.com/artifact/net.sf.dozer/dozer -->
         <dependency>
             <groupId>net.sf.dozer</groupId>
