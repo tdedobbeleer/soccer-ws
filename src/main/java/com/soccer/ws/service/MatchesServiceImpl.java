@@ -29,6 +29,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -74,14 +75,14 @@ public class MatchesServiceImpl implements MatchesService {
     }
 
     @Override
-    public List<MatchDTO> getMatchesForSeason(long seasonId, boolean
+    public List<MatchDTO> getMatchesForSeason(UUID seasonId, boolean
             isLoggedIn) {
         return cacheAdapter.getMatchesForSeason(seasonId, isLoggedIn);
     }
 
 
     @Override
-    public List<Match> getMatchesForSeason(long seasonId) {
+    public List<Match> getMatchesForSeason(UUID seasonId) {
         Season s = seasonDao.findById(seasonId).orElse(null);
         if (s == null) throw new ObjectNotFoundException(String.format("Season with id %s not found", seasonId));
         return matchesDao.getMatchesForSeason(s);
@@ -110,7 +111,7 @@ public class MatchesServiceImpl implements MatchesService {
     }
 
     @Override
-    public void openMatchDoodle(long matchId) {
+    public void openMatchDoodle(UUID matchId) {
         Match match = matchesDao.findById(matchId).orElse(null);
         if (match == null) throw new ObjectNotFoundException(String.format("Match %s does not exists", matchId));
         match.getMatchDoodle().setStatus(DoodleStatusEnum.OPEN);
@@ -143,7 +144,7 @@ public class MatchesServiceImpl implements MatchesService {
 
     @Override
     @Transactional(readOnly = false)
-    public Match get(long id) {
+    public Match get(UUID id) {
         return matchesDao.findById(id).orElse(null);
     }
 
@@ -201,7 +202,7 @@ public class MatchesServiceImpl implements MatchesService {
 
     @Override
     @Transactional(readOnly = false)
-    public void delete(long id) throws ObjectNotFoundException {
+    public void delete(UUID id) throws ObjectNotFoundException {
         Match m = matchesDao.findById(id).orElse(null);
         if (m == null) throw new ObjectNotFoundException(String.format("Match with id %s not found", id));
         matchesDao.deleteById(id);

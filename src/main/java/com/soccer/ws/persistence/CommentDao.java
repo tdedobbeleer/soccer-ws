@@ -7,5 +7,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 /**
  * Created by u0090265 on 10/13/14.
  */
-public interface CommentDao extends PagingAndSortingRepository<Comment, Long>, JpaSpecificationExecutor<Comment> {
+public interface CommentDao extends PagingAndSortingRepository<Comment, java.util.UUID>, JpaSpecificationExecutor<Comment> {
 }

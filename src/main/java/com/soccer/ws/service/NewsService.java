@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * User: Tom De Dobbeleer
@@ -29,14 +30,14 @@ public interface NewsService {
     @Transactional
     void update(NewsDTO news, Account account);
 
-    Comment addNewsComment(long newsId, String content, Account account);
+    Comment addNewsComment(UUID newsId, String content, Account account);
 
-    Comment changeNewsComment(long commentId, long newsId, String content, Account account);
+    Comment changeNewsComment(UUID commentId, UUID newsId, String content, Account account);
 
     @Transactional
-    void deleteNewsComment(long commentId, long newsId, Account account);
+    void deleteNewsComment(UUID commentId, UUID newsId, Account account);
 
-    News getNewsItem(long id);
+    News getNewsItem(UUID id);
 
     List<News> getAll();
 
@@ -45,7 +46,7 @@ public interface NewsService {
     int getNewsCount();
 
     @Transactional
-    void deleteNews(long id, Account account);
+    void deleteNews(UUID id, Account account);
 
     void sendNewsEmail(NewsDTO news);
 }

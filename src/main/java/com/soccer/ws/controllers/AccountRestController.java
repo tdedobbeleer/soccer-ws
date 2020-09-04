@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by u0090265 on 09.06.17.
@@ -48,7 +49,7 @@ public class AccountRestController extends AbstractRestController {
     @RequestMapping(value = "/accounts/{id}", method = RequestMethod.GET)
     @ResponseBody
     @ApiOperation(value = "Get Account", nickname = "getAccount")
-    public ResponseEntity<AccountDTO> getAccount(@PathVariable long id) {
+    public ResponseEntity<AccountDTO> getAccount(@PathVariable UUID id) {
         return new ResponseEntity<>(dtoConversionHelper.convertAccount(accountService.getAccount(id), isLoggedIn()), HttpStatus.OK);
     }
 
@@ -56,7 +57,7 @@ public class AccountRestController extends AbstractRestController {
     @RequestMapping(value = "/accounts/{id}/activation", method = RequestMethod.PUT)
     @ResponseBody
     @ApiOperation(value = "Change activation status", nickname = "changeActivation")
-    public ResponseEntity changeActivation(@PathVariable long id, @RequestParam boolean status) {
+    public ResponseEntity changeActivation(@PathVariable UUID id, @RequestParam boolean status) {
         accountService.changeActivation(id, status);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
@@ -65,7 +66,7 @@ public class AccountRestController extends AbstractRestController {
     @RequestMapping(value = "/accounts/{id}/activation/first", method = RequestMethod.PUT)
     @ResponseBody
     @ApiOperation(value = "Activate account for the first time", nickname = "firstTimeActivation")
-    public ResponseEntity firstTimeActivation(@PathVariable long id, @RequestParam boolean sendMail) {
+    public ResponseEntity firstTimeActivation(@PathVariable UUID id, @RequestParam boolean sendMail) {
         if (!accountService.firstTimeActivation(id, sendMail)) {
             return new ResponseEntity(HttpStatus.PRECONDITION_FAILED);
         }
@@ -76,7 +77,7 @@ public class AccountRestController extends AbstractRestController {
     @RequestMapping(value = "/accounts/{id}/elevation", method = RequestMethod.PUT)
     @ResponseBody
     @ApiOperation(value = "Elevate user", nickname = "elevate")
-    public ResponseEntity elevate(@PathVariable long id) {
+    public ResponseEntity elevate(@PathVariable UUID id) {
         accountService.elevate(id);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
@@ -85,7 +86,7 @@ public class AccountRestController extends AbstractRestController {
     @RequestMapping(value = "/accounts/{id}/demotion", method = RequestMethod.PUT)
     @ResponseBody
     @ApiOperation(value = "Demote user", nickname = "demote")
-    public ResponseEntity demote(@PathVariable long id) {
+    public ResponseEntity demote(@PathVariable UUID id) {
         accountService.demote(id);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
@@ -94,9 +95,9 @@ public class AccountRestController extends AbstractRestController {
     @RequestMapping(value = "/accounts/password", method = RequestMethod.PUT)
     @ResponseBody
     @ApiOperation(value = "Change password", nickname = "changePassword")
-    public ResponseEntity changePassword(@Valid @RequestBody PasswordDTO passwordDTO, BindingResult bindingResult) throws CustomMethodArgumentNotValidException {
+    public ResponseEntity<?> changePassword(@Valid @RequestBody PasswordDTO passwordDTO, BindingResult bindingResult) throws CustomMethodArgumentNotValidException {
         validate(passwordDTOValidator, passwordDTO, bindingResult);
         accountService.setPasswordFor(passwordDTO.getId(), passwordDTO.getNewPassword());
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 }

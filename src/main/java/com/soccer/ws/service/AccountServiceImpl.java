@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 @Service
 @Transactional(readOnly = true)
@@ -74,7 +75,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional
-    public boolean firstTimeActivation(final long id, final boolean sendMail) {
+    public boolean firstTimeActivation(final UUID id, final boolean sendMail) {
         Account account = accountDao.findById(id).orElse(null);
         if (account == null) throw new ObjectNotFoundException(String.format("Object with id %s not found", id));
         account.setActive(true);
@@ -92,7 +93,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional
-    public void changeActivation(long id, boolean status) {
+    public void changeActivation(UUID id, boolean status) {
         Account account = accountDao.findById(id).orElse(null);
         if (account == null)
             throw new ObjectNotFoundException("Account not found");
@@ -102,7 +103,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional
-    public void elevate(long id) {
+    public void elevate(UUID id) {
         Account account = accountDao.findById(id).orElse(null);
         if (account == null)
             throw new ObjectNotFoundException("Account not found");
@@ -112,7 +113,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional
-    public void demote(long id) {
+    public void demote(UUID id) {
         Account account = accountDao.findById(id).orElse(null);
         if (account == null)
             throw new ObjectNotFoundException("Account not found");
@@ -141,13 +142,13 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public boolean isValidUsernameExcludeCurrentId(String username, Long id) {
+    public boolean isValidUsernameExcludeCurrentId(String username, UUID id) {
         return accountDao.findByEmailExcludeCurrentId(username, id) == null;
     }
 
     @Override
     @Transactional
-    public void setPasswordFor(long id, String password) {
+    public void setPasswordFor(UUID id, String password) {
         String encPassword = passwordEncoder.encode(password);
         SqlParameterSource namedParameters = new MapSqlParameterSource().addValue("id", id).addValue("password", encPassword);
         int i = jdbcTemplate.update(UPDATE_PASSWORD_SQL, namedParameters);
@@ -156,7 +157,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean checkOldPassword(long id, String password) {
+    public boolean checkOldPassword(UUID id, String password) {
         final Account account = accountDao.findById(id).orElse(null);
         if (account == null) throw new ObjectNotFoundException("Account cannot be found");
         String encodedPassword = getCurrentEncodedPasswordFor(account);
@@ -197,11 +198,11 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account getAccount(String id) {
-        return accountDao.findById(GeneralUtils.convertToLong(id)).orElse(null);
+        return accountDao.findById(GeneralUtils.convertToUUID(id)).orElse(null);
     }
 
     @Override
-    public Account getAccount(Long id) {
+    public Account getAccount(UUID id) {
         return accountDao.findById(id).orElse(null);
     }
 
@@ -212,7 +213,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account getActiveAccountById(String id) {
-        return accountDao.findByIdAndActiveStatus(GeneralUtils.convertToLong(id), true);
+        return accountDao.findByIdAndActiveStatus(GeneralUtils.convertToUUID(id), true);
     }
 
     @Override

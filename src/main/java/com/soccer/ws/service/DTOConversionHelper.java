@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.UUID;
 
 /**
  * Created by u0090265 on 10/2/15.
@@ -28,7 +29,7 @@ public interface DTOConversionHelper {
 
     List<AccountDTO> convertIdentityOptions(Set<IdentityOption> identityOptions, boolean isLoggedIn);
 
-    List<VotesDTO> convertIdentityRankings(RankingList<Long> rankingList, boolean isLoggedIn);
+    List<VotesDTO> convertIdentityRankings(RankingList<UUID> rankingList, boolean isLoggedIn);
 
     List<SeasonDTO> convertSeasons(List<Season> seasons);
 

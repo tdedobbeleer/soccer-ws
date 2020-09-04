@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by u0090265 on 16/09/16.
@@ -41,7 +42,7 @@ public class StatisticsRestController extends AbstractRestController {
 
     @RequestMapping(value = "/statistics/season/{id}", method = RequestMethod.GET)
     @ApiOperation(value = "Get statictics", nickname = "getStatictics")
-    public ResponseEntity<List<AccountStatisticDTO>> getStatisticsForSeason(@PathVariable long id) {
+    public ResponseEntity<List<AccountStatisticDTO>> getStatisticsForSeason(@PathVariable UUID id) {
         return new ResponseEntity<>(cacheAdapter.getStatisticsForSeason(id, isLoggedIn()),
                 HttpStatus.OK);
     }
@@ -49,7 +50,7 @@ public class StatisticsRestController extends AbstractRestController {
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/statistics/season/{id}/export")
     @ApiOperation(value = "Export statistics for season", nickname = "exportStatistics")
-    public ByteResponseDTO getExportStatistic(@PathVariable Long id, HttpServletResponse response) throws IOException {
+    public ByteResponseDTO getExportStatistic(@PathVariable UUID id, HttpServletResponse response) throws IOException {
         List<List<String>> csvData = Lists.<List<String>>newArrayList(Lists.newArrayList("Name", "Goals", "Assists", "Matches played", "Motm"));
         cacheAdapter.getStatisticsForSeason(id, isLoggedIn()).forEach(s -> {
             csvData.add(Lists.newArrayList(s.getAccount().getName(), Integer.toString(s.getGoals()), Integer.toString(s.getAssists()), Integer.toString(s.getPlayed()), Integer.toString(s.getMotm())));

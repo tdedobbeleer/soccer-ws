@@ -5,6 +5,7 @@ import lombok.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by u0090265 on 16/09/16.
@@ -37,7 +38,7 @@ public class NewsDTO extends BaseClassDTO {
      * @param editable
      * @param comments
      */
-    public NewsDTO(Long id, String header, String content, String postDate, AccountDTO postedBy, boolean editable,
+    public NewsDTO(UUID id, String header, String content, String postDate, AccountDTO postedBy, boolean editable,
                    List<CommentDTO> comments) {
         super(id);
         this.header = header;
@@ -55,7 +56,7 @@ public class NewsDTO extends BaseClassDTO {
      * @param postDate
      * @param postedBy
      */
-    public NewsDTO(Long id, String header, String content, String postDate, AccountDTO postedBy) {
+    public NewsDTO(UUID id, String header, String content, String postDate, AccountDTO postedBy) {
         super(id);
         this.header = header;
         this.content = content;

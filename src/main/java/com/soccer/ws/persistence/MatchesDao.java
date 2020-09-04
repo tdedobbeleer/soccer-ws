@@ -18,7 +18,7 @@ import java.util.Optional;
 /**
  * Created by u0090265 on 5/3/14.
  */
-public interface MatchesDao extends PagingAndSortingRepository<Match, Long>, JpaSpecificationExecutor<Match> {
+public interface MatchesDao extends PagingAndSortingRepository<Match, java.util.UUID>, JpaSpecificationExecutor<Match> {
 
     @Query("select m from Match m where m.season = ?1 order by date asc")
     List<Match> getMatchesForSeason(Season season);

@@ -7,5 +7,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 /**
  * Created by u0090265 on 10/1/14.
  */
-public interface DoodleDao extends PagingAndSortingRepository<Doodle, Long>, JpaSpecificationExecutor<Doodle> {
+public interface DoodleDao extends PagingAndSortingRepository<Doodle, java.util.UUID>, JpaSpecificationExecutor<Doodle> {
 }

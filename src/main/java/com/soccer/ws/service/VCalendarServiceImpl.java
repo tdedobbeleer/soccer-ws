@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by u0090265 on 1/26/15.
@@ -31,7 +32,7 @@ public class VCalendarServiceImpl implements VCalendarService {
     }
 
     @Override
-    public Calendar getMatchesCalendar(long seasonId) throws SocketException {
+    public Calendar getMatchesCalendar(UUID seasonId) throws SocketException {
         List<Match> matches = matchesService.getMatchesForSeason(seasonId);
         List<VEvent> calendarEvents = new ArrayList<>();
 

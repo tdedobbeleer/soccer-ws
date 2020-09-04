@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Created by u0090265 on 07/06/16.
@@ -44,14 +45,14 @@ public class PollServiceImpl implements PollService {
     }
 
     @Override
-    public Poll get(Long pollId) {
+    public Poll get(UUID pollId) {
         Poll poll = pollDao.findById(pollId).orElse(null);
         GeneralUtils.throwObjectNotFoundException(poll, pollId, Poll.class);
         return poll;
     }
 
     @Override
-    public Set<IdentityOption> refreshPlayerOptions(Long matchId) {
+    public Set<IdentityOption> refreshPlayerOptions(UUID matchId) {
         Match match = matchesDao.findById(matchId).orElse(null);
         GeneralUtils.throwObjectNotFoundException(match, matchId, Match.class);
         Set<IdentityOption> options = getPlayerOptionsFor(match);
@@ -61,7 +62,7 @@ public class PollServiceImpl implements PollService {
     }
 
     @Override
-    public Poll reset(Long id) {
+    public Poll reset(UUID id) {
         Poll poll = pollDao.findById(id).orElse(null);
         GeneralUtils.throwObjectNotFoundException(poll, id, Poll.class);
         poll.getVotes().clear();
@@ -70,7 +71,7 @@ public class PollServiceImpl implements PollService {
 
     @Override
     @Transactional
-    public Poll vote(Long pollId, Vote vote) {
+    public Poll vote(UUID pollId, Vote vote) {
         //Get poll
         Poll poll = pollDao.findById(pollId).orElse(null);
         GeneralUtils.throwObjectNotFoundException(poll, pollId, Poll.class);

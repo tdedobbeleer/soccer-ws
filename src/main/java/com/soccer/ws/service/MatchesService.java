@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Created by u0090265 on 5/3/14.
@@ -20,9 +21,9 @@ public interface MatchesService {
 
     Page<Match> getUpcomingMatchesPages(int page, int pageSize, Optional<Sort> sort);
 
-    List<MatchDTO> getMatchesForSeason(long seasonId, boolean isLoggedIn);
+    List<MatchDTO> getMatchesForSeason(UUID seasonId, boolean isLoggedIn);
 
-    List<Match> getMatchesForSeason(long seasonId);
+    List<Match> getMatchesForSeason(UUID seasonId);
 
     Match getMatchByPoll(long pollId);
 
@@ -30,7 +31,7 @@ public interface MatchesService {
 
     Match getLatestMatch();
 
-    void openMatchDoodle(long matchId);
+    void openMatchDoodle(UUID matchId);
 
     List<Match> openNextMatchDoodle();
 
@@ -38,7 +39,7 @@ public interface MatchesService {
 
     Page<Match> getMatchesWithPolls(int page, int pageSize, Optional<Sort> sort, Optional<String> searchTerm);
 
-    Match get(long id);
+    Match get(UUID id);
 
     //Match createMatch(CreateMatchForm form) throws ParseException;
 
@@ -50,5 +51,5 @@ public interface MatchesService {
     @Transactional(readOnly = false)
     MatchDTO update(MatchDTO matchDTO);
 
-    void delete(long id) throws ObjectNotFoundException;
+    void delete(UUID id) throws ObjectNotFoundException;
 }

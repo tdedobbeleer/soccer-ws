@@ -2,6 +2,8 @@ package com.soccer.ws.dto;
 
 import lombok.*;
 
+import java.util.UUID;
+
 /**
  * Created by u0090265 on 10/06/16.
  */
@@ -18,7 +20,7 @@ public class AccountDTO extends BaseClassDTO implements Comparable<AccountDTO> {
     private String role;
     private boolean activated;
 
-    public AccountDTO(Long id, String username, String firstName, String lastName, String role, boolean activated) {
+    public AccountDTO(UUID id, String username, String firstName, String lastName, String role, boolean activated) {
         super(id);
         this.firstName = firstName;
         this.lastName = lastName;

@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.UUID;
+
 /**
  * Created by u0090265 on 09/09/16.
  */
@@ -20,7 +22,7 @@ public class MatchDoodleDTO extends BaseClassDTO {
     private String description;
     private MatchStatusEnum matchStatus;
 
-    public MatchDoodleDTO(Long id, DoodleDTO doodle, String date, String hour, String description, MatchStatusEnum matchStatus) {
+    public MatchDoodleDTO(UUID id, DoodleDTO doodle, String date, String hour, String description, MatchStatusEnum matchStatus) {
         super(id);
         this.doodle = doodle;
         this.date = date;

@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by u0090265 on 09/09/16.
@@ -23,7 +24,7 @@ public class DoodleDTO extends BaseClass {
     private int total;
     private DoodleStatusEnum status;
 
-    public DoodleDTO(long id, List<PresenceDTO> presences, List<PresenceDTO> reserves, PresenceDTO currentPresence, int total, DoodleStatusEnum status) {
+    public DoodleDTO(UUID id, List<PresenceDTO> presences, List<PresenceDTO> reserves, PresenceDTO currentPresence, int total, DoodleStatusEnum status) {
         this.id = id;
         this.total = total;
         this.status = status;

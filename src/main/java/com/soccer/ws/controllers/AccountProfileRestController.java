@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -49,7 +50,7 @@ public class AccountProfileRestController extends AbstractRestController {
     @RequestMapping(value = "/profiles/{id}", method = RequestMethod.GET)
     @ResponseBody
     @ApiOperation(value = "Get Account profile", nickname = "getProfile")
-    public ResponseEntity<ProfileDTO> getProfile(@PathVariable long id) {
+    public ResponseEntity<ProfileDTO> getProfile(@PathVariable UUID id) {
         final Account account = getAccountFromSecurity();
         if (account.getId().equals(id) || account.getRole().equals(Role.ADMIN)) {
             return new ResponseEntity<>(dtoConversionHelper.convertProfile(accountService.getAccount(id).getAccountProfile(), isLoggedIn()), HttpStatus.OK);

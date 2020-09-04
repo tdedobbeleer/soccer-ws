@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Created by u0090265 on 09/09/16.
@@ -58,7 +59,7 @@ public class DoodleRestController extends AbstractRestController {
 
     @RequestMapping(value = "/matchDoodle/{id}", method = RequestMethod.GET)
     @ApiOperation(value = "Get matchdoodles", nickname = "matchDoodle")
-    public ResponseEntity<MatchDoodleDTO> getMatchDoodle(@PathVariable Long id) {
+    public ResponseEntity<MatchDoodleDTO> getMatchDoodle(@PathVariable UUID id) {
         Match m = matchesService.get(id);
         return new ResponseEntity<>(DTOConversionHelper.convertMatchDoodle(m, getAccountFromSecurity(),
                 isAdmin()), HttpStatus.OK);
@@ -67,7 +68,7 @@ public class DoodleRestController extends AbstractRestController {
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/doodle/match/{id}/presence/{accountId}", method = RequestMethod.PUT)
     @ApiOperation(value = "Change presence", nickname = "changePresence")
-    public ResponseEntity<PresenceDTO> changePresence(@PathVariable Long id, @PathVariable Long accountId, @RequestParam(required = false) Boolean force) {
+    public ResponseEntity<PresenceDTO> changePresence(@PathVariable UUID id, @PathVariable UUID accountId, @RequestParam(required = false) Boolean force) {
         final Account requestingAccount = getAccountFromSecurity();
         if (force != null && force) {
             if (isAdmin()) {

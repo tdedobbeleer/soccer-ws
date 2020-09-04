@@ -6,6 +6,7 @@ import com.soccer.ws.model.Poll;
 import com.soccer.ws.model.Vote;
 
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Created by u0090265 on 07/06/16.
@@ -13,11 +14,11 @@ import java.util.Set;
 public interface PollService {
     void setMotmPoll(Match match);
 
-    Poll get(Long pollId);
+    Poll get(UUID pollId);
 
-    Set<IdentityOption> refreshPlayerOptions(Long id);
+    Set<IdentityOption> refreshPlayerOptions(UUID id);
 
-    Poll reset(Long id);
+    Poll reset(UUID id);
 
-    Poll vote(Long pollId, Vote vote);
+    Poll vote(UUID pollId, Vote vote);
 }

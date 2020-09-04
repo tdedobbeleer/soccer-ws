@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.UUID;
+
 /**
  * Created by u0090265 on 12/12/16.
  */
@@ -41,7 +43,7 @@ public class CommentsRestController extends AbstractRestController {
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/news/{id}/comment", method = RequestMethod.POST)
     @ApiOperation(value = "Post news", nickname = "postComment")
-    public ResponseEntity<CommentDTO> postComment(@PathVariable Long id, @RequestBody CommentDTO commentDTO) {
+    public ResponseEntity<CommentDTO> postComment(@PathVariable UUID id, @RequestBody CommentDTO commentDTO) {
         Comment c = newsService.addNewsComment(id, SanitizeUtils.sanitizeHtml(commentDTO.getContent()), getAccountFromSecurity());
         return new ResponseEntity<>(dtoConversionHelper.convertComment(getAccountFromSecurity(), c, isAdmin(), true), HttpStatus.OK);
     }
@@ -49,7 +51,7 @@ public class CommentsRestController extends AbstractRestController {
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/news/{id}/comment", method = RequestMethod.PUT)
     @ApiOperation(value = "Get news", nickname = "editComment")
-    public ResponseEntity editComment(@PathVariable Long id, @RequestBody CommentDTO commentDTO) {
+    public ResponseEntity editComment(@PathVariable UUID id, @RequestBody CommentDTO commentDTO) {
         Comment c = newsService.changeNewsComment(commentDTO.getId(), id, SanitizeUtils.sanitizeHtml(commentDTO.getContent()),
                 getAccountFromSecurity());
         return new ResponseEntity<>(dtoConversionHelper.convertComment(getAccountFromSecurity(), c, isAdmin(), true), HttpStatus.OK);
@@ -58,7 +60,7 @@ public class CommentsRestController extends AbstractRestController {
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/news/{id}/comment/{commentId}", method = RequestMethod.DELETE)
     @ApiOperation(value = "Get news", nickname = "deleteComment")
-    public ResponseEntity deleteComment(@PathVariable Long id, @PathVariable Long commentId) {
+    public ResponseEntity deleteComment(@PathVariable UUID id, @PathVariable UUID commentId) {
         newsService.deleteNewsComment(commentId, id, getAccountFromSecurity());
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }

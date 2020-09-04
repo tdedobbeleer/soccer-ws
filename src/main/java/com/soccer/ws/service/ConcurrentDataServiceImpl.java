@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -46,7 +47,7 @@ public class ConcurrentDataServiceImpl implements ConcurrentDataService {
     }
 
     @Override
-    public List<AccountStatisticDTO> getAccountStatisticsForSeason(final long seasonId, final boolean isLoggedIn) {
+    public List<AccountStatisticDTO> getAccountStatisticsForSeason(final UUID seasonId, final boolean isLoggedIn) {
         Season season = seasonDao.findById(seasonId).orElse(null);
         if (season == null) throw new ObjectNotFoundException(String.format("Season with id %s not found", seasonId));
         List<Match> matches = matchesDao.getMatchesForSeason(season);
@@ -58,7 +59,7 @@ public class ConcurrentDataServiceImpl implements ConcurrentDataService {
     }
 
     @Override
-    public List<MatchDTO> getMatchForSeason(final long seasonId, final boolean isLoggedIn) {
+    public List<MatchDTO> getMatchForSeason(final UUID seasonId, final boolean isLoggedIn) {
         Season season = seasonDao.findById(seasonId).orElseThrow();
 
         return matchesDao.getMatchesForSeason(season).stream()

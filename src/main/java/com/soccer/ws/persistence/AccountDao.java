@@ -6,8 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
+import java.util.UUID;
 
-public interface AccountDao extends PagingAndSortingRepository<Account, Long>, JpaSpecificationExecutor<Account> {
+public interface AccountDao extends PagingAndSortingRepository<Account, UUID>, JpaSpecificationExecutor<Account> {
     @Query("select a from Account a where a.username = ?1")
     Account findByUsername(String email);
 
@@ -15,10 +16,10 @@ public interface AccountDao extends PagingAndSortingRepository<Account, Long>, J
     Account findByUsernameAndActiveStatus(String username, boolean active);
 
     @Query("select a from Account a where a.id = ?1 AND a.active = ?2")
-    Account findByIdAndActiveStatus(Long id, boolean active);
+    Account findByIdAndActiveStatus(UUID id, boolean active);
 
     @Query("select a from Account a where a.username = ?1 AND a.id <> ?2")
-    Account findByEmailExcludeCurrentId(String email, Long id);
+    Account findByEmailExcludeCurrentId(String email, UUID id);
 
     @Query("select a from Account a where a.active = ?1")
     List<Account> findByActivationStatus(boolean status);

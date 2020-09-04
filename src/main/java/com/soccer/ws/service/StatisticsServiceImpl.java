@@ -14,6 +14,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Created by u0090265 on 6/27/15.
@@ -106,7 +107,7 @@ public class StatisticsServiceImpl implements StatisticsService {
                 }
 
                 if (match.getMotmPoll() != null && match.getMotmPoll().getStatus().equals(PollStatusEnum.CLOSED)) {
-                    Optional<Ranking<Long>> rl = match.getMotmPoll().getResult().getHighestRanked();
+                    Optional<Ranking<UUID>> rl = match.getMotmPoll().getResult().getHighestRanked();
                     if (rl.isPresent() && rl.get().getOption().equals(account.getId())) {
                         motm++;
                     }

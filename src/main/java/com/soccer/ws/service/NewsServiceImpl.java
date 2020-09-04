@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import static com.soccer.ws.validators.SanitizeUtils.sanitizeHtml;
 
@@ -65,7 +66,7 @@ public class NewsServiceImpl implements NewsService {
     public NewsDTO create(NewsDTO news) {
         Account account = accountDao.findById(news.getPostedBy().getId()).orElse(null);
         if (account == null)
-            throw new UsernameNotFoundException("Cannopt post news, user not found");
+            throw new UsernameNotFoundException("Cannot post news, user not found");
         News n = newsDao.save(new News(news.getHeader(), news.getContent(), account));
         news.setId(n.getId());
         return news;
@@ -107,7 +108,7 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional
-    public Comment addNewsComment(long newsId, String content, Account account) {
+    public Comment addNewsComment(UUID newsId, String content, Account account) {
         News news = newsDao.findById(newsId).orElseThrow();
         NewsComment comment = new NewsComment(content, news, account);
         commentDao.save(comment);
@@ -117,7 +118,7 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional
-    public Comment changeNewsComment(long commentId, long newsId, String content, Account account) {
+    public Comment changeNewsComment(UUID commentId, UUID newsId, String content, Account account) {
         Comment comment = commentDao.findById(commentId).orElseThrow();
         authorizationService.isAuthorized(account, comment);
         comment.setContent(content);
@@ -129,7 +130,7 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional
-    public void deleteNewsComment(long commentId, long newsId, Account account) {
+    public void deleteNewsComment(UUID commentId, UUID newsId, Account account) {
         NewsComment comment = (NewsComment) commentDao.findById(commentId).orElseThrow();
         authorizationService.isAuthorized(account, comment);
         News news = newsDao.findById(newsId).orElseThrow();
@@ -139,7 +140,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    public News getNewsItem(long id) {
+    public News getNewsItem(UUID id) {
         News news = newsDao.findById(id).orElse(null);
         if (news == null) throw new ObjectNotFoundException(String.format("News item with id %s not found", id));
         return news;
@@ -166,7 +167,7 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional
-    public void deleteNews(long id, Account account) {
+    public void deleteNews(UUID id, Account account) {
         News news = newsDao.findById(id).orElseThrow();
         authorizationService.isAuthorized(account, news);
         log.info(String.format("Newsitem %s deleted by %s", news, account));

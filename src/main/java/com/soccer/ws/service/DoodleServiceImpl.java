@@ -19,10 +19,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static com.soccer.ws.utils.Constants.EMAIL_ACCOUNT_VARIABLE;
 import static com.soccer.ws.utils.Constants.EMAIL_BASE_URL_VARIABLE;
@@ -61,7 +58,7 @@ public class DoodleServiceImpl implements DoodleService {
     }
 
     @Override
-    public Presence changePresence(final long accountId, final long matchId, final boolean isAdmin) {
+    public Presence changePresence(final UUID accountId, final UUID matchId, final boolean isAdmin) {
         Account accountInUse = accountDao.findById(accountId).orElse(null);
         if (accountInUse == null)
             throw new ObjectNotFoundException(String.format("Account with id %s not found.", accountId));
@@ -90,7 +87,7 @@ public class DoodleServiceImpl implements DoodleService {
     }
 
     @Override
-    public Presence forceChangePresence(final long accountId, final long matchId) {
+    public Presence forceChangePresence(final UUID accountId, final UUID matchId) {
         Account accountInUse = accountDao.findById(accountId).orElse(null);
         if (accountInUse == null)
             throw new ObjectNotFoundException(String.format("Account with id %s not found.", accountId));
