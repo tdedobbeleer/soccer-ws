@@ -52,7 +52,7 @@ public class PwdRecoveryServiceImpl implements PwdRecoveryService {
     @Override
     @Transactional
     public void deleteExpiredCodes() {
-        List<Account> accounts = accountDao.findByActivationCodeNotNull();
+        List<Account> accounts = accountDao.findAllByPwdRecoveryNotNull();
         DateTime hourAgo = DateTime.now().minusHours(1);
 
         for (Account a : accounts) {

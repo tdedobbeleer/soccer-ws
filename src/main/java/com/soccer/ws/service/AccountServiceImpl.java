@@ -143,7 +143,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public boolean isValidUsernameExcludeCurrentId(String username, UUID id) {
-        return accountDao.findByEmailExcludeCurrentId(username, id) == null;
+        return accountDao.findByUsernameAndIdNot(username, id) == null;
     }
 
     @Override
@@ -208,22 +208,22 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account getActiveAccountByEmail(String email) {
-        return accountDao.findByUsernameAndActiveStatus(email, true);
+        return accountDao.findByUsernameAndActive(email, true);
     }
 
     @Override
     public Account getActiveAccountById(String id) {
-        return accountDao.findByIdAndActiveStatus(GeneralUtils.convertToUUID(id), true);
+        return accountDao.findByIdAndActive(GeneralUtils.convertToUUID(id), true);
     }
 
     @Override
     public List<Account> getAccountsByActivationStatus(boolean status) {
-        return accountDao.findByActivationStatus(status);
+        return accountDao.findAllByActive(status);
     }
 
     @Override
     public List<Account> getAccountsWithActivationCode() {
-        return accountDao.findByActivationCodeNotNull();
+        return accountDao.findAllByPwdRecoveryNotNull();
     }
 
     private String getCurrentEncodedPasswordFor(Account account) {

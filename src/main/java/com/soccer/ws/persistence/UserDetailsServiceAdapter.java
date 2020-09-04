@@ -37,7 +37,7 @@ public class UserDetailsServiceAdapter implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, DataAccessException {
         logger.info(String.format("Trying to load user %s from Database", username));
         Account account =
-                accountDao.findByUsernameAndActiveStatus(username, true);
+                accountDao.findByUsernameAndActive(username, true);
         if (account == null) {
             throw new UsernameNotFoundException(
                     "No user with username " + username);

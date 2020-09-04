@@ -12,7 +12,7 @@ import java.util.UUID;
  */
 @MappedSuperclass
 public class BaseClass {
-    protected UUID id = UUID.randomUUID();
+    protected UUID id;
     private DateTime created;
     private DateTime modified;
 

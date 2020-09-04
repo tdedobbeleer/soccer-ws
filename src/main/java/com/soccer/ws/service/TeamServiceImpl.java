@@ -48,12 +48,12 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public boolean teamExists(String name) {
-        return teamDao.getTeamByName(name) != null;
+        return teamDao.findOneByName(name) != null;
     }
 
     @Override
     public boolean teamExistsExcludeId(final String name, final UUID id) {
-        final Team team = teamDao.getTeamByName(name);
+        final Team team = teamDao.findOneByName(name);
         if (team != null) {
             return !team.getId().equals(id);
         }

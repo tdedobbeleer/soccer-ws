@@ -155,7 +155,7 @@ public class NewsServiceImpl implements NewsService {
     public Page<News> getPagedNews(Optional<String> term, int start, int pageSize, Optional<Sort> sort) {
         Sort s = sort.isPresent() ? sort.get() : Sort.by(Sort.Direction.DESC, "postDate");
         if (term.isPresent()) {
-            return newsDao.getSearch("%" + sanitizeHtml(term.get()) + "%", PageRequest.of(start, pageSize, s));
+            return newsDao.findByHeaderOrContent("%" + sanitizeHtml(term.get()) + "%", PageRequest.of(start, pageSize, s));
         }
         return newsDao.findAll((PageRequest.of(start, pageSize, s)));
     }
