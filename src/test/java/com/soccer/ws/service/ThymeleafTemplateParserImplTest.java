@@ -11,6 +11,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.thymeleaf.TemplateEngine;
 
+import java.util.UUID;
+
 import static com.soccer.ws.utils.Constants.EMAIL_ACCOUNT_VARIABLE;
 import static com.soccer.ws.utils.Constants.EMAIL_BASE_URL_VARIABLE;
 
@@ -39,7 +41,7 @@ public class ThymeleafTemplateParserImplTest {
     @Test
     public void parseMessage() throws Exception {
         News n = new News();
-        n.setId(1L);
+        n.setId(UUID.randomUUID());
         parser.parse(MailTypeEnum.MESSAGE, ImmutableMap.of("message", new News(), Constants.EMAIL_BASE_URL_VARIABLE,
                 baseUrl));
         parser.parse(MailTypeEnum.MESSAGE, ImmutableMap.of("message", n, Constants.EMAIL_BASE_URL_VARIABLE,

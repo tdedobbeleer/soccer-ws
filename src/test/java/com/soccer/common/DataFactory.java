@@ -5,6 +5,7 @@ import com.soccer.ws.model.*;
 import org.joda.time.DateTime;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 
@@ -35,7 +36,7 @@ public class DataFactory {
 
     public static Account createAccount() {
         Account account = new Account(getDefaultRandomString(), getDefaultRandomString(), getRandomUserName());
-        account.setId(new java.util.Random().nextLong());
+        account.setId(UUID.randomUUID());
         return account;
     }
 
