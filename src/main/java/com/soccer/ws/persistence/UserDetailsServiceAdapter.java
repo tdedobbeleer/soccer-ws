@@ -37,12 +37,12 @@ public class UserDetailsServiceAdapter implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, DataAccessException {
         logger.info(String.format("Trying to load user %s from Database", username));
         Account account =
-                accountDao.findByUsernameAndActive(username, true);
+                accountDao.findByUsernameIgnoreCaseAndActive(username, true);
         if (account == null) {
             throw new UsernameNotFoundException(
                     "No user with username " + username);
         }
-        String pw = userDetailsDao.findPasswordByUsername(username);
+        String pw = userDetailsDao.findPasswordByUsernameIgnoreCase(username);
         return new UserDetailsAdapter(account, pw);
     }
 }

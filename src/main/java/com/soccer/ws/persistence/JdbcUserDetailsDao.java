@@ -22,7 +22,7 @@ public class JdbcUserDetailsDao implements UserDetailsDao {
     }
 
     @Override
-    public String findPasswordByUsername(String username) {
+    public String findPasswordByUsernameIgnoreCase(String username) {
         return jdbcTemplate.queryForObject(
                 FIND_PASSWORD_SQL, new Object[]{username}, String.class);
     }

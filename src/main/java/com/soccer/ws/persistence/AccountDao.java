@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.UUID;
 
 public interface AccountDao extends PagingAndSortingRepository<Account, UUID>, JpaSpecificationExecutor<Account> {
-    Account findByUsername(String email);
+    Account findByUsernameIgnoreCase(String email);
 
-    Account findByUsernameAndActive(String username, boolean active);
+    Account findByUsernameIgnoreCaseAndActive(String username, boolean active);
 
     Account findByIdAndActive(UUID id, boolean active);
 
-    Account findByUsernameAndIdNot(String email, UUID id);
+    Account findByUsernameIgnoreCaseAndIdNot(String email, UUID id);
 
     List<Account> findAllByPwdRecoveryNotNull();
 

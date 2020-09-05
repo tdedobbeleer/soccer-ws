@@ -138,12 +138,12 @@ public class AccountServiceImpl implements AccountService {
 
     @Transactional(readOnly = true)
     public boolean isValidUsername(String username) {
-        return accountDao.findByUsername(username) == null;
+        return accountDao.findByUsernameIgnoreCase(username) == null;
     }
 
     @Override
     public boolean isValidUsernameExcludeCurrentId(String username, UUID id) {
-        return accountDao.findByUsernameAndIdNot(username, id) == null;
+        return accountDao.findByUsernameIgnoreCaseAndIdNot(username, id) == null;
     }
 
     @Override
@@ -208,7 +208,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account getActiveAccountByEmail(String email) {
-        return accountDao.findByUsernameAndActive(email, true);
+        return accountDao.findByUsernameIgnoreCaseAndActive(email, true);
     }
 
     @Override
