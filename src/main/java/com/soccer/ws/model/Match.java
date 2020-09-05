@@ -95,7 +95,7 @@ public class Match extends BaseClass {
         this.awayTeam = awayTeam;
     }
 
-    @Column(name = "atGoals")
+    @Column(name = "at_goals")
     public Integer getAtGoals() {
         return atGoals == null ? new Integer(0) : atGoals;
     }
@@ -104,7 +104,7 @@ public class Match extends BaseClass {
         this.atGoals = atGoals;
     }
 
-    @Column(name = "htGoals")
+    @Column(name = "ht_goals")
     public Integer getHtGoals() {
         return htGoals == null ? new Integer(0) : htGoals;
     }

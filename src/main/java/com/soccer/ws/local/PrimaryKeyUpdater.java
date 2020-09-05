@@ -9,6 +9,7 @@ import com.soccer.ws.model.BaseClass;
 import com.soccer.ws.model.Match;
 import com.soccer.ws.model.Poll;
 import com.soccer.ws.persistence.*;
+import org.apache.commons.lang.RandomStringUtils;
 import org.dozer.DozerBeanMapper;
 import org.dozer.DozerConverter;
 import org.dozer.loader.api.BeanMappingBuilder;
@@ -117,10 +118,13 @@ public class PrimaryKeyUpdater {
                 NewAccount o = new NewAccount();
                 mapper.map(e, o);
                 log.info("Extracted account " + o);
-                o.setPassword(jdbcUserDetailsDao.findPasswordByUsername(o.getUsername()));
+                String password = jdbcUserDetailsDao.findPasswordByUsername(o.getUsername());
+                o.setPassword(password == null ? RandomStringUtils.randomAlphanumeric(40) : password);
                 new_New_accountDao.save(o);
             } catch (Exception ex) {
                 log.info("Could not copy account " + e);
+                ex.printStackTrace();
+                throw new RuntimeException(ex);
             }
         });
 
@@ -135,6 +139,8 @@ public class PrimaryKeyUpdater {
                 new_New_seasonDao.save(o);
             } catch (Exception ex) {
                 log.info("Could not copy season " + e);
+                ex.printStackTrace();
+                throw new RuntimeException(ex);
             }
         });
 
@@ -146,6 +152,8 @@ public class PrimaryKeyUpdater {
                 new_New_addressDao.save(o);
             } catch (Exception ex) {
                 log.info("Could not copy address " + e);
+                ex.printStackTrace();
+                throw new RuntimeException(ex);
             }
         });
 
@@ -160,6 +168,7 @@ public class PrimaryKeyUpdater {
                 addresses.stream().filter(a -> a.getAddress().toString().equals(o.getAddress().toString())).findFirst().ifPresent(a -> o.setAddress(a));
                 new_New_teamDao.save(o);
             } catch (Exception ex) {
+                ex.printStackTrace();
                 log.info("Could not copy team " + e);
             }
         });
@@ -177,6 +186,8 @@ public class PrimaryKeyUpdater {
                 new_New_newsDao.save(o);
             } catch (Exception ex) {
                 log.info("Could not copy new " + e);
+                ex.printStackTrace();
+                throw new RuntimeException(ex);
             }
         });
 
@@ -236,8 +247,11 @@ public class PrimaryKeyUpdater {
                     NewGoal goal = new NewGoal();
                     mapper.map(g, goal);
                     g.setMatch(e);
-                    accounts.stream().filter(a -> a.getUsername().equals(g.getScorer().getUsername())).findFirst().ifPresent(goal::setScorer);
-                    accounts.stream().filter(a -> a.getUsername().equals(g.getAssist().getUsername())).findFirst().ifPresent(goal::setAssist);
+
+                    if (g.getScorer() != null)
+                        accounts.stream().filter(a -> a.getUsername().equals(g.getScorer().getUsername())).findFirst().ifPresent(goal::setScorer);
+                    if (g.getAssist() != null)
+                        accounts.stream().filter(a -> a.getUsername().equals(g.getAssist().getUsername())).findFirst().ifPresent(goal::setAssist);
                     return goal;
                 }).collect(Collectors.toSet());
 
@@ -258,6 +272,7 @@ public class PrimaryKeyUpdater {
             } catch (Exception ex) {
                 log.info("Could not copy match " + e);
                 ex.printStackTrace();
+                throw new RuntimeException(ex);
             }
         });
 
