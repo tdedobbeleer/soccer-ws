@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public class JdbcUserDetailsDao implements UserDetailsDao {
-    private static final String FIND_PASSWORD_SQL = "select password from account where username = ?";
+    private static final String FIND_PASSWORD_SQL = "select password from account where lower(username) = lower(?)";
 
     private final JdbcTemplate jdbcTemplate;
 
