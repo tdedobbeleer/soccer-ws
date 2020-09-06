@@ -77,7 +77,7 @@ public class AccountProfile extends BaseClass {
     }
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "adrress_id", insertable = true, updatable = true, nullable = true)
+    @JoinColumn(name = "address_id", insertable = true, updatable = true, nullable = true)
     public Address getAddress() {
         return address;
     }

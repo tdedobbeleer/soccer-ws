@@ -39,7 +39,7 @@ public class Team extends BaseClass {
     @JsonIgnore
     @NotNull
     @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-    @JoinColumn(name = "adrress_id", insertable = true, updatable = true, nullable = false)
+    @JoinColumn(name = "address_id", insertable = true, updatable = true, nullable = false)
     public Address getAddress() {
         return address;
     }
