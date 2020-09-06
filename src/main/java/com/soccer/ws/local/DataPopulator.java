@@ -122,7 +122,7 @@ public class DataPopulator {
 
         matchesService.openMatchDoodle(matchDTO2.getId());
 
-        logger.info("DB population successful");
+        logger.info("DB population succesful");
     }
 
     private AccountDTO register(RegistrationDTO r) {
