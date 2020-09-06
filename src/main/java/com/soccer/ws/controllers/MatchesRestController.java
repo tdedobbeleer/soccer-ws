@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 /**
  * Created by u0090265 on 08/07/16.
@@ -85,7 +86,7 @@ public class MatchesRestController extends AbstractRestController {
     public
     @ResponseBody
     @ApiOperation(value = "Delete match", nickname = "deleteMatch")
-    ResponseEntity deleteMatch(@PathVariable long id) {
+    ResponseEntity deleteMatch(@PathVariable UUID id) {
         matchesService.delete(id);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
@@ -94,7 +95,7 @@ public class MatchesRestController extends AbstractRestController {
     public
     @ResponseBody
     @ApiOperation(value = "Get match", nickname = "getMatch")
-    ResponseEntity<MatchDTO> getMatch(@PathVariable long id) {
+    ResponseEntity<MatchDTO> getMatch(@PathVariable UUID id) {
         Match match = matchesService.get(id);
         return new ResponseEntity<>(DTOConversionHelper.convertMatch(match, isLoggedIn()), HttpStatus.OK);
     }
@@ -103,7 +104,7 @@ public class MatchesRestController extends AbstractRestController {
     public
     @ResponseBody
     @ApiOperation(value = "Get matches for season", nickname = "matchesForSeason")
-    List<MatchDTO> getMatchesForSeason(@PathVariable Long id, Locale locale) {
+    List<MatchDTO> getMatchesForSeason(@PathVariable UUID id, Locale locale) {
         return matchesService.getMatchesForSeason(id, isLoggedIn());
     }
 
@@ -119,7 +120,7 @@ public class MatchesRestController extends AbstractRestController {
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/matches/season/{id}/export")
     @ApiOperation(value = "Export matches for season", nickname = "exportMatches")
-    public ByteResponseDTO getExportMatches(@PathVariable Long id) throws IOException {
+    public ByteResponseDTO getExportMatches(@PathVariable UUID id) throws IOException {
         List<List<String>> csvData = Lists.<List<String>>newArrayList(Lists.newArrayList("Date", "Home team", "Away team", "Home team goals", "Away team goals"));
         matchesService.getMatchesForSeason(id, isLoggedIn()).forEach(m -> {
             csvData.add(Lists.newArrayList(m.getDate(), m.getHomeTeam().getName(), m.getAwayTeam().getName(), m.getHtGoals().toString(), m.getAtGoals().toString()));
@@ -131,7 +132,7 @@ public class MatchesRestController extends AbstractRestController {
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/matches/season/{id}/calendar")
     @ApiOperation(value = "Export matches calendar for season", nickname = "exportMatchesCalendar")
-    public ByteResponseDTO getExportMatchesCal(@PathVariable Long id) throws IOException, ValidationException {
+    public ByteResponseDTO getExportMatchesCal(@PathVariable UUID id) throws IOException, ValidationException {
         final Calendar c = vCalendarService.getMatchesCalendar(id);
         final CalendarOutputter o = new CalendarOutputter();
         final StringWriter writer = new StringWriter();
@@ -141,7 +142,7 @@ public class MatchesRestController extends AbstractRestController {
 
     @RequestMapping(value = "/match/{id}/poll", method = RequestMethod.GET)
     @ApiOperation(value = "Get poll for match", nickname = "MatchPoll")
-    public ResponseEntity<MatchPollDTO> getMatchPoll(@PathVariable Long id) {
+    public ResponseEntity<MatchPollDTO> getMatchPoll(@PathVariable UUID id) {
         Match m = matchesService.get(id);
         if (m == null) throw new ObjectNotFoundException(String.format("Match with id %s not found", id));
         return new ResponseEntity<>(DTOConversionHelper.convertMatchPoll(m, isLoggedIn()), HttpStatus.OK);

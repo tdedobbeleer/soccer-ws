@@ -2,6 +2,8 @@ package com.soccer.ws.dto;
 
 import lombok.*;
 
+import java.util.UUID;
+
 /**
  * Created by u0090265 on 10/06/16.
  */
@@ -12,5 +14,5 @@ import lombok.*;
 @EqualsAndHashCode
 @ToString
 public class BaseClassDTO {
-    private Long id;
+    private UUID id;
 }

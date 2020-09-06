@@ -18,6 +18,7 @@ import org.springframework.context.MessageSource;
 
 import java.util.Locale;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
@@ -213,7 +214,7 @@ public class DoodleServiceImplTest extends JUnitTest {
 
     private Match createTestMatch() {
         Match m = DataFactory.createMatch();
-        m.setId(1L);
+        m.setId(UUID.randomUUID());
         return m;
     }
 

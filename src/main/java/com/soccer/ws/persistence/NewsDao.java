@@ -13,7 +13,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
  * Time: 9:14 AM
  * Remarks: none
  */
-public interface NewsDao extends PagingAndSortingRepository<News, Long>, JpaSpecificationExecutor<News> {
+public interface NewsDao extends PagingAndSortingRepository<News, java.util.UUID>, JpaSpecificationExecutor<News> {
     @Query("select n from News n where n.header like ?1 OR n.content like ?1 order by n.postDate desc")
-    Page<News> getSearch(String term, Pageable pageable);
+    Page<News> findByHeaderOrContent(String term, Pageable pageable);
 }

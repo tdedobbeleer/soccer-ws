@@ -4,6 +4,8 @@ import com.google.common.base.Strings;
 import lombok.*;
 import org.springframework.data.annotation.Transient;
 
+import java.util.UUID;
+
 /**
  * Created by u0090265 on 17.02.17.
  */
@@ -19,7 +21,7 @@ public class AddressDTO extends BaseClassDTO {
     private String city;
     private String googleLink;
 
-    public AddressDTO(Long id, Integer postalCode, String address, String city, String googleLink) {
+    public AddressDTO(UUID id, Integer postalCode, String address, String city, String googleLink) {
         super(id);
         this.postalCode = postalCode;
         this.address = address;

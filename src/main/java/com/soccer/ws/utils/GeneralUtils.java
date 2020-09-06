@@ -21,8 +21,12 @@ public class GeneralUtils {
 
     private static final DateTimeZone defaultTimeZone = DateTimeZone.forID("Europe/Brussels");
 
-    public static long convertToLong(String element) {
+    public static Long convertToLong(String element) {
         return Long.parseLong(element);
+    }
+
+    public static UUID convertToUUID(String element) {
+        return UUID.fromString(element);
     }
 
     public static String generateRandomUUID() {
@@ -69,7 +73,7 @@ public class GeneralUtils {
         return input == null ? "" : input.trim();
     }
 
-    public static void throwObjectNotFoundException(Object o, Long id, Class expectedClass) {
+    public static void throwObjectNotFoundException(Object o, UUID id, Class expectedClass) {
         if (o == null) throw new ObjectNotFoundException(String.format("%s %s not found", expectedClass.getName(), id));
     }
 

@@ -52,7 +52,7 @@ public class PwdRecoveryServiceImpl implements PwdRecoveryService {
     @Override
     @Transactional
     public void deleteExpiredCodes() {
-        List<Account> accounts = accountDao.findByActivationCodeNotNull();
+        List<Account> accounts = accountDao.findAllByPwdRecoveryNotNull();
         DateTime hourAgo = DateTime.now().minusHours(1);
 
         for (Account a : accounts) {
@@ -69,7 +69,7 @@ public class PwdRecoveryServiceImpl implements PwdRecoveryService {
     @Override
     @Transactional
     public void setRecoveryCodeAndEmail(String email, Locale locale) {
-        Account account = accountDao.findByUsername(email);
+        Account account = accountDao.findByUsernameIgnoreCase(email);
         if (account == null) throw new ObjectNotFoundException(String.format("Account with email %s not found", email));
 
         String recoveryHex = getRandomHexString(RECOVERY_LENGTH);
@@ -94,7 +94,7 @@ public class PwdRecoveryServiceImpl implements PwdRecoveryService {
     @Override
     @Transactional
     public void checkPwdRecoverCodeAndEmail(String password, String email, String code) {
-        Account account = accountDao.findByUsername(email);
+        Account account = accountDao.findByUsernameIgnoreCase(email);
         if (account == null) throw new ObjectNotFoundException(String.format("Account with email %s not found", email));
 
         String dbRecoveryCode = getCodeFromDbString(account.getPwdRecovery());
@@ -110,7 +110,7 @@ public class PwdRecoveryServiceImpl implements PwdRecoveryService {
     @Override
     @Transactional
     public boolean isValidRecoveryCode(String email, String code) {
-        Account account = accountDao.findByUsername(email);
+        Account account = accountDao.findByUsernameIgnoreCase(email);
         if (account == null) throw new ObjectNotFoundException(String.format("Account with email %s not found", email));
         String dbRecoveryCode = getCodeFromDbString(account.getPwdRecovery());
         return !(dbRecoveryCode == null || !dbRecoveryCode.equals(code));

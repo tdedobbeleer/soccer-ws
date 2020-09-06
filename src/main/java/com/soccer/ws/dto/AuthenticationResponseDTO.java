@@ -3,6 +3,7 @@ package com.soccer.ws.dto;
 import lombok.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @NoArgsConstructor
 @Getter
@@ -17,7 +18,7 @@ public class AuthenticationResponseDTO extends BaseClassDTO {
     private String lastName;
     private List<String> roles;
 
-    public AuthenticationResponseDTO(String token, long id, String firstName, String lastName, List<String> roles) {
+    public AuthenticationResponseDTO(String token, UUID id, String firstName, String lastName, List<String> roles) {
         super(id);
         this.setToken(token);
         this.setFirstName(firstName);

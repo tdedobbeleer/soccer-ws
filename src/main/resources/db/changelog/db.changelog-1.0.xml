@@ -2,43 +2,18 @@
 <databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
-    <changeSet author="u0090265 (generated)" id="1497185125116-1">
-        <createTable tableName="UserConnection">
-            <column name="userId" type="VARCHAR(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="providerId" type="VARCHAR(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column defaultValue="" name="providerUserId" type="VARCHAR(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="rank" type="INT">
-                <constraints nullable="false"/>
-            </column>
-            <column name="displayName" type="VARCHAR(255)"/>
-            <column name="profileUrl" type="VARCHAR(512)"/>
-            <column name="imageUrl" type="VARCHAR(512)"/>
-            <column name="accessToken" type="VARCHAR(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="secret" type="VARCHAR(255)"/>
-            <column name="refreshToken" type="VARCHAR(255)"/>
-            <column name="expireTime" type="BIGINT"/>
-        </createTable>
-    </changeSet>
     <changeSet author="u0090265 (generated)" id="1497185125116-2">
         <createTable tableName="account">
-            <column autoIncrement="true" name="id" type="BIGINT">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="pk_account"/>
             </column>
-            <column name="activated" type="BIT(1)">
+            <column name="activated" type="BOOLEAN">
                 <constraints nullable="false"/>
             </column>
             <column name="firstname" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>
-            <column name="lastName" type="VARCHAR(255)"/>
+            <column name="lastname" type="VARCHAR(255)"/>
             <column name="password_recovery" type="VARCHAR(255)"/>
             <column name="role" type="VARCHAR(255)"/>
             <column name="sign_in_provider" type="VARCHAR(20)"/>
@@ -46,9 +21,9 @@
                 <constraints nullable="false"/>
             </column>
             <column name="password" type="VARCHAR(255)"/>
-            <column name="send_doodle_notifications" type="BIT(1)"/>
-            <column name="send_news_notifications" type="BIT(1)"/>
-            <column name="profile_id" type="BIGINT"/>
+            <column name="send_doodle_notifications" type="BOOLEAN"/>
+            <column name="send_news_notifications" type="BOOLEAN"/>
+            <column name="profile_id" type="uuid"/>
             <column name="created" type="datetime(6)"/>
             <column name="modified" type="datetime(6)"/>
             <column name="password_last_set" type="datetime(6)"/>
@@ -56,22 +31,22 @@
     </changeSet>
     <changeSet author="u0090265 (generated)" id="1497185125116-3">
         <createTable tableName="account_profile">
-            <column autoIncrement="true" name="id" type="BIGINT">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="pk_account_profile"/>
             </column>
             <column name="content" type="VARCHAR(200)"/>
             <column name="favourite_position" type="VARCHAR(20)"/>
             <column name="mobile_phone" type="VARCHAR(255)"/>
             <column name="phone" type="VARCHAR(255)"/>
-            <column name="adrress_id" type="BIGINT"/>
-            <column name="avatar_id" type="BIGINT"/>
+            <column name="adrress_id" type="uuid"/>
+            <column name="avatar_id" type="uuid"/>
             <column name="created" type="datetime(6)"/>
             <column name="modified" type="datetime(6)"/>
         </createTable>
     </changeSet>
     <changeSet author="u0090265 (generated)" id="1497185125116-4">
         <createTable tableName="address">
-            <column autoIncrement="true" name="id" type="BIGINT">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="pk_address"/>
             </column>
             <column name="address" type="VARCHAR(255)">
@@ -90,7 +65,7 @@
     </changeSet>
     <changeSet author="u0090265 (generated)" id="1497185125116-5">
         <createTable tableName="comment">
-            <column autoIncrement="true" name="id" type="BIGINT">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="pk_comment"/>
             </column>
             <column name="content" type="VARCHAR(255)">
@@ -99,7 +74,7 @@
             <column name="postdate" type="datetime(6)">
                 <constraints nullable="false"/>
             </column>
-            <column name="posted_by" type="BIGINT">
+            <column name="posted_by" type="uuid">
                 <constraints nullable="false"/>
             </column>
             <column name="created" type="datetime(6)"/>
@@ -108,51 +83,45 @@
     </changeSet>
     <changeSet author="u0090265 (generated)" id="1497185125116-6">
         <createTable tableName="comment_news">
-            <column name="id" type="BIGINT">
+            <column name="id" type="uuid">
                 <constraints nullable="false"/>
             </column>
-            <column name="NEWS_ID" type="BIGINT"/>
+            <column name="news_id" type="uuid"/>
         </createTable>
     </changeSet>
     <changeSet author="u0090265 (generated)" id="1497185125116-7">
         <createTable tableName="doodle">
-            <column name="id" type="BIGINT">
+            <column name="id" type="uuid">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
     <changeSet author="u0090265 (generated)" id="1497185125116-8">
         <createTable tableName="goals">
-            <column autoIncrement="true" name="id" type="BIGINT">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="pk_goals"/>
             </column>
             <column name="goal_order" type="INT"/>
-            <column name="assist" type="BIGINT"/>
-            <column name="scorer" type="BIGINT"/>
-            <column name="MATCH_ID" type="BIGINT"/>
+            <column name="assist" type="uuid"/>
+            <column name="scorer" type="uuid"/>
+            <column name="match_id" type="uuid"/>
             <column name="created" type="datetime(6)"/>
             <column name="modified" type="datetime(6)"/>
         </createTable>
     </changeSet>
-    <changeSet author="u0090265 (generated)" id="1497185125116-9">
-        <createTable tableName="hibernate_sequences">
-            <column name="sequence_name" type="VARCHAR(255)"/>
-            <column name="sequence_next_hi_value" type="INT"/>
-        </createTable>
-    </changeSet>
     <changeSet author="u0090265 (generated)" id="1497185125116-10">
         <createTable tableName="identity_option">
-            <column autoIncrement="true" name="id" type="BIGINT">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="pk_identity_options"/>
             </column>
-            <column name="opt" type="BIGINT"/>
+            <column name="opt" type="uuid"/>
             <column name="created" type="datetime(6)"/>
             <column name="modified" type="datetime(6)"/>
         </createTable>
     </changeSet>
     <changeSet author="u0090265 (generated)" id="1497185125116-11">
         <createTable tableName="image">
-            <column autoIncrement="true" name="id" type="BIGINT">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="pk_image"/>
             </column>
             <column name="image_id" type="VARCHAR(255)"/>
@@ -163,28 +132,26 @@
     </changeSet>
     <changeSet author="u0090265 (generated)" id="1497185125116-12">
         <createTable tableName="matches">
-            <column autoIncrement="true" name="id" type="BIGINT">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="pk_matches"/>
             </column>
-            <column name="atGoals" type="INT"/>
             <column name="date" type="datetime(6)">
                 <constraints nullable="false"/>
             </column>
-            <column name="htGoals" type="INT"/>
-            <column name="awayteam_id" type="BIGINT">
+            <column name="awayteam_id" type="uuid">
                 <constraints nullable="false"/>
             </column>
-            <column name="hometeam_id" type="BIGINT">
+            <column name="hometeam_id" type="uuid">
                 <constraints nullable="false"/>
             </column>
-            <column name="news_id" type="BIGINT"/>
-            <column name="season_id" type="BIGINT">
+            <column name="news_id" type="uuid"/>
+            <column name="season_id" type="uuid">
                 <constraints nullable="false"/>
             </column>
-            <column name="doodle_id" type="BIGINT"/>
+            <column name="doodle_id" type="uuid"/>
             <column name="status" type="VARCHAR(20)"/>
             <column name="status_text" type="VARCHAR(255)"/>
-            <column name="motmpoll_id" type="BIGINT"/>
+            <column name="motmpoll_id" type="uuid"/>
             <column name="created" type="datetime(6)"/>
             <column name="modified" type="datetime(6)"/>
             <column name="at_goals" type="INT"/>
@@ -193,27 +160,27 @@
     </changeSet>
     <changeSet author="u0090265 (generated)" id="1497185125116-13">
         <createTable tableName="matches_goals">
-            <column name="matches_id" type="BIGINT">
+            <column name="matches_id" type="uuid">
                 <constraints nullable="false"/>
             </column>
-            <column name="goals_id" type="BIGINT">
+            <column name="goals_id" type="uuid">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
     <changeSet author="u0090265 (generated)" id="1497185125116-14">
         <createTable tableName="multiple_choice_player_vote">
-            <column name="answer" type="BIGINT">
+            <column name="answer" type="uuid">
                 <constraints nullable="false"/>
             </column>
-            <column name="vote_id" type="BIGINT">
+            <column name="vote_id" type="uuid">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
     <changeSet author="u0090265 (generated)" id="1497185125116-15">
         <createTable tableName="news">
-            <column autoIncrement="true" name="id" type="BIGINT">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="pk_news"/>
             </column>
             <column name="content" type="MEDIUMTEXT">
@@ -225,7 +192,7 @@
             <column name="postdate" type="datetime(6)">
                 <constraints nullable="false"/>
             </column>
-            <column name="posted_by" type="BIGINT">
+            <column name="posted_by" type="uuid">
                 <constraints nullable="false"/>
             </column>
             <column name="created" type="datetime(6)"/>
@@ -250,24 +217,24 @@
     </changeSet>
     <changeSet author="u0090265 (generated)" id="1497185125116-17">
         <createTable tableName="players_poll">
-            <column name="poll_id" type="BIGINT">
+            <column name="poll_id" type="uuid">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
     <changeSet author="u0090265 (generated)" id="1497185125116-18">
         <createTable tableName="poll_options">
-            <column name="id" type="BIGINT">
+            <column name="id" type="uuid">
                 <constraints nullable="false"/>
             </column>
-            <column name="options_id" type="BIGINT">
+            <column name="options_id" type="uuid">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
     <changeSet author="u0090265 (generated)" id="1497185125116-19">
         <createTable tableName="polls">
-            <column autoIncrement="true" name="id" type="BIGINT">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="pk_polls"/>
             </column>
             <column name="end_date" type="datetime(6)">
@@ -288,19 +255,19 @@
     </changeSet>
     <changeSet author="u0090265 (generated)" id="1497185125116-20">
         <createTable tableName="presences">
-            <column autoIncrement="true" name="id" type="BIGINT">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="pk_presences"/>
             </column>
-            <column name="present" type="BIT(1)"/>
-            <column name="account_id" type="BIGINT"/>
-            <column name="doodle_id" type="BIGINT"/>
+            <column name="present" type="BOOLEAN"/>
+            <column name="account_id" type="uuid"/>
+            <column name="doodle_id" type="uuid"/>
             <column name="created" type="datetime(6)"/>
             <column name="modified" type="datetime(6)"/>
         </createTable>
     </changeSet>
     <changeSet author="u0090265 (generated)" id="1497185125116-21">
         <createTable tableName="season">
-            <column autoIncrement="true" name="id" type="BIGINT">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="pk_season"/>
             </column>
             <column name="description" type="VARCHAR(255)">
@@ -312,13 +279,13 @@
     </changeSet>
     <changeSet author="u0090265 (generated)" id="1497185125116-22">
         <createTable tableName="teams">
-            <column autoIncrement="true" name="id" type="BIGINT">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="pk_teams"/>
             </column>
             <column name="description" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="adrress_id" type="BIGINT">
+            <column name="adrress_id" type="uuid">
                 <constraints nullable="false"/>
             </column>
             <column name="created" type="datetime(6)"/>
@@ -327,22 +294,18 @@
     </changeSet>
     <changeSet author="u0090265 (generated)" id="1497185125116-23">
         <createTable tableName="vote">
-            <column autoIncrement="true" name="id" type="BIGINT">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="pk_vote"/>
             </column>
-            <column name="poll_id" type="BIGINT">
+            <column name="poll_id" type="uuid">
                 <constraints nullable="false"/>
             </column>
-            <column name="voter" type="BIGINT">
+            <column name="voter" type="uuid">
                 <constraints nullable="false"/>
             </column>
             <column name="created" type="datetime(6)"/>
             <column name="modified" type="datetime(6)"/>
         </createTable>
-    </changeSet>
-    <changeSet author="u0090265 (generated)" id="1497185125116-24">
-        <addPrimaryKey columnNames="userId, providerId, providerUserId" constraintName="pk_userconnection"
-                       tableName="UserConnection"/>
     </changeSet>
     <changeSet author="u0090265 (generated)" id="1497185125116-25">
         <addPrimaryKey columnNames="id" constraintName="pk_comment_news" tableName="comment_news"/>
@@ -374,10 +337,6 @@
     <changeSet author="u0090265 (generated)" id="1497185125116-33">
         <addUniqueConstraint columnNames="doodle_id, account_id" constraintName="UKqhw94jh6l7mhtrpiqwp8jmti4"
                              tableName="presences"/>
-    </changeSet>
-    <changeSet author="u0090265 (generated)" id="1497185125116-34">
-        <addUniqueConstraint columnNames="userId, providerId, rank" constraintName="UserConnectionRank"
-                             tableName="UserConnection"/>
     </changeSet>
     <changeSet author="u0090265 (generated)" id="1497185125116-35">
         <createIndex indexName="FK321E89331132B9DC" tableName="matches">
@@ -466,7 +425,7 @@
     </changeSet>
     <changeSet author="u0090265 (generated)" id="1497185125116-53">
         <createIndex indexName="FK_kvawlyv7wyvvjsnk2iqj87ork" tableName="comment_news">
-            <column name="NEWS_ID"/>
+            <column name="news_id"/>
         </createIndex>
     </changeSet>
     <changeSet author="u0090265 (generated)" id="1497185125116-54">

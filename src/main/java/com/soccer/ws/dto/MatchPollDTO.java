@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by u0090265 on 10/06/16.
@@ -20,9 +21,9 @@ public class MatchPollDTO extends BaseClassDTO {
     private String status;
     private String matchDescription;
     private String matchDate;
-    private Long matchId;
+    private UUID matchId;
 
-    public MatchPollDTO(Long id, Long matchId, List<VotesDTO> votes, List<AccountDTO> accounts, int totalVotes,
+    public MatchPollDTO(UUID id, UUID matchId, List<VotesDTO> votes, List<AccountDTO> accounts, int totalVotes,
                         String status, String matchDescription, String matchDate) {
         this.votes = votes;
         this.totalVotes = totalVotes;

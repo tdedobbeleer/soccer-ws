@@ -8,6 +8,7 @@ import com.soccer.ws.model.Role;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface AccountService {
     AccountDTO register(RegistrationDTO registration);
@@ -15,15 +16,15 @@ public interface AccountService {
     //Account updateAccount(Account account, AccountProfileForm form);
 
     @Transactional(readOnly = false)
-    boolean firstTimeActivation(long id, boolean sendMail);
+    boolean firstTimeActivation(UUID id, boolean sendMail);
 
-    void changeActivation(long id, boolean status);
-
-    @Transactional(readOnly = false)
-    void elevate(long id);
+    void changeActivation(UUID id, boolean status);
 
     @Transactional(readOnly = false)
-    void demote(long id);
+    void elevate(UUID id);
+
+    @Transactional(readOnly = false)
+    void demote(UUID id);
 
     @Transactional(readOnly = false)
     void changeRole(AccountDTO accountDTO, Role role);
@@ -34,13 +35,13 @@ public interface AccountService {
 
     boolean isValidUsername(String email);
 
-    boolean isValidUsernameExcludeCurrentId(String username, Long id);
+    boolean isValidUsernameExcludeCurrentId(String username, UUID id);
 
     @Transactional(readOnly = false)
-    void setPasswordFor(long id, String password);
+    void setPasswordFor(UUID id, String password);
 
     @Transactional(readOnly = false)
-    boolean checkOldPassword(long id, String password);
+    boolean checkOldPassword(UUID id, String password);
 
     @Transactional(readOnly = true)
     boolean passwordIsNullOrEmpty(Account account);
@@ -57,7 +58,7 @@ public interface AccountService {
     @Transactional(readOnly = true)
     Account getAccount(String id);
 
-    Account getAccount(Long id);
+    Account getAccount(UUID id);
 
     Account getActiveAccountByEmail(String email);
 

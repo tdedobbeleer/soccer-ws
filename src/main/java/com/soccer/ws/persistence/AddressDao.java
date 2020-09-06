@@ -7,5 +7,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 /**
  * Created by u0090265 on 9/11/14.
  */
-public interface AddressDao extends PagingAndSortingRepository<Address, Long>, JpaSpecificationExecutor<Address> {
+public interface AddressDao extends PagingAndSortingRepository<Address, java.util.UUID>, JpaSpecificationExecutor<Address> {
 }

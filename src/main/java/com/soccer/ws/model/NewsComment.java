@@ -23,7 +23,7 @@ public class NewsComment extends Comment {
     }
 
     @ManyToOne
-    @JoinColumn(name = "NEWS_ID", referencedColumnName = "ID")
+    @JoinColumn(name = "news_id", referencedColumnName = "id")
     public News getNews() {
         return news;
     }

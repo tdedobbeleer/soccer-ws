@@ -10,6 +10,6 @@ import java.util.List;
 /**
  * Created by u0090265 on 10/1/14.
  */
-public interface PollDao extends PagingAndSortingRepository<Poll, Long>, JpaSpecificationExecutor<Poll> {
+public interface PollDao extends PagingAndSortingRepository<Poll, java.util.UUID>, JpaSpecificationExecutor<Poll> {
     List<Poll> findByStatus(PollStatusEnum pollStatusEnum);
 }

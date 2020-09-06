@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * User: Tom De Dobbeleer
@@ -36,7 +37,7 @@ public class UserDetailsAdapter implements UserDetails {
         return account;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return account.getId();
     }
 

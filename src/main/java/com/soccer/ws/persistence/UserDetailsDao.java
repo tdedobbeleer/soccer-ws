@@ -7,5 +7,5 @@ package com.soccer.ws.persistence;
  * Remarks: none
  */
 public interface UserDetailsDao {
-    String findPasswordByUsername(String email);
+    String findPasswordByUsernameIgnoreCase(String email);
 }

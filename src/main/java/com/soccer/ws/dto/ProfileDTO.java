@@ -3,6 +3,8 @@ package com.soccer.ws.dto;
 import com.soccer.ws.data.PositionsEnum;
 import lombok.*;
 
+import java.util.UUID;
+
 /**
  * Created by u0090265 on 10/06/16.
  */
@@ -22,7 +24,7 @@ public class ProfileDTO extends BaseClassDTO {
     private boolean doodleNotifications;
     private boolean newsNotifications;
 
-    public ProfileDTO(Long id, AccountDTO account, String mobilePhone, String phone, PositionsEnum position, String description, AddressDTO address, ImageDTO image, boolean doodleNotifications, boolean newsNotifications) {
+    public ProfileDTO(UUID id, AccountDTO account, String mobilePhone, String phone, PositionsEnum position, String description, AddressDTO address, ImageDTO image, boolean doodleNotifications, boolean newsNotifications) {
         super(id);
         this.account = account;
         this.mobilePhone = mobilePhone;

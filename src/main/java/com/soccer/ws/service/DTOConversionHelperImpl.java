@@ -10,10 +10,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -91,7 +88,7 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
     public MatchPollDTO convertMatchPoll(Match match, boolean isLoggedIn) {
         PlayersPoll playersPoll = match.getMotmPoll();
         if (playersPoll != null) {
-            RankingList<Long> rankingList = playersPoll.getResult();
+            RankingList<UUID> rankingList = playersPoll.getResult();
             return new MatchPollDTO(playersPoll.getId(), match.getId(),
                     convertIdentityRankings(rankingList, isLoggedIn),
                     convertIdentityOptions(playersPoll.getOptions(), isLoggedIn),
@@ -123,9 +120,9 @@ public class DTOConversionHelperImpl implements DTOConversionHelper {
     }
 
     @Override
-    public List<VotesDTO> convertIdentityRankings(RankingList<Long> rankingList, boolean isLoggedIn) {
+    public List<VotesDTO> convertIdentityRankings(RankingList<UUID> rankingList, boolean isLoggedIn) {
         List<VotesDTO> votes = Lists.newArrayList();
-        for (Ranking<Long> ranking : rankingList.getRankings()) {
+        for (Ranking<UUID> ranking : rankingList.getRankings()) {
             votes.add(new VotesDTO(
                     convertAccount(cacheAdapter.getAccount(ranking.getOption()), isLoggedIn),
                     ranking.getPonts()));

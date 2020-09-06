@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by u0090265 on 10/2/15.
@@ -41,7 +42,7 @@ public class MatchDTO extends BaseClassDTO {
     @ApiModelProperty(value = "Goals of this match, ordered", name = "goals")
     private List<GoalDTO> goals;
 
-    public MatchDTO(Long id, String date, String hour, TeamDTO homeTeam, TeamDTO awayTeam, Integer atGoals, Integer
+    public MatchDTO(UUID id, String date, String hour, TeamDTO homeTeam, TeamDTO awayTeam, Integer atGoals, Integer
             htGoals, MatchStatusEnum status, MatchPollDTO matchPollDTO, List<GoalDTO> goals, AddressDTO
                             address, String statusText, boolean hasDoodle, SeasonDTO season) {
         super(id);
@@ -60,7 +61,7 @@ public class MatchDTO extends BaseClassDTO {
         this.address = address;
     }
 
-    public MatchDTO(Long id, String date, String hour, TeamDTO homeTeam, TeamDTO awayTeam, Integer atGoals, Integer
+    public MatchDTO(UUID id, String date, String hour, TeamDTO homeTeam, TeamDTO awayTeam, Integer atGoals, Integer
             htGoals, SeasonDTO season) {
         super(id);
         this.date = date;

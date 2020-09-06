@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static java.util.Optional.empty;
 
@@ -49,7 +50,7 @@ public class PollRestController extends AbstractRestController {
     @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/poll/{id}/reset", method = RequestMethod.PUT)
     @ApiOperation(value = "Reset match poll", nickname = "resetMatchPoll")
-    public ResponseEntity resetPoll(@PathVariable Long id) {
+    public ResponseEntity resetPoll(@PathVariable UUID id) {
         pollService.reset(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -57,7 +58,7 @@ public class PollRestController extends AbstractRestController {
     @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/matchPoll/match/{id}/refresh", method = RequestMethod.PUT)
     @ApiOperation(value = "Refresh match poll", nickname = "refreshMatchPoll")
-    public ResponseEntity<List<AccountDTO>> refreshMatchPoll(@PathVariable Long id) {
+    public ResponseEntity<List<AccountDTO>> refreshMatchPoll(@PathVariable UUID id) {
         return new ResponseEntity<>(DTOConversionHelper.convertIdentityOptions(pollService.refreshPlayerOptions(id),
                 isLoggedIn()), HttpStatus.OK);
     }
@@ -72,8 +73,8 @@ public class PollRestController extends AbstractRestController {
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/matchPoll/{id}/vote", method = RequestMethod.POST)
     @ApiOperation(value = "Vote", nickname = "matchPollVote")
-    public ResponseEntity<MultipleChoiceVoteDTO<Long>> postMatchPoll(@PathVariable Long id, @RequestBody
-    MultipleChoiceVoteDTO<Long>
+    public ResponseEntity<MultipleChoiceVoteDTO<Long>> postMatchPoll(@PathVariable UUID id, @RequestBody
+            MultipleChoiceVoteDTO<UUID>
             vote) {
         logger.debug(vote.toString());
         Account account = getAccountFromSecurity();

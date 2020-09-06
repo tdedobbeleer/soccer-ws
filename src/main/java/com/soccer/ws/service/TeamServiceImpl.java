@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by u0090265 on 5/10/14.
@@ -47,20 +48,20 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public boolean teamExists(String name) {
-        return teamDao.getTeamByName(name) != null;
+        return teamDao.findOneByName(name) != null;
     }
 
     @Override
-    public boolean teamExistsExcludeId(final String name, final long id) {
-        final Team team = teamDao.getTeamByName(name);
-        if ( team != null) {
+    public boolean teamExistsExcludeId(final String name, final UUID id) {
+        final Team team = teamDao.findOneByName(name);
+        if (team != null) {
             return !team.getId().equals(id);
         }
         return false;
     }
 
     @Override
-    public Team get(long id) {
+    public Team get(UUID id) {
         return teamDao.findById(id).orElse(null);
     }
 
@@ -109,7 +110,7 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     @Transactional(readOnly = false)
-    public boolean delete(long id, Account a) {
+    public boolean delete(UUID id, Account a) {
         Team team = teamDao.findById(id).orElse(null);
         if (team == null) return true;
         if (!matchesDao.getMatchesForTeam(team).isEmpty()) {

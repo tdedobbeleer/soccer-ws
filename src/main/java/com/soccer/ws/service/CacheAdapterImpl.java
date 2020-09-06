@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -33,12 +34,12 @@ public class CacheAdapterImpl implements CacheAdapter {
 
     private final AccountDao accountDao;
 
-    private Cache<Long, Account> accountCache =
-            new Cache2kBuilder<Long, Account>() {
+    private Cache<UUID, Account> accountCache =
+            new Cache2kBuilder<UUID, Account>() {
             }
-                    .loader(new CacheLoader<Long, Account>() {
+                    .loader(new CacheLoader<UUID, Account>() {
                         @Override
-                        public Account load(Long l) throws Exception {
+                        public Account load(UUID l) throws Exception {
                             return accountDao.findById(l).orElse(null);
                         }
                     })
@@ -91,7 +92,7 @@ public class CacheAdapterImpl implements CacheAdapter {
     }
 
     @Override
-    public Account getAccount(Long l) {
+    public Account getAccount(UUID l) {
         return accountCache.get(l);
     }
 
@@ -101,13 +102,13 @@ public class CacheAdapterImpl implements CacheAdapter {
     }
 
     @Override
-    public List<MatchDTO> getMatchesForSeason(final long seasonId, final boolean isLoggedIn) {
+    public List<MatchDTO> getMatchesForSeason(final UUID seasonId, final boolean isLoggedIn) {
         log.debug("Getting matchActionWrappers");
         return matchesCache.get(new Parameters(seasonId, isLoggedIn));
     }
 
     @Override
-    public List<AccountStatisticDTO> getStatisticsForSeason(final long seasonId, final boolean isLoggedIn) {
+    public List<AccountStatisticDTO> getStatisticsForSeason(final UUID seasonId, final boolean isLoggedIn) {
         log.debug("Getting account statistics");
         return statisticsCache.get(new Parameters(seasonId, isLoggedIn));
     }
@@ -125,10 +126,10 @@ public class CacheAdapterImpl implements CacheAdapter {
     }
 
     private class Parameters {
-        private final long seasonId;
+        private final UUID seasonId;
         private final boolean isLoggedIn;
 
-        Parameters(long seasonId, boolean isLoggedIn) {
+        Parameters(UUID seasonId, boolean isLoggedIn) {
             this.seasonId = seasonId;
             this.isLoggedIn = isLoggedIn;
         }
@@ -146,7 +147,7 @@ public class CacheAdapterImpl implements CacheAdapter {
 
         @Override
         public int hashCode() {
-            int result = (int) (seasonId ^ (seasonId >>> 32));
+            int result = seasonId.hashCode();
             result = 31 * result + (isLoggedIn ? 1 : 0);
             return result;
         }

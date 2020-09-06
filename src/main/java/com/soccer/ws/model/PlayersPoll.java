@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import javax.persistence.*;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Created by u0090265 on 29/05/16.
@@ -14,7 +15,7 @@ import java.util.Set;
 @Entity
 @Table(name = "players_poll")
 @PrimaryKeyJoinColumn(name = "poll_id", referencedColumnName = "id")
-public class PlayersPoll extends Poll<Long> implements MultipleChoicePoll<Long> {
+public class PlayersPoll extends Poll<UUID> implements MultipleChoicePoll<UUID> {
     private Set<IdentityOption> options;
     private Set<MultipleChoicePlayerVote> votes;
 
@@ -28,7 +29,7 @@ public class PlayersPoll extends Poll<Long> implements MultipleChoicePoll<Long> 
         for (final MultipleChoicePlayerVote element : getVotes()) {
             //If the vote already exists, replace answer
             if (element.getVoter().equals(vote.getVoter())) {
-                element.setAnswer((Long) vote.getAnswer());
+                element.setAnswer((UUID) vote.getAnswer());
                 updated = true;
             }
         }
@@ -68,13 +69,13 @@ public class PlayersPoll extends Poll<Long> implements MultipleChoicePoll<Long> 
 
     @Override
     @Transient
-    public RankingList<Long> getResult() {
-        List<Ranking<Long>> rankings = Lists.newArrayList();
+    public RankingList<UUID> getResult() {
+        List<Ranking<UUID>> rankings = Lists.newArrayList();
         int totalVotes = 0;
-        for (Option<Long> p : options) {
+        for (Option<UUID> p : options) {
             Ranking r = new Ranking();
             r.setOption(p.getOption());
-            for (Vote<Long> v : votes) {
+            for (Vote<UUID> v : votes) {
                 if (v.getAnswer().equals(p.getOption())) {
                     r.setPoints(r.getPonts() + 1);
                     totalVotes++;

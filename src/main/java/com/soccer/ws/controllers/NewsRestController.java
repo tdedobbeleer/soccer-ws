@@ -24,6 +24,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.UUID;
 
 /**
  * Created by u0090265 on 16/09/16.
@@ -98,7 +99,7 @@ public class NewsRestController extends AbstractRestController {
 
     @RequestMapping(value = "/news/{id}", method = RequestMethod.GET)
     @ApiOperation(value = "Get news", nickname = "getNews")
-    public ResponseEntity<NewsDTO> getNews(@PathVariable Long id) {
+    public ResponseEntity<NewsDTO> getNews(@PathVariable UUID id) {
         News news = newsService.getNewsItem(id);
         return new ResponseEntity<>(dtoConversionHelper.convertNews(getAccountFromSecurity(), news, isAdmin()),
                 HttpStatus.OK);
@@ -107,7 +108,7 @@ public class NewsRestController extends AbstractRestController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/news/{id}", method = RequestMethod.DELETE)
     @ApiOperation(value = "Delete news", nickname = "deleteNews")
-    public ResponseEntity deleteNews(@PathVariable Long id) {
+    public ResponseEntity deleteNews(@PathVariable UUID id) {
         newsService.deleteNews(id, getAccountFromSecurity());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

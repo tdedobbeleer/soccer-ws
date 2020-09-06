@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 /**
  * Created by u0090265 on 08/07/16.
  */
@@ -20,7 +22,7 @@ public class SeasonDTO extends BaseClassDTO {
         this.description = description;
     }
 
-    public SeasonDTO(Long id, String description) {
+    public SeasonDTO(UUID id, String description) {
         super(id);
         this.description = description;
     }

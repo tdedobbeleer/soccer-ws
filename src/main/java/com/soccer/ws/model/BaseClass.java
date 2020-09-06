@@ -2,17 +2,17 @@ package com.soccer.ws.model;
 
 import com.soccer.ws.utils.GeneralUtils;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 /**
  * Created by u0090265 on 08/06/16.
  */
 @MappedSuperclass
 public class BaseClass {
-    protected Long id;
+    protected UUID id;
     private DateTime created;
     private DateTime modified;
 
@@ -26,20 +26,17 @@ public class BaseClass {
     }
 
     @Id
-    @GeneratedValue(generator = "sequence-generator")
+    @GeneratedValue(generator = "UUID")
     @GenericGenerator(
-            name = "sequence-generator",
-            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
-            parameters = {
-                    @Parameter(name = "sequence_name", value = "hibernate_sequences")
-            }
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
     )
     @Column(name = "id")
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

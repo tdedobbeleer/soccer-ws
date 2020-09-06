@@ -19,11 +19,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by u0090265 on 16/09/16.
@@ -56,7 +56,7 @@ public class TeamsRestController extends AbstractRestController {
 
     @RequestMapping(value = "/teams/{id}", method = RequestMethod.GET)
     @ApiOperation(value = "Get team by id", nickname = "getTeam")
-    public ResponseEntity<TeamDTO> getTeam(@PathVariable long id) {
+    public ResponseEntity<TeamDTO> getTeam(@PathVariable UUID id) {
         return new ResponseEntity<>(dtoConversionHelper.convertTeam(teamService.get(id), isLoggedIn()), HttpStatus.OK);
     }
 
@@ -81,7 +81,7 @@ public class TeamsRestController extends AbstractRestController {
     @RequestMapping(value = "/teams/{id}",
             method = RequestMethod.DELETE)
     @ApiOperation(value = "Delete a team", nickname = "deleteTeam")
-    public ResponseEntity deleteTeam(@PathVariable long id) {
+    public ResponseEntity deleteTeam(@PathVariable UUID id) {
         if (!teamService.delete(id, getAccountFromSecurity())) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
