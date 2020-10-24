@@ -26,6 +26,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -158,6 +161,16 @@ public class NewsServiceImpl implements NewsService {
             return newsDao.findByHeaderOrContent("%" + sanitizeHtml(term.get()) + "%", PageRequest.of(start, pageSize, s));
         }
         return newsDao.findAll((PageRequest.of(start, pageSize, s)));
+    }
+
+    @Override
+    public Page<News> getLatestPagedNews(Optional<String> term, int start, int pageSize, Optional<Sort> sort) {
+        Sort s = sort.isPresent() ? sort.get() : Sort.by(Sort.Direction.DESC, "postDate");
+        Date date = new Date(Instant.now().minus(14, ChronoUnit.DAYS).toEpochMilli());
+        if (term.isPresent()) {
+            return newsDao.findByHeaderOrContentPostDateAfter("%" + sanitizeHtml(term.get()) + "%", date, PageRequest.of(start, pageSize, s));
+        }
+        return newsDao.findByPostDateAfterOrderByPostDateDesc((PageRequest.of(start, pageSize, s)), date);
     }
 
     @Override

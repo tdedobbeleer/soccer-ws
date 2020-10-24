@@ -58,6 +58,15 @@ public class NewsRestController extends AbstractRestController {
                 HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/news/latest", method = RequestMethod.GET)
+    @ApiOperation(value = "Get latest news", nickname = "getLatestNews")
+    public ResponseEntity<PageDTO<NewsDTO>> getLatestNewsPage(@RequestParam(required = false) String searchTerm, @RequestParam int page, @RequestParam(required =
+            false) int size) {
+        Page<News> news = newsService.getLatestPagedNews(Optional.fromNullable(searchTerm), page, size, Optional.absent());
+        return new ResponseEntity<>(dtoConversionHelper.convertNewsPage(getAccountFromSecurity(), news, isAdmin()),
+                HttpStatus.OK);
+    }
+
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/news", method = RequestMethod.POST)
     @ApiOperation(value = "Post news", nickname = "postNews")

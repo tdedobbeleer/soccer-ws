@@ -43,6 +43,8 @@ public interface NewsService {
 
     Page<News> getPagedNews(Optional<String> term, int start, int pageSize, Optional<Sort> sort);
 
+    Page<News> getLatestPagedNews(Optional<String> term, int start, int pageSize, Optional<Sort> sort);
+
     int getNewsCount();
 
     @Transactional

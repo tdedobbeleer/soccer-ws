@@ -65,7 +65,7 @@ public class PollRestController extends AbstractRestController {
 
     @RequestMapping(value = "/matchPoll/{id}", method = RequestMethod.GET)
     @ApiOperation(value = "Get match poll by id", nickname = "getMatchPollById")
-    public ResponseEntity<MatchPollDTO> getMatchPoll(@PathVariable Long id) {
+    public ResponseEntity<MatchPollDTO> getMatchPoll(@PathVariable UUID id) {
         return new ResponseEntity<>(DTOConversionHelper.convertMatchPoll(matchesService.getMatchByPoll(id),
                 isLoggedIn()), HttpStatus.OK);
     }

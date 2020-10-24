@@ -14,6 +14,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Created by u0090265 on 5/3/14.
@@ -37,7 +38,7 @@ public interface MatchesDao extends PagingAndSortingRepository<Match, java.util.
 
     Page<Match> findByMotmPollNotNull(Pageable pageable);
 
-    Optional<Match> findByMotmPollId(long pollId);
+    Optional<Match> findByMotmPollId(UUID pollId);
 
     Optional<Match> findByMatchDoodle(Doodle doodle);
 
