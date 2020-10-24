@@ -89,7 +89,7 @@ public class MatchesServiceImpl implements MatchesService {
     }
 
     @Override
-    public Match getMatchByPoll(long pollId) {
+    public Match getMatchByPoll(UUID pollId) {
         java.util.Optional<Match> m = matchesDao.findByMotmPollId(pollId);
         if (m.isPresent()) {
             return m.get();
