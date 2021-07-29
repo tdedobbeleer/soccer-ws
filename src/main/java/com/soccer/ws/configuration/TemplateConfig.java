@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.spring5.SpringTemplateEngine;
+import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
@@ -25,13 +26,13 @@ public class TemplateConfig {
     }
 
     private ITemplateResolver htmlTemplateResolver() {
-        final ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+        final SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
         templateResolver.setOrder(1);
         templateResolver.setSuffix(".html");
         templateResolver.setPrefix("/templates/");
-        templateResolver.setTemplateMode("html");
+        templateResolver.setTemplateMode("HTML5");
         templateResolver.setCharacterEncoding(EMAIL_TEMPLATE_ENCODING);
-        templateResolver.setCacheable(false);
+        templateResolver.setCacheable(true);
         return templateResolver;
     }
 }
