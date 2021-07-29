@@ -1,11 +1,10 @@
 package com.soccer.ws.configuration;
 
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.thymeleaf.spring5.SpringTemplateEngine;
-import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 /**
  * Created by u0090265 on 13.10.17.
@@ -13,21 +12,14 @@ import org.thymeleaf.templatemode.TemplateMode;
 @Configuration
 public class TemplateConfig {
 
-    private final ApplicationContext applicationContext;
-
     private static final String EMAIL_TEMPLATE_ENCODING = "UTF-8";
 
-    public TemplateConfig(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
-
     @Bean
-    public SpringResourceTemplateResolver htmlTemplateResolver() {
+    public ClassLoaderTemplateResolver htmlTemplateResolver() {
         // SpringResourceTemplateResolver automatically integrates with Spring's own
         // resource resolution infrastructure, which is highly recommended.
-        SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
+        ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
         templateResolver.setOrder(1);
-        templateResolver.setApplicationContext(this.applicationContext);
         templateResolver.setPrefix("/templates/");
         templateResolver.setCharacterEncoding(EMAIL_TEMPLATE_ENCODING);
         templateResolver.setSuffix(".html");
@@ -42,15 +34,8 @@ public class TemplateConfig {
 
     @Bean
     public SpringTemplateEngine emailTemplateEngine() {
-        // SpringTemplateEngine automatically applies SpringStandardDialect and
-        // enables Spring's own MessageSource message resolution mechanisms.
         SpringTemplateEngine templateEngine = new SpringTemplateEngine();
         templateEngine.setTemplateResolver(htmlTemplateResolver());
-        // Enabling the SpringEL compiler with Spring 4.2.4 or newer can
-        // speed up execution in most scenarios, but might be incompatible
-        // with specific cases when expressions in one template are reused
-        // across different data types, so this flag is "false" by default
-        // for safer backwards compatibility.
         templateEngine.setEnableSpringELCompiler(true);
         return templateEngine;
     }

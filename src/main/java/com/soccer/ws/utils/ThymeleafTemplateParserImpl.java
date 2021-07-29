@@ -1,6 +1,7 @@
 package com.soccer.ws.utils;
 
 import com.soccer.ws.data.MailTypeEnum;
+import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
@@ -10,6 +11,7 @@ import java.util.Map;
 /**
  * Created by u0090265 on 14.10.17.
  */
+@Component
 public class ThymeleafTemplateParserImpl implements TemplateParser {
     private final TemplateEngine templateEngine;
 
