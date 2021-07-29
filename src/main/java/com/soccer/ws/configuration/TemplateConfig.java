@@ -30,7 +30,7 @@ public class TemplateConfig {
         templateResolver.setOrder(1);
         templateResolver.setSuffix(".html");
         templateResolver.setPrefix("/templates/");
-        templateResolver.setTemplateMode("HTML5");
+        templateResolver.setTemplateMode("HTML");
         templateResolver.setCharacterEncoding(EMAIL_TEMPLATE_ENCODING);
         templateResolver.setCacheable(true);
         return templateResolver;
