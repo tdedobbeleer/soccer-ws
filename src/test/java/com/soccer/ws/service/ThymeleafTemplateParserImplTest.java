@@ -7,6 +7,7 @@ import com.soccer.ws.data.MailTypeEnum;
 import com.soccer.ws.model.Account;
 import com.soccer.ws.model.News;
 import com.soccer.ws.utils.Constants;
+import com.soccer.ws.utils.ThymeleafTemplateParserImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.thymeleaf.TemplateEngine;

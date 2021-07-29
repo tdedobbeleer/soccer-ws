@@ -10,6 +10,7 @@ public enum MailTypeEnum {
     DOODLE_OPEN("doodle-open"),
     DOODLE_RESERVE("doodle-reserve"),
     MESSAGE("message"),
+    TEST("test"),
     PASSWORD_RECOVERY("password-recovery");
 
     private String value;

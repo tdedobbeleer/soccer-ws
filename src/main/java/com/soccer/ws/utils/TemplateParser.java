@@ -1,4 +1,4 @@
-package com.soccer.ws.service;
+package com.soccer.ws.utils;
 
 import com.soccer.ws.data.MailTypeEnum;
 

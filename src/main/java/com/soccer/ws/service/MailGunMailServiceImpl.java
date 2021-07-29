@@ -1,6 +1,7 @@
 package com.soccer.ws.service;
 
 import com.soccer.ws.data.MailTypeEnum;
+import com.soccer.ws.utils.TemplateParser;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
