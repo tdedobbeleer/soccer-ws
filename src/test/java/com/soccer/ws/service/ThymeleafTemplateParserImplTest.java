@@ -7,8 +7,10 @@ import com.soccer.ws.data.MailTypeEnum;
 import com.soccer.ws.model.Account;
 import com.soccer.ws.model.News;
 import com.soccer.ws.utils.Constants;
+import com.soccer.ws.utils.ThymeleafTemplateParserImpl;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.context.support.StaticApplicationContext;
 import org.thymeleaf.TemplateEngine;
 
 import java.util.UUID;
@@ -20,7 +22,7 @@ import static com.soccer.ws.utils.Constants.EMAIL_BASE_URL_VARIABLE;
  * Created by u0090265 on 14.10.17.
  */
 public class ThymeleafTemplateParserImplTest {
-    private static final TemplateEngine templateEngine = new TemplateConfig().emailTemplateEngine();
+    private static final TemplateEngine templateEngine = new TemplateConfig(new StaticApplicationContext()).emailTemplateEngine();
     private static final Account account = DataFactory.createAccount();
     private static final String baseUrl = "https://base.com";
 

@@ -2,6 +2,7 @@ package com.soccer.ws.service;
 
 import com.google.common.collect.Lists;
 import com.soccer.ws.data.MailTypeEnum;
+import com.soccer.ws.utils.TemplateParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
