@@ -4,6 +4,7 @@ import com.soccer.ws.dto.AccountDTO;
 import com.soccer.ws.dto.PasswordDTO;
 import com.soccer.ws.exceptions.CustomMethodArgumentNotValidException;
 import com.soccer.ws.service.AccountService;
+import com.soccer.ws.service.CacheAdapter;
 import com.soccer.ws.service.DTOConversionHelper;
 import com.soccer.ws.utils.SecurityUtils;
 import com.soccer.ws.validators.PasswordDTOValidator;
@@ -28,13 +29,15 @@ public class AccountRestController extends AbstractRestController {
     private final AccountService accountService;
     private final DTOConversionHelper dtoConversionHelper;
     private final PasswordDTOValidator passwordDTOValidator;
+    private final CacheAdapter cacheAdapter;
 
     @Autowired
-    public AccountRestController(SecurityUtils securityUtils, MessageSource messageSource, AccountService accountService, DTOConversionHelper dtoConversionHelper, PasswordDTOValidator passwordDTOValidator) {
+    public AccountRestController(SecurityUtils securityUtils, MessageSource messageSource, AccountService accountService, DTOConversionHelper dtoConversionHelper, PasswordDTOValidator passwordDTOValidator, CacheAdapter cacheAdapter) {
         super(securityUtils, messageSource);
         this.accountService = accountService;
         this.dtoConversionHelper = dtoConversionHelper;
         this.passwordDTOValidator = passwordDTOValidator;
+        this.cacheAdapter = cacheAdapter;
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -59,6 +62,8 @@ public class AccountRestController extends AbstractRestController {
     @ApiOperation(value = "Change activation status", nickname = "changeActivation")
     public ResponseEntity changeActivation(@PathVariable UUID id, @RequestParam boolean status) {
         accountService.changeActivation(id, status);
+        //reset cache in order to show account everywhere
+        cacheAdapter.reset();
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
@@ -70,6 +75,8 @@ public class AccountRestController extends AbstractRestController {
         if (!accountService.firstTimeActivation(id, sendMail)) {
             return new ResponseEntity(HttpStatus.PRECONDITION_FAILED);
         }
+        //reset cache in order to show account everywhere
+        cacheAdapter.reset();
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 

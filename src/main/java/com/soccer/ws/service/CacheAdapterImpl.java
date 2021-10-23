@@ -121,8 +121,21 @@ public class CacheAdapterImpl implements CacheAdapter {
 
     @Override
     public void resetMatchesCache() {
-        log.debug("resetMatchesCache - reset");
+        log.debug("resetCache - matches");
         matchesCache.removeAll();
+    }
+
+    @Override
+    public void resetAccountsCache() {
+        log.debug("resetCache - accounts");
+        accountCache.removeAll();
+    }
+
+    @Override
+    public void reset() {
+        resetMatchesCache();
+        resetStatisticsCache();
+        resetAccountsCache();
     }
 
     private class Parameters {

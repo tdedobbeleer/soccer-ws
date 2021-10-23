@@ -22,4 +22,8 @@ public interface CacheAdapter {
     void resetStatisticsCache();
 
     void resetMatchesCache();
+
+    void resetAccountsCache();
+
+    void reset();
 }
