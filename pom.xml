@@ -14,7 +14,8 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.5.6</version>
+        <version>2.6.1</version>
+
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -25,6 +26,8 @@
         <org.springsocial-version>1.1.4.RELEASE</org.springsocial-version>
         <io.springfox.version>2.9.2</io.springfox.version>
         <mainClass>com.soccer.WsApplication</mainClass>
+        <!-- only to avoid bug in  2.14.0 - Remove when updating spring-->
+        <log4j2.version>2.15.0</log4j2.version>
     </properties>
 
     <dependencies>
