@@ -27,7 +27,7 @@
         <io.springfox.version>2.9.2</io.springfox.version>
         <mainClass>com.soccer.WsApplication</mainClass>
         <!-- only to avoid bug in  2.14.0 - Remove when updating spring-->
-        <log4j2.version>2.15.0</log4j2.version>
+        <log4j2.version>2.16.0</log4j2.version>
     </properties>
 
     <dependencies>
