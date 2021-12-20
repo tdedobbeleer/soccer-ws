@@ -132,10 +132,17 @@ public class CacheAdapterImpl implements CacheAdapter {
     }
 
     @Override
+    public void resetActiveAccountsCache() {
+        log.debug("resetCache - active accounts");
+        activeAccountCache.removeAll();
+    }
+
+    @Override
     public void reset() {
         resetMatchesCache();
         resetStatisticsCache();
         resetAccountsCache();
+        resetActiveAccountsCache();
     }
 
     private class Parameters {

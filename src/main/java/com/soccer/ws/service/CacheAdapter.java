@@ -25,5 +25,7 @@ public interface CacheAdapter {
 
     void resetAccountsCache();
 
+    void resetActiveAccountsCache();
+
     void reset();
 }
