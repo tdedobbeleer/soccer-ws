@@ -33,12 +33,14 @@ public class MailGunMailServiceImpl extends AbstractMailService {
 
     @Autowired
     public MailGunMailServiceImpl(TemplateParser templateParser,
+                                  CacheAdapter cacheAdapter,
                                   @Value("${mail.admin.fromTo}") String defaultAdminFromTo,
                                   @Value("${mail.admin.name}") String defaultAdminName,
                                   @Value("${mail.admin.subject}") String defaultAdminSubject,
                                   @Value("${mailgun.api.key}") String apiKey,
-                                  @Value("${mailgun.api.url}") String apiUrl) {
-        super(defaultAdminFromTo, defaultAdminName, defaultAdminSubject);
+                                  @Value("${mailgun.api.url}") String apiUrl
+    ) {
+        super(defaultAdminFromTo, defaultAdminName, defaultAdminSubject, cacheAdapter);
         this.templateParser = templateParser;
         this.apiKey = apiKey;
         this.apiUrl = apiUrl;

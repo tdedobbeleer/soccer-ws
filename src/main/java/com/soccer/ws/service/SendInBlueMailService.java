@@ -27,12 +27,13 @@ public class SendInBlueMailService extends AbstractMailService {
     private final TemplateParser templateParser;
 
     @Autowired
-    public SendInBlueMailService(@Value("${sendinblue.api.key}") String apiKey,
+    public SendInBlueMailService(CacheAdapter cacheAdapter,
+                                 TemplateParser templateParser,
+                                 @Value("${sendinblue.api.key}") String apiKey,
                                  @Value("${mail.admin.fromTo}") String defaultAdminFromTo,
                                  @Value("${mail.admin.name}") String defaultAdminName,
-                                 @Value("${mail.admin.subject}") String defaultAdminSubject,
-                                 TemplateParser templateParser) {
-        super(defaultAdminFromTo, defaultAdminName, defaultAdminSubject);
+                                 @Value("${mail.admin.subject}") String defaultAdminSubject) {
+        super(defaultAdminFromTo, defaultAdminName, defaultAdminSubject, cacheAdapter);
         this.templateParser = templateParser;
         ((ApiKeyAuth) Configuration.getDefaultApiClient().getAuthentication("api-key")).setApiKey(apiKey);
     }
