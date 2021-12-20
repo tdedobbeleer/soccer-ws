@@ -25,10 +25,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -44,19 +42,17 @@ public class AccountServiceImpl implements AccountService {
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final PasswordEncoder passwordEncoder;
     private final ImageService imageService;
-    private final DTOConversionHelper dtoConversionHelper;
     @Value("${base.url}")
     private String baseUrl;
 
     @Autowired
-    public AccountServiceImpl(MessageSource messageSource, AccountDao accountDao, MailService mailService, NamedParameterJdbcTemplate jdbcTemplate, PasswordEncoder passwordEncoder, ImageService imageService, DTOConversionHelper dtoConversionHelper) {
+    public AccountServiceImpl(MessageSource messageSource, AccountDao accountDao, MailService mailService, NamedParameterJdbcTemplate jdbcTemplate, PasswordEncoder passwordEncoder, ImageService imageService) {
         this.messageSource = messageSource;
         this.accountDao = accountDao;
         this.mailService = mailService;
         this.jdbcTemplate = jdbcTemplate;
         this.passwordEncoder = passwordEncoder;
         this.imageService = imageService;
-        this.dtoConversionHelper = dtoConversionHelper;
     }
 
     @Override
@@ -68,7 +64,9 @@ public class AccountServiceImpl implements AccountService {
                 .username(registration.getEmail())
                 .build();
         Account result = createAccount(toBeCreated);
-        mailService.sendPreConfiguredMail(MailTypeEnum.REGISTRATION, ImmutableMap.of(Constants
+        //send an email to the Admins
+        Map<String, String> admins = accountDao.findAllByActive(true).stream().filter(a -> a.getRole().equals(Role.ADMIN)).collect(Collectors.toMap(Account::getUsername, Account::getFullName));
+        mailService.sendPreConfiguredMail(admins, MailTypeEnum.REGISTRATION, ImmutableMap.of(Constants
                 .EMAIL_ACCOUNT_VARIABLE, result, Constants.EMAIL_BASE_URL_VARIABLE, baseUrl));
         return new AccountDTO(result.getId(), result.getUsername(), result.getFirstName(), result.getLastName(), result.getRole().name(), result.isActive());
     }

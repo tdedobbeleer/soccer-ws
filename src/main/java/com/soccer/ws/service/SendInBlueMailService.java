@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import sendinblue.ApiException;
@@ -21,19 +22,19 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@Lazy
 @Profile("!default")
 public class SendInBlueMailService extends AbstractMailService {
     private static final Logger logger = LoggerFactory.getLogger(SendInBlueMailService.class);
     private final TemplateParser templateParser;
 
     @Autowired
-    public SendInBlueMailService(CacheAdapter cacheAdapter,
-                                 TemplateParser templateParser,
+    public SendInBlueMailService(TemplateParser templateParser,
                                  @Value("${sendinblue.api.key}") String apiKey,
                                  @Value("${mail.admin.fromTo}") String defaultAdminFromTo,
                                  @Value("${mail.admin.name}") String defaultAdminName,
                                  @Value("${mail.admin.subject}") String defaultAdminSubject) {
-        super(defaultAdminFromTo, defaultAdminName, defaultAdminSubject, cacheAdapter);
+        super(defaultAdminFromTo, defaultAdminName, defaultAdminSubject);
         this.templateParser = templateParser;
         ((ApiKeyAuth) Configuration.getDefaultApiClient().getAuthentication("api-key")).setApiKey(apiKey);
     }

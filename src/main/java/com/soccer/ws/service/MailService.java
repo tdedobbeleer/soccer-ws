@@ -16,5 +16,5 @@ public interface MailService {
 
     boolean sendMail(String to, String name, String subject, MailTypeEnum type, Map<String, Object> propertyMap);
 
-    void sendPreConfiguredMail(MailTypeEnum type, Map<String, Object> propertyMap);
+    void sendPreConfiguredMail(Map<String, String> admins, MailTypeEnum type, Map<String, Object> propertyMap);
 }

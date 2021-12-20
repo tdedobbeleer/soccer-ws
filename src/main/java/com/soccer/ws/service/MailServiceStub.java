@@ -49,7 +49,7 @@ public class MailServiceStub implements MailService {
     }
 
     @Override
-    public void sendPreConfiguredMail(MailTypeEnum type, Map<String, Object> propertyMap) {
-        log(Lists.newArrayList("admin"), "admin", type, propertyMap);
+    public void sendPreConfiguredMail(Map<String, String> admins, MailTypeEnum type, Map<String, Object> propertyMap) {
+        log(admins.keySet().stream().toList(), "admin", type, propertyMap);
     }
 }
