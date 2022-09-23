@@ -12,4 +12,4 @@ COPY --from=builder /usr/src/app/target/ws-0.0.1-SNAPSHOT.jar /usr/app/app.jar
 RUN adduser -D javauser
 USER javauser
 
-ENTRYPOINT ["java", "-Xmx268M","-Xss512K","-XX:CICompilerCount=2","-Dfile.encoding=UTF-8","-XX:+UseContainerSupport","-Djava.security.egd=file:/dev/./urandom", "-jar","/usr/app/app.jar", "--spring.profiles.active=${SPRING_PROFILES_ACTIVE}"]
+ENTRYPOINT ["java", "-Xmx250","-Xss512K","-XX:CICompilerCount=2","-Dfile.encoding=UTF-8","-XX:+UseContainerSupport","-Djava.security.egd=file:/dev/./urandom", "-jar","/usr/app/app.jar", "--spring.profiles.active=${SPRING_PROFILES_ACTIVE}"]
