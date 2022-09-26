@@ -3,7 +3,7 @@ FROM maven:3-amazoncorretto-17 as builder
 COPY src /usr/src/app/src
 COPY pom.xml /usr/src/app
 
-RUN mvn -f /usr/src/app/pom.xml clean install -DskipTests
+RUN mvn -f /usr/src/app/pom.xml clean package -Dmaven.test.skip=true
 
 FROM amazoncorretto:17-alpine
 
