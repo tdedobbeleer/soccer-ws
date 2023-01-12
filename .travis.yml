@@ -5,6 +5,9 @@ jdk:
   - openjdk17
 before_install:
   - if [ ! -z "$TRAVIS_TAG" ]; then echo "on a tag -> set pom.xml <version> to $TRAVIS_TAG"; mvn org.codehaus.mojo:versions-maven-plugin:2.14.2:set -DnewVersion=$TRAVIS_TAG; else echo "not on a tag -> keep snapshot version in pom.xml"; fi
+  - mkdir -vp ~/.docker/cli-plugins/
+  - curl --silent -L "https://github.com/docker/buildx/releases/download/v0.10.0/buildx-v0.10.0.linux-amd64" > ~/.docker/cli-plugins/docker-buildx
+  - chmod a+x ~/.docker/cli-plugins/docker-buildx
 install:
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 script:
@@ -17,9 +20,7 @@ deploy:
   on:
     tags: true
 after_deploy:
-  - docker build --build-arg RELEASE=${TRAVIS_TAG} -t soccer-ws .
-  - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-  - docker tag soccer-ws $DOCKER_USER/soccer-ws:${TRAVIS_TAG}_${TRAVIS_BUILD_NUMBER}
-  - docker push $DOCKER_USER/soccer-ws:${TRAVIS_TAG}_${TRAVIS_BUILD_NUMBER}
-  - docker tag soccer-ws $DOCKER_USER/soccer-ws:latest
-  - docker push $DOCKER_USER/soccer-ws:latest
+  - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+  - docker buildx create --use
+  - docker buildx build --push --platform linux/arm/v7,linux/arm64/v8,linux/amd64 --tag $DOCKER_USERNAME/soccerws:latest .
+  - docker buildx build --push --platform linux/arm/v7,linux/arm64/v8,linux/amd64 --tag $DOCKER_USERNAME/soccerws:${TRAVIS_TAG}_${TRAVIS_BUILD_NUMBER} .
