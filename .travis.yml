@@ -1,7 +1,15 @@
 language: java
 jdk:
   - openjdk17
+before_install:
+  - bash ./scripts/onTag.sh
 install:
 - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 script:
 - mvn test
+deploy:
+  provider: releases
+  api_key: "${GITHUB_TOKEN}"
+  file: "./target/${TRAVIS_TAG}.jar"
+  skip_cleanup: true
+  draft: true
