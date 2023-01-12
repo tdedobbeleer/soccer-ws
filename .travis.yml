@@ -10,6 +10,7 @@ script:
 deploy:
   provider: releases
   api_key: "${GITHUB_TOKEN}"
-  file: "./target/${TRAVIS_TAG}.jar"
+  file: "./target/ws-${TRAVIS_TAG}.jar"
   skip_cleanup: true
-  draft: true
+  on:
+    tags: true
