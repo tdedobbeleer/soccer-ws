@@ -1,12 +1,14 @@
 language: java
+services:
+  - docker
 jdk:
   - openjdk17
 before_install:
   - if [ ! -z "$TRAVIS_TAG" ]; then echo "on a tag -> set pom.xml <version> to $TRAVIS_TAG"; mvn org.codehaus.mojo:versions-maven-plugin:2.14.2:set -DnewVersion=$TRAVIS_TAG; else echo "not on a tag -> keep snapshot version in pom.xml"; fi
 install:
-- mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 script:
-- mvn test
+  - mvn test
 deploy:
   provider: releases
   api_key: "${GITHUB_TOKEN}"
@@ -14,3 +16,10 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
+after_deploy:
+  - docker build --build-arg RELEASE=${TRAVIS_TAG} -t soccer-ws .
+  - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+  - docker tag soccer-ws $DOCKER_USER/soccer-ws:${TRAVIS_TAG}_${TRAVIS_BUILD_NUMBER}
+  - docker push $DOCKER_USER/soccer-ws:${TRAVIS_TAG}_${TRAVIS_BUILD_NUMBER}
+  - docker tag soccer-ws $DOCKER_USER/soccer-ws:latest
+  - docker push $DOCKER_USER/soccer-ws:latest
