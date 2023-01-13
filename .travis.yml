@@ -22,5 +22,5 @@ deploy:
 after_deploy:
   - echo "${DOCKER_PASSWORD}" | docker login --username $DOCKER_USER --password-stdin
   - docker buildx create --use
-  - docker buildx build --build-arg RELEASE=${TRAVIS_TAG} --push --platform linux/arm/v7,linux/arm64/v8,linux/amd64 --tag $DOCKER_USERNAME/soccerws:latest .
-  - docker buildx build --build-arg RELEASE=${TRAVIS_TAG} --push --platform linux/arm/v7,linux/arm64/v8,linux/amd64 --tag $DOCKER_USERNAME/soccerws:${TRAVIS_TAG}_${TRAVIS_BUILD_NUMBER} .
+  - docker buildx build --build-arg RELEASE=${TRAVIS_TAG} --push --platform linux/arm/v7,linux/arm64/v8,linux/amd64 --tag $DOCKER_USER/soccer-ws:latest .
+  - docker buildx build --build-arg RELEASE=${TRAVIS_TAG} --push --platform linux/arm/v7,linux/arm64/v8,linux/amd64 --tag $DOCKER_USER/soccer-ws:${TRAVIS_TAG}_${TRAVIS_BUILD_NUMBER} .
