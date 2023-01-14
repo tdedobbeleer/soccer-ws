@@ -1,13 +1,8 @@
 language: java
-services:
-  - docker
 jdk:
   - openjdk17
 before_install:
   - if [ ! -z "$TRAVIS_TAG" ]; then echo "on a tag -> set pom.xml <version> to $TRAVIS_TAG"; mvn org.codehaus.mojo:versions-maven-plugin:2.14.2:set -DnewVersion=$TRAVIS_TAG; else echo "not on a tag -> keep snapshot version in pom.xml"; fi
-  - mkdir -vp ~/.docker/cli-plugins/
-  - curl --silent -L "https://github.com/docker/buildx/releases/download/v0.10.0/buildx-v0.10.0.linux-amd64" > ~/.docker/cli-plugins/docker-buildx
-  - chmod a+x ~/.docker/cli-plugins/docker-buildx
 install:
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 script:
