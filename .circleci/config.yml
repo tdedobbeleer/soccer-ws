@@ -34,9 +34,9 @@ jobs:
             if [ ! -z "$CIRCLE_TAG" ]; then
                ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${CIRCLE_TAG} ./target/
             fi
-      -run:
-        name: trigger-docker-build
-        command: |
-          curl --location --request POST 'https://circleci.com/api/v2/project/gh/tdedobbeleer/soccer-ws-docker/pipeline' \
-          --header 'Content-Type: application/json' \
-          -u "${API_TOKEN}:"
+      - run:
+          name: trigger-docker-build
+          command: |
+            curl --location --request POST 'https://circleci.com/api/v2/project/gh/tdedobbeleer/soccer-ws-docker/pipeline' \
+            --header 'Content-Type: application/json' \
+            -u "${API_TOKEN}:"
