@@ -11,10 +11,10 @@ workflows:
               only: /.*/
           requires:
             - build
-      - trigger_docker_pipeline
-        filters:
-          tags:
-            only: /.*/
+      - trigger_docker_pipeline:
+          filters:
+            tags:
+              only: /.*/
 
 jobs:
   "build":
