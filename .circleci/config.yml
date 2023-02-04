@@ -1,0 +1,44 @@
+version: 2.1
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build_and_release
+
+jobs:
+  "build_and_release":
+    working_directory: ~/repo
+    docker:
+      - image: cimg/openjdk:19.0.2
+    steps:
+      - checkout
+      - run:
+          name: tag-if-necessary
+          command: |
+            if [ ! -z "$CIRCLE_TAG" ]; then
+              echo "on a tag -> set pom.xml <version> to $CIRCLE_TAG";
+              mvn org.codehaus.mojo:versions-maven-plugin:2.14.2:set -DnewVersion=$CIRCLE_TAG;
+            else
+              echo "not on a tag -> keep snapshot version in pom.xml"
+            fi
+      - run:
+          name: mvn-test
+          command: mvn test
+      - run:
+          name: mvn-install
+          command: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+      - run:
+          name: github-release
+          command: |
+            if [ ! -z "$CIRCLE_TAG" ]; then
+               ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${CIRCLE_TAG} ./target/
+            fi
+      - run:
+          name: trigger-docker-build
+          command: |
+            if [ ! -z "$CIRCLE_TAG" ]; then
+              curl --location --request POST 'https://circleci.com/api/v2/project/gh/tdedobbeleer/soccer-ws-docker/pipeline' \
+              --header 'Content-Type: application/json' \
+              -u "${API_TOKEN}:"
+            fi
