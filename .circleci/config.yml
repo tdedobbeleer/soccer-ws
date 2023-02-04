@@ -37,6 +37,8 @@ jobs:
       - run:
           name: trigger-docker-build
           command: |
-            curl --location --request POST 'https://circleci.com/api/v2/project/gh/tdedobbeleer/soccer-ws-docker/pipeline' \
-            --header 'Content-Type: application/json' \
-            -u "${API_TOKEN}:"
+            if [ ! -z "$CIRCLE_TAG" ]; then
+              curl --location --request POST 'https://circleci.com/api/v2/project/gh/tdedobbeleer/soccer-ws-docker/pipeline' \
+              --header 'Content-Type: application/json' \
+              -u "${API_TOKEN}:"
+            fi
