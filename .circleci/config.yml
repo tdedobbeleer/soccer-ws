@@ -4,7 +4,10 @@ workflows:
   version: 2
   build:
     jobs:
-      - build_and_release
+      - build_and_release:
+          filters:
+            tags:
+              only: /.*/
 
 jobs:
   "build_and_release":
