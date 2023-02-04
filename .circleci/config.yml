@@ -43,6 +43,9 @@ jobs:
       - run:
           name: mvn-install
           command: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+      - persist_to_workspace:
+          root: ./
+          paths: target
   "publish_github_release":
     docker:
       - image: cibuilds/github:0.10
