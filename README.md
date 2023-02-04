@@ -1,7 +1,7 @@
 Soccer API
 ===================
 
-[![Build Status](https://travis-ci.com/tdedobbeleer/soccer-ws.svg?branch=master)](https://travis-ci.com/tdedobbeleer/soccer-ws)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/tdedobbeleer/soccer-ws/tree/master.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/tdedobbeleer/soccer-ws/tree/master)
 <br>
 
 This is a free soccer API based on JAVA and Spring (Boot) technology. This guide will explain how to deploy the API onto free platforms such as [Heroku](https://www.heroku.com "Heroku"). This is always a working copy.
