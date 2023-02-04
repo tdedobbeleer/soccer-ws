@@ -4,13 +4,20 @@ workflows:
   version: 2
   build:
     jobs:
-      - build_and_release:
+      - build
+      - publish_github_release:
           filters:
             tags:
               only: /.*/
+          requires:
+            - build
+      - trigger_docker_pipeline
+        filters:
+          tags:
+            only: /.*/
 
 jobs:
-  "build_and_release":
+  "build":
     working_directory: ~/repo
     docker:
       - image: cimg/openjdk:19.0.2
@@ -37,11 +44,27 @@ jobs:
             if [ ! -z "$CIRCLE_TAG" ]; then
                ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${CIRCLE_TAG} ./target/
             fi
-      - run:
-          name: trigger-docker-build
-          command: |
-            if [ ! -z "$CIRCLE_TAG" ]; then
-              curl --location --request POST 'https://circleci.com/api/v2/project/gh/tdedobbeleer/soccer-ws-docker/pipeline' \
-              --header 'Content-Type: application/json' \
-              -u "${API_TOKEN}:"
-            fi
+    publish_github_release:
+      docker:
+        - image: cibuilds/github:0.10
+      steps:
+        - attach_workspace:
+            at: ./target
+        - run:
+            name: "Publish Release on GitHub"
+            command: |
+              if [ ! -z "$CIRCLE_TAG" ]; then
+                ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${CIRCLE_TAG} ./target/
+              fi
+    trigger_docker_release:
+      docker:
+        - image: cibuilds/github:0.10
+      steps:
+        - run:
+            name: trigger-docker-build
+            command: |
+              if [ ! -z "$CIRCLE_TAG" ]; then
+                curl --location --request POST 'https://circleci.com/api/v2/project/gh/tdedobbeleer/soccer-ws-docker/pipeline' \
+                --header 'Content-Type: application/json' \
+                -u "${API_TOKEN}:"
+              fi
