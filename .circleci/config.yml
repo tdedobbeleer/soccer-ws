@@ -18,6 +18,8 @@ workflows:
           filters:
             tags:
               only: /.*/
+          requires:
+            - publish_github_release
 
 jobs:
   "build":
