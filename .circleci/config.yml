@@ -48,7 +48,7 @@ jobs:
           paths: target
   "publish_github_release":
     docker:
-      - image: cibuilds/github:0.10
+      - image: cimg/base
     steps:
       - attach_workspace:
           at: ./
@@ -60,7 +60,7 @@ jobs:
             fi
   "trigger_docker_pipeline":
     docker:
-      - image: cibuilds/github:0.10
+      - image: cimg/base
     steps:
       - run:
           name: trigger-docker-build
