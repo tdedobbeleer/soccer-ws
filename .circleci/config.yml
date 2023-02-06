@@ -53,13 +53,10 @@ jobs:
       - attach_workspace:
           at: ./
       - run:
-          command: |
-            go install github.com/tcnksm/ghr@latest
-            ghr --version
-      - run:
           name: "Publish Release on GitHub"
           command: |
             if [ ! -z "$CIRCLE_TAG" ]; then
+              go install github.com/tcnksm/ghr@latest
               ghr -generatenotes -t "${GITHUB_TOKEN}" -u "${CIRCLE_PROJECT_USERNAME}" -r "${CIRCLE_PROJECT_REPONAME}" -c "${CIRCLE_SHA1}" -delete "${CIRCLE_TAG}" target/
             fi
   "trigger_docker_pipeline":
