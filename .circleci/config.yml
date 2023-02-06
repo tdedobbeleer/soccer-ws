@@ -53,6 +53,8 @@ jobs:
       - attach_workspace:
           at: ./
       - run:
+          command: ghr --version
+      - run:
           name: "Publish Release on GitHub"
           command: |
             if [ ! -z "$CIRCLE_TAG" ]; then
