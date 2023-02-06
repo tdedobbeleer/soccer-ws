@@ -54,7 +54,7 @@ jobs:
           at: ./
       - run:
           command: |
-            go get github.com/tcnksm/ghr
+            go install github.com/tcnksm/ghr@latest
             ghr --version
       - run:
           name: "Publish Release on GitHub"
