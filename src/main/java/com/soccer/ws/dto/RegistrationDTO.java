@@ -14,7 +14,15 @@ import lombok.Setter;
 @Setter
 @EqualsAndHashCode
 public class RegistrationDTO {
-    private String email, firstName, lastName, password;
+    private String email, firstName, lastName, password, captchaResponse;
+
+    public RegistrationDTO(String email, String firstName, String lastName, String password, String captchaResponse) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+        this.captchaResponse = captchaResponse;
+    }
 
     public RegistrationDTO(String email, String firstName, String lastName, String password) {
         this.email = email;

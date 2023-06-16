@@ -20,7 +20,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -52,11 +55,11 @@ public class RegistrationRestController extends AbstractRestController {
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     @ApiOperation(value = "Create an account", nickname = "createAccount")
     @ApiResponse(code = 400, message = "Validation error", response = ValidationErrorDetailDTO.class)
-    public ResponseEntity createAccount(@Valid @RequestBody RegistrationDTO registrationDTO, @RequestParam String captchaResponse, BindingResult result, HttpServletRequest request) throws CustomMethodArgumentNotValidException {
+    public ResponseEntity createAccount(@Valid @RequestBody RegistrationDTO registrationDTO, BindingResult result, HttpServletRequest request) throws CustomMethodArgumentNotValidException {
         if (result.hasErrors()) {
             throw new CustomMethodArgumentNotValidException(result);
         }
-        if (Strings.isNullOrEmpty(captchaResponse) || !reCaptchaService.isResponseValid(request, captchaResponse)) {
+        if (Strings.isNullOrEmpty(registrationDTO.getCaptchaResponse()) || !reCaptchaService.isResponseValid(request, registrationDTO.getCaptchaResponse())) {
             throw new AccessDeniedException("You are a bot, access denied! In yo Face!");
         }
         //Create the account

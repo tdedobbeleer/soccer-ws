@@ -18,7 +18,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Locale;
@@ -57,8 +60,8 @@ public class PasswordRecoveryRestController extends AbstractRestController {
             @ApiResponse(code = 404, message = "No account with this email address found"),
             @ApiResponse(code = 400, message = "Email could not be sent for some reason"),
     })
-    public ResponseEntity postForgotPassword(@RequestBody PasswordRecoveryDTO passwordRecoveryDTO, @RequestParam String captchaResponse, BindingResult result, Locale locale, HttpServletRequest request) throws CustomMethodArgumentNotValidException {
-        if (Strings.isNullOrEmpty(captchaResponse) || !reCaptchaService.isResponseValid(request, captchaResponse)) {
+    public ResponseEntity postForgotPassword(@RequestBody PasswordRecoveryDTO passwordRecoveryDTO, BindingResult result, Locale locale, HttpServletRequest request) throws CustomMethodArgumentNotValidException {
+        if (Strings.isNullOrEmpty(passwordRecoveryDTO.getCaptchaResponse()) || !reCaptchaService.isResponseValid(request, passwordRecoveryDTO.getCaptchaResponse())) {
             throw new AccessDeniedException("You are a bot, access denied! In yo Face!");
         }
         validate(requestPwdRecoveryValidator, passwordRecoveryDTO, result);
