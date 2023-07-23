@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class PollsTask implements Task {
-    private static final Logger log = LoggerFactory.getLogger(CleanupTask.class);
+    private static final Logger log = LoggerFactory.getLogger(PollsTask.class);
 
     final PollDao pollDao;
 
