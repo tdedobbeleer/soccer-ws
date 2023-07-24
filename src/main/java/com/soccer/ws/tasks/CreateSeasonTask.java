@@ -23,7 +23,7 @@ public class CreateSeasonTask implements Task {
         this.seasonDao = seasonDao;
     }
 
-    @Scheduled(cron = "0 20 * * 7 SUN", zone = "Europe/Brussels")
+    @Scheduled(cron = "${createSeasonTask.cronSchedule}", zone = "Europe/Brussels")
     @Override
     public void execute() {
         log.info("Execute createSeasonTask - start");

@@ -20,7 +20,7 @@ public class CleanupTask implements Task {
         this.pwdRecoveryService = pwdRecoveryService;
     }
 
-    @Scheduled(cron = "0 */30 * * * *", zone = "Europe/Brussels")
+    @Scheduled(cron = "${activationCodeCleanup.cronSchedule}", zone = "Europe/Brussels")
     @Override
     public void execute() {
         log.info("Execute CleanupTask - start");
