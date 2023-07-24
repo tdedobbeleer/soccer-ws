@@ -17,7 +17,7 @@ public class WakeUpTask implements Task {
     private String appUrl;
 
     @Override
-    @Scheduled(cron = "0 */1 7-23 * * *", zone = "Europe/Brussels")
+    @Scheduled(cron = "${wakeUpTask.cronSchedule}", zone = "Europe/Brussels")
     public void execute() {
         log.info("Making sure application is not idle...");
         RestTemplate restTemplate = new RestTemplate();
